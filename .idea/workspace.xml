@@ -2,21 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/sbt.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/UdfFunctions.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/Compare.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/CompareRate.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/UDFReportDateFormat.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/UDFTimestampFormat.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/target/ReportDateFormat-1.0-SNAPSHOT-shaded.jar" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/target/ReportDateFormat-1.0-SNAPSHOT.jar" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/target/classes/com/hll/udaf/Compare$ArgsState.class" afterDir="false" />
@@ -31,6 +16,7 @@
       <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/testCompile/default-testCompile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,6 +35,13 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="D:\work\source\ReportDateFormat\.idea" />
+      </set>
+    </option>
   </component>
   <component name="MavenImportPreferences">
     <option name="importingSettings">
@@ -79,6 +72,9 @@
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.hll.udaf" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\work\source\ReportDateFormat" />
     </key>
   </component>
   <component name="RunManager">
@@ -138,8 +134,18 @@
       <workItem from="1585013525418" duration="34000" />
       <workItem from="1585044961078" duration="1868000" />
       <workItem from="1585055236983" duration="15353000" />
-      <workItem from="1585100281251" duration="1473000" />
+      <workItem from="1585100281251" duration="1724000" />
+      <workItem from="1585106255505" duration="632000" />
+      <workItem from="1585188236842" duration="1192000" />
     </task>
+    <task id="LOCAL-00001" summary="20200325   ...1">
+      <created>1585103679259</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1585103679259</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -158,10 +164,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="446" y="51" key="#com.intellij.ide.util.MemberChooser/0.0.1280.680@0.0.1280.680" timestamp="1584674812572" />
-    <state x="250" y="0" key="CommitChangelistDialog2" timestamp="1585103674741">
+    <state x="250" y="0" key="CommitChangelistDialog2" timestamp="1585203219856">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="250" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1585103674741" />
+    <state x="250" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1585203219856" />
     <state x="421" y="82" key="FileChooserDialogImpl" timestamp="1585103517341">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -182,6 +188,14 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state width="1237" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1585070042065" />
+    <state x="411" y="54" key="RollbackChangesDialog" timestamp="1585203234696">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="411" y="54" key="RollbackChangesDialog/0.0.1280.680@0.0.1280.680" timestamp="1585203234696" />
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1585103696311">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1585103696311" />
     <state x="325" y="165" key="com.intellij.ide.util.TipDialog" timestamp="1585100284804">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
