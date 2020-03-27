@@ -31,15 +31,9 @@ public class UDFHourDiff extends GenericUDF {
         ObjectInspector a = objectInspectors[0];
         ObjectInspector b = objectInspectors[1];
 
-//        if (!(a instanceof WritableTimestampObjectInspector) || !(b instanceof WritableTimestampObjectInspector)) {
-//            System.out.println("1 "+a.getClass());
-//            System.out.println("1 "+b.getClass());
         if (!(a instanceof TimestampObjectInspector) || !(b instanceof TimestampObjectInspector)) {
-            System.out.println("2 " + a.getClass());
-            System.out.println("2 " + b.getClass());
             throw new UDFArgumentException(String.format("first argument must be a Timestamp, second argument must be a Timestamp %s %s", a.getClass(), b.getClass()));
         }
-//        }
 
         this.dateObjectInspector01 = (TimestampObjectInspector) a;
         this.dateObjectInspector02 = (TimestampObjectInspector) b;
@@ -61,19 +55,10 @@ public class UDFHourDiff extends GenericUDF {
         Calendar endCa = Calendar.getInstance();
         endCa.setTime(new Date(end.getTime()));
 
-        System.out.println("start " + start);
-        System.out.println("end " + end);
-        System.out.println("startCa " + startCa);
-        System.out.println("endCa " + endCa);
-        System.out.println("startCa.getTime().getTime() " + startCa.getTime().getTime());
-        System.out.println("endCa.getTime().getTime() " + endCa.getTime().getTime());
         BigDecimal startSecond = new BigDecimal(startCa.getTime().getTime());
         BigDecimal endSecond = new BigDecimal(endCa.getTime().getTime());
         BigDecimal div = new BigDecimal(60 * 60);
         try {
-            System.out.println(startSecond);
-            System.out.println(endSecond);
-            System.out.println(div);
             BigDecimal result = endSecond.subtract(startSecond).divide(div).setScale(2, BigDecimal.ROUND_UP);
             return result.doubleValue();
         } catch (Exception e) {

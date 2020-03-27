@@ -1,22 +1,26 @@
 package com.hll.udf.dif;
 
+import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.DateObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.StringObjectInspector;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.TimestampObjectInspector;
 
+import java.sql.Timestamp;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 
+@Description(name = "udfweekdiff",
+        value = "_FUNC_(start, end) - " +
+                "date:Timestamp , day:Timestamp")
 public class UDFWeekDiff extends GenericUDF {
-    private DateObjectInspector dateObjectInspector01;
-    private DateObjectInspector dateObjectInspector02;
+    private TimestampObjectInspector dateObjectInspector01;
+    private TimestampObjectInspector dateObjectInspector02;
 
     @Override
     public ObjectInspector initialize(ObjectInspector[] objectInspectors) throws UDFArgumentException {
@@ -26,29 +30,33 @@ public class UDFWeekDiff extends GenericUDF {
         // 1. 检查是否接收到正确的参数类型
         ObjectInspector a = objectInspectors[0];
         ObjectInspector b = objectInspectors[1];
-        if (!(a instanceof DateObjectInspector) || !(b instanceof DateObjectInspector)) {
-            throw new UDFArgumentException("first argument must be a String, second argument must be a String");
+
+        if (!(a instanceof TimestampObjectInspector) || !(b instanceof TimestampObjectInspector)) {
+            throw new UDFArgumentException(String.format("first argument must be a Timestamp, second argument must be a Timestamp %s %s", a.getClass(), b.getClass()));
         }
 
-        this.dateObjectInspector01 = (DateObjectInspector) a;
-        this.dateObjectInspector02 = (DateObjectInspector) b;
+        this.dateObjectInspector01 = (TimestampObjectInspector) a;
+        this.dateObjectInspector02 = (TimestampObjectInspector) b;
 
-        return PrimitiveObjectInspectorFactory.javaIntObjectInspector;
+        return PrimitiveObjectInspectorFactory.javaLongObjectInspector;
     }
 
 
     @Override
     public Object evaluate(DeferredObject[] deferredObjects) throws HiveException {
 
-        Date start = this.dateObjectInspector01.getPrimitiveJavaObject(deferredObjects[0].get());
-        Date end = this.dateObjectInspector02.getPrimitiveJavaObject(deferredObjects[1].get());
-
+        Timestamp start = this.dateObjectInspector01.getPrimitiveJavaObject(deferredObjects[0].get());
+        Timestamp end = this.dateObjectInspector02.getPrimitiveJavaObject(deferredObjects[1].get());
         if (start == null || end == null) {
             throw new UDFArgumentLengthException(String.format("args has null :=} start is %s end is %s", start, end));
         }
+        Calendar startCa = Calendar.getInstance();
+        startCa.setTime(new Date(start.getTime()));
+        Calendar endCa = Calendar.getInstance();
+        endCa.setTime(new Date(end.getTime()));
 
-        LocalDate startDate = LocalDate.of(start.getYear(), start.getMonth(), start.getDay());
-        LocalDate endDate = LocalDate.of(end.getYear(), end.getMonth(), end.getDay());
+        LocalDate startDate = LocalDate.of(startCa.get(Calendar.YEAR),startCa.get(Calendar.MONTH), startCa.get(Calendar.DAY_OF_MONTH));
+        LocalDate endDate = LocalDate.of(startCa.get(Calendar.YEAR), startCa.get(Calendar.MONTH), startCa.get(Calendar.DAY_OF_MONTH));
 
         return ChronoUnit.WEEKS.between(startDate, endDate);
     }
