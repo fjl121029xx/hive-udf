@@ -2,6 +2,7 @@ package com.hll.udaf;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang.text.StrBuilder;
 import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDAF;
 import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
@@ -15,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-@Description(name = "compare", value = "_FUNC_(dimension,measure,dimen_mode,time_diff_type,measure_name) - Returns the mean of a set of numbers")
+@Description(name = "row_col_stat", value = "_FUNC_(dimension,measure,dimen_mode,time_diff_type,measure_name) - Returns the mean of a set of numbers")
 
 public class RowColStat extends UDAF {
 
@@ -184,7 +185,8 @@ public class RowColStat extends UDAF {
                 }
             }
 
-
+            argsState.cat.put("dog", argsState.dog);
+            argsState.cat.put("info", argsState.info);
             return true;
         }
 
@@ -202,30 +204,454 @@ public class RowColStat extends UDAF {
         // reduce 阶段，用于逐个迭代处理map当中每个不同key对应的 terminatePartial的结果
         public boolean merge(Map<String, Map<String, String>> mapOutput) {
 
-            Map<String, String> dog = mapOutput.getOrDefault("dog", new HashMap<>());
-            if (dog == null || dog.size() == 0) {
+            Map<String, String> dog2 = mapOutput.getOrDefault("dog", new HashMap<>());
+            if (dog2 == null || dog2.size() == 0) {
                 throw new RuntimeException("dog is null");
             }
-            argsState.dog = dog;
 
             Map<String, String> info = mapOutput.getOrDefault("info", new HashMap<>());
+            logger.info(info);
             if (info == null || info.size() == 0) {
                 throw new RuntimeException("info is null");
             }
-            argsState.info = info;
             mapOutput.remove("dog");
             mapOutput.remove("info");
 
-            argsState.cat = mapOutput;
-            if (argsState.cat == null || argsState.cat.size() == 0) {
-                throw new RuntimeException("cat is null");
+            Map<String, Map<String, String>> cat2 = mapOutput;
+            if (cat2 == null || cat2.size() == 0) {
+                throw new RuntimeException("mapOutput is null");
             }
+
+            Map<String, String> dog1 = argsState.cat.getOrDefault("dog", new HashMap<>());
+            argsState.cat.remove("dog");
+            argsState.cat.remove("info");
+            Map<String, Map<String, String>> cat1 = argsState.cat;
+
+            // 列维度
+            Set<String> key = cat1.keySet();
+            List<String> list = new ArrayList<>(key);
+            list.addAll(cat2.keySet());
+
+            for (String k : list) {
+
+                Map<String, String> cat11 = cat1.getOrDefault(k, new HashMap<>());
+                Map<String, String> cat21 = cat2.getOrDefault(k, new HashMap<>());
+                // ckey
+                Set<String> ckey = cat11.keySet();
+                List<String> clist = new ArrayList<>(ckey);
+                clist.addAll(cat21.keySet());
+
+                for (String subk : clist) {
+                    if (subk.contains("count")) {
+
+                        double dvalue = Double.parseDouble(cat11.getOrDefault(subk, "0.00")) +
+                                Double.parseDouble(cat21.getOrDefault(subk, "0.00"));
+                        cat11.put(subk, Double.toString(dvalue));
+                    } else if (subk.contains("max")) {
+                        double dvalue1 = Double.parseDouble(cat11.getOrDefault(subk, "0.00"));
+                        double dvalue2 = Double.parseDouble(cat21.getOrDefault(subk, "0.00"));
+                        if (dvalue2 > dvalue1) {
+                            dvalue1 = dvalue2;
+                        }
+                        cat11.put(subk, Double.toString(dvalue1));
+                    } else if (subk.contains("min")) {
+
+                        double dvalue1 = Double.parseDouble(cat11.getOrDefault(subk, "0.00"));
+                        double dvalue2 = Double.parseDouble(cat21.getOrDefault(subk, "0.00"));
+                        if (dvalue2 < dvalue1) {
+                            dvalue1 = dvalue2;
+                        }
+                        cat11.put(subk, Double.toString(dvalue1));
+                    } else if (subk.contains("discount")) {
+                        String dvalue1 = cat11.getOrDefault(subk, "");
+                        String dvalue2 = cat21.getOrDefault(subk, "");
+
+                        String[] dvalue2_arr = dvalue2.split(",");
+                        for (String f : dvalue2_arr) {
+                            if (dvalue1.equals("")) {
+                                dvalue1 = f;
+                            } else if (!dvalue1.contains(f)) {
+                                dvalue1 = String.format("%s,%s", dvalue1, f);
+                            }
+                        }
+                        cat11.put(subk, dvalue1);
+                    } else if (subk.contains("avg")) {
+                        String dvalue1 = cat11.getOrDefault(subk, "0,0");
+                        String dvalue2 = cat21.getOrDefault(subk, "0,0");
+
+                        double a1 = Double.parseDouble(dvalue1.split(",")[0]);
+                        double a2 = Double.parseDouble(dvalue1.split(",")[1]);
+                        double b1 = Double.parseDouble(dvalue2.split(",")[0]);
+                        double b2 = Double.parseDouble(dvalue2.split(",")[1]);
+                        cat11.put(subk, Double.toString(((a1 + b1) / (a2 + b2))));
+                    } else {
+                        double dvalue = Double.parseDouble(cat11.getOrDefault(subk, "0.00")) +
+                                Double.parseDouble(cat21.getOrDefault(subk, "0.00"));
+                        cat11.put(subk, Double.toString(dvalue));
+                    }
+
+                }
+                cat1.put(k, cat11);
+            }
+            argsState.cat = cat1;
+
+            Set<String> dkey = dog1.keySet();
+            List<String> dlist = new ArrayList<>(dkey);
+            dlist.addAll(dog2.keySet());
+
+            for (String keyd : dlist) {
+                if (keyd.contains("count")) {
+                    double v1 = Double.parseDouble(dog2.getOrDefault(keyd, "0.00"));
+                    double v2 = Double.parseDouble(dog1.getOrDefault(keyd, "0.00"));
+                    double result = v1 + v2;
+                    dog1.put(keyd, Double.toString(result));
+                } else if (keyd.contains("max")) {
+                    double v1 = Double.parseDouble(dog2.getOrDefault(keyd, "0.00"));
+                    double v2 = Double.parseDouble(dog1.getOrDefault(keyd, "0.00"));
+
+                    if (v2 > v1) {
+                        v1 = v2;
+                    }
+                    dog1.put(keyd, Double.toString(v1));
+                } else if (keyd.contains("min")) {
+                    double v1 = Double.parseDouble(dog2.getOrDefault(keyd, "0.00"));
+                    double v2 = Double.parseDouble(dog1.getOrDefault(keyd, "0.00"));
+
+                    if (v2 < v1) {
+                        v1 = v2;
+                    }
+                    dog1.put(keyd, Double.toString(v1));
+                } else if (keyd.contains("discount")) {
+
+                    String v1 = dog2.getOrDefault(keyd, "");
+                    String v2 = dog1.getOrDefault(keyd, "");
+                    if (v2.equals("")) {
+                        v2 = v1;
+                    } else {
+                        String[] vrr = v1.split(",");
+                        for (String f : vrr) {
+                            if (!v2.contains(f)) {
+                                v2 = String.format("%s,%s", v2, f);
+                            }
+                        }
+                    }
+                    dog1.put(keyd, v2);
+
+                } else if (keyd.contains("avg")) {
+
+                    String v1 = dog2.getOrDefault(keyd, "0,0");
+                    String v2 = dog1.getOrDefault(keyd, "0,0");
+                    double a1 = Double.parseDouble(v1.split(",")[0]);
+                    double a2 = Double.parseDouble(v1.split(",")[1]);
+                    double b1 = Double.parseDouble(v2.split(",")[0]);
+                    double b2 = Double.parseDouble(v2.split(",")[1]);
+
+                    dog1.put(keyd, Double.toString(((a1 + b1) / (a2 + b2))));
+                } else {
+                    double v1 = Double.parseDouble(dog2.getOrDefault(keyd, "0.00"));
+                    double v2 = Double.parseDouble(dog1.getOrDefault(keyd, "0.00"));
+                    double result = v1 + v2;
+                    dog1.put(keyd, Double.toString(result));
+                }
+            }
+
+            argsState.cat.put("dog", dog1);
+            argsState.cat.put("info", info);
             return true;
         }
 
         // 处理merge计算完成后的结果，即对merge完成后的结果做最后的业务处理
-        public Map<String, String> terminate() {
-            return null;
+        public Map<String, Double> terminate() {
+
+            Map<String, String> dog = argsState.cat.getOrDefault("dog", new HashMap<>());
+            if (dog == null || dog.size() == 0) {
+                throw new RuntimeException("dog is null");
+            }
+
+            Map<String, String> info = argsState.cat.getOrDefault("info", new HashMap<>());
+            if (info == null || info.size() == 0) {
+                throw new RuntimeException("info is null");
+            }
+            argsState.cat.remove("dog");
+            argsState.cat.remove("info");
+
+            Map<String, Map<String, String>> cat = argsState.cat;
+            if (cat == null || cat.size() == 0) {
+                throw new RuntimeException("cat is null");
+            }
+            Pattern p = Pattern.compile("\\d+\\.\\d+$|-\\d+\\.\\d+$");
+            Pattern p2 = Pattern.compile("\\d+\\.\\d+,\\d+\\.\\d+$");
+
+            Map<String, Map<String, Double>> compare = new HashMap<>();
+            for (Map.Entry<String, Map<String, String>> f :
+                    cat.entrySet()) {
+                String key = f.getKey();
+                Map<String, String> value = f.getValue();
+
+
+                Map<String, Double> newValue = new HashMap<>();
+                for (Map.Entry<String, String> en : value.entrySet()) {
+                    if (p.matcher(en.getValue()).matches()) {
+                        newValue.put(en.getKey(), Double.parseDouble(en.getValue()));
+                    } else if (p2.matcher(en.getValue()).matches()) {
+                        String[] enarr = en.getValue().split(",");
+                        newValue.put(en.getKey(), Double.parseDouble(enarr[0]) / Double.parseDouble(enarr[1]));
+                    } else {
+                        newValue.put(en.getKey(), Double.parseDouble(new String(en.getValue().split(",").length + "")));
+                    }
+                }
+                compare.put(key, newValue);
+            }
+
+            Map<String, Double> dimension = new HashMap<>();
+            for (Map.Entry<String, String> en : dog.entrySet()) {
+                String value = en.getValue();
+                String key = en.getKey();
+                if (p.matcher(value).matches()) {
+                    dimension.put(key, Double.parseDouble(value));
+                } else if (p2.matcher(value).matches()) {
+                    dimension.put(key, (Double.parseDouble(value.split(",")[0]) / Double.parseDouble(value.split(",")[1])));
+                } else {
+                    dimension.put(key, Double.parseDouble(value.split(",").length + ""));
+                }
+            }
+            if (compare == null || compare.size() == 0) {
+                throw new RuntimeException("compare is null");
+            }
+
+            if (dimension == null || dimension.size() == 0) {
+                throw new RuntimeException("dimension is null");
+            }
+
+
+            int dimension_length = Integer.parseInt(info.getOrDefault("dimension_length", "0"));
+            int compare_length = Integer.parseInt(info.getOrDefault("compare_length", "0"));
+            int measure_length = Integer.parseInt(info.getOrDefault("measure_length", "0"));
+//            measure_func
+            String measure_name = info.get("measure_func");
+            String[] measure_arr = measure_name.split(",");
+
+            Map<String, Double> compareValue = new HashMap<>();
+            for (Map<String, Double> l : compare.values()) {
+                compareValue.putAll(l);
+            }
+            Map<String, Double> result = new HashMap<>();
+
+            String rowcol = info.get("rowcol");
+
+            for (Map.Entry<String, Double> en : compareValue.entrySet()) {
+
+                String measure_key = en.getKey();
+
+                String compare_key = measure_key.substring(0, measure_key.lastIndexOf("△"));
+                String compare_key_tmp = measure_key.substring(0, measure_key.lastIndexOf("△"));
+
+                String[] all_keys = compare_key.split("△");
+
+                String dimensionKeys = all_keys[0];
+                for (int i = 1; i < dimension_length; i++) {
+                    dimensionKeys = String.format("%s△%s", dimensionKeys, all_keys[i]);
+                }
+
+                String compareKeys = all_keys[dimension_length];
+                for (int i = (dimension_length + 1); i < (dimension_length + compare_length); i++) {
+                    compareKeys = compareKeys + "△" + all_keys[i];
+                }
+
+                double tmp_count = 0.00;
+                double tmp_count2 = 0.00;
+
+                for (int i = 0; i < measure_arr.length; i++) {
+                    String s = measure_arr[i];
+                    String tmp_key = String.format("%s△%s", compare_key, s);
+                    double v = compareValue.getOrDefault(tmp_key, 0.00);
+                    tmp_count = tmp_count + v;
+                    compare_key_tmp = String.format("%s△%s", compare_key_tmp, v);
+                }
+
+                // 行合计
+                if (rowcol.equals("1") || rowcol.equals("7")) {
+                    for (int i = 0; i < measure_arr.length; i++) {
+                        String s = measure_arr[i];
+                        double v = dimension.getOrDefault(dimensionKeys + "△" + s, 0.00);
+                        tmp_count2 = tmp_count2 + v;
+                        compare_key_tmp = String.format("%s△%s", compare_key_tmp, v);
+                    }
+
+                    compare_key_tmp = String.format("%s△%s", compare_key_tmp, tmp_count2);
+                    compare_key_tmp = String.format("%s△%s△", compare_key_tmp, tmp_count);
+                } else {
+                    compare_key_tmp = String.format("%s△", compare_key_tmp);
+                }
+                result.put(compare_key_tmp, 0.00);
+            }
+
+            if (rowcol.equals("7")) {
+                StrBuilder mea = new StrBuilder();
+                for (int i = 0; i < measure_length; i++) {
+                    if (i == measure_length - 1) {
+                        mea.append("0.0");
+                    } else {
+                        mea.append("0.0△");
+                    }
+                }
+
+                Map<String, String> totalSumMap = new HashMap<>();
+                String total_key = "总计";
+                for (int i = 0; i < dimension_length; i++) {
+                    total_key += "△";
+                }
+                for (String k : result.keySet()) {
+
+                    String[] all_key = k.split("△");
+                    List<String> compare_list = splitArray(k.split("△"), dimension_length, dimension_length + compare_length);
+                    List<String> measure_list = splitArray(k.split("△"), dimension_length + compare_length, dimension_length + compare_length + measure_length);
+
+                    String total_pre_key = String.format("%s△%s", total_key, compare_list.stream().reduce((a, b) -> String.format("%s△%s", a, b)).get());
+
+                    String[] tt = totalSumMap.getOrDefault(total_pre_key, mea.toString()).split("△");
+                    StringBuilder res = new StringBuilder();
+                    for (int i = 0; i < measure_list.size(); i++) {
+                        double d = Double.parseDouble(tt[i]) + Double.parseDouble(measure_list.get(i));
+                        if (i == measure_list.size() - 1) {
+                            res.append(d);
+                        } else {
+                            res.append(d).append("△");
+                        }
+                    }
+                    Double sumRes = Arrays.stream(res.toString().split("△")).map(Double::parseDouble).reduce((a, b) -> a + b).get();
+                    totalSumMap.put(total_pre_key, String.format("%s△%s△%s△%s△columnSum", res, res, sumRes, sumRes));
+                }
+
+                // =====
+                Map<String, String> sub_ttal = new HashMap<>();
+                for (String k : result.keySet()) {
+                    List<String> dimension_list = splitArray(k.split("△"), 0, dimension_length);
+                    List<String> compare_list = splitArray(k.split("△"), dimension_length, dimension_length + compare_length);
+                    List<String> measure_list = splitArray(k.split("△"), dimension_length + compare_length, dimension_length + compare_length + measure_length);
+
+                    for (int i = 1; i < dimension_list.size(); i++) {
+                        String dkey = splitList(dimension_list, 0, i).stream().reduce((a, b) -> a + "△" + b).get() + "△小计";
+                        if (dkey.split("△").length < dimension_length) {
+                            for (int j = 0; j < (dimension_length - dkey.split("△").length); j++) {
+                                dkey += "△";
+                            }
+                        }
+
+                        String subtotal_tmp_key = dkey + "△" + compare_list.stream().reduce((a, b) -> a + "△" + b).get();
+
+                        String[] tt = sub_ttal.getOrDefault(subtotal_tmp_key, mea.toString()).split("△");
+                        StringBuilder res = new StringBuilder();
+                        for (int j = 0; j < measure_list.size(); j++) {
+                            double d = Double.parseDouble(tt[j]) + Double.parseDouble(measure_list.get(j));
+                            if (j == measure_list.size() - 1) {
+                                res.append(d);
+                            } else {
+                                res.append(d).append("△");
+                            }
+                        }
+                        Double sumRes = Arrays.stream(res.toString().split("△")).map(Double::parseDouble).reduce((a, b) -> a + b).get();
+                        sub_ttal.put(subtotal_tmp_key, res + "△" + res + "△" + sumRes + "△" + sumRes + "△columnSum_subtotal_");
+                    }
+                }
+
+                for (Map.Entry<String, String> en : totalSumMap.entrySet()) {
+                    result.put(en.getKey() + "△" + en.getValue(), 0.00);
+                }
+
+                for (Map.Entry<String, String> en : sub_ttal.entrySet()) {
+                    result.put(en.getKey() + "△" + en.getValue(), 0.00);
+                }
+            } else if (rowcol.equals("6") || rowcol.equals("4") || rowcol.equals("2")) {
+                StrBuilder mea = new StrBuilder();
+                for (int i = 0; i < measure_length; i++) {
+                    if (i == measure_length - 1) {
+                        mea.append("0.0");
+                    } else {
+                        mea.append("0.0△");
+                    }
+                }
+                String total_key = "总计";
+                for (int i = 0; i < dimension_length; i++) {
+                    total_key += "△";
+                }
+
+                Map<String, String> totalSumMap = new HashMap<>();
+                for (String k : result.keySet()) {
+                    List<String> compare_list = splitArray(k.split("△"), dimension_length, dimension_length + compare_length);
+                    List<String> measure_list = splitArray(k.split("△"), dimension_length + compare_length, dimension_length + compare_length + measure_length);
+
+                    String total_tmp_key = total_key + "△" + compare_list.stream().reduce((a, b) -> a + "△" + b).get();
+
+                    String[] tt = totalSumMap.getOrDefault(total_tmp_key, mea.toString()).split("△");
+                    StringBuilder res = new StringBuilder();
+                    for (int j = 0; j < measure_list.size(); j++) {
+                        double d = Double.parseDouble(tt[j]) + Double.parseDouble(measure_list.get(j));
+                        if (j == measure_list.size() - 1) {
+                            res.append(d);
+                        } else {
+                            res.append(d).append("△");
+                        }
+                    }
+                    totalSumMap.put(total_tmp_key, res.toString());
+                }
+                Map<String, String> sub_ttal = new HashMap<>();
+                for (String k : result.keySet()) {
+                    List<String> dimension_list = splitArray(k.split("△"), 0, dimension_length);
+                    List<String> compare_list = splitArray(k.split("△"), dimension_length, dimension_length + compare_length);
+                    List<String> measure_list = splitArray(k.split("△"), dimension_length + compare_length, dimension_length + compare_length + measure_length);
+
+                    for (int i = 1; i < dimension_list.size(); i++) {
+                        String dkey = splitList(dimension_list, 0, i).stream().reduce((a, b) -> a + "△" + b).get() + "△小计";
+                        if (dkey.split("△").length < dimension_length) {
+                            for (int j = 0; j < (dimension_length - dkey.split("△").length); j++) {
+                                dkey += "△";
+                            }
+                        }
+
+                        String subtotal_tmp_key = dkey + "△" + compare_list.stream().reduce((a, b) -> a + "△" + b).get();
+
+                        String[] tt = sub_ttal.getOrDefault(subtotal_tmp_key, mea.toString()).split("△");
+                        StringBuilder res = new StringBuilder();
+                        for (int j = 0; j < measure_list.size(); j++) {
+                            double d = Double.parseDouble(tt[j]) + Double.parseDouble(measure_list.get(j));
+                            if (j == measure_list.size() - 1) {
+                                res.append(d);
+                            } else {
+                                res.append(d).append("△");
+                            }
+                        }
+                        sub_ttal.put(subtotal_tmp_key, res.toString());
+                    }
+
+                }
+
+                if (rowcol.equals("4") && !rowcol.equals("2")) {
+                    for (Map.Entry<String, String> en : totalSumMap.entrySet()) {
+                        String key = String.format("%s△%s△columnSum", en.getKey(), en.getValue());
+                        result.put(key, 0.00);
+                    }
+                }
+                if (!rowcol.equals("4") && rowcol.equals("2")) {
+                    for (Map.Entry<String, String> en : sub_ttal.entrySet()) {
+                        String key = String.format("%s△%s△columnSum_subtotal_", en.getKey(), en.getValue());
+                        result.put(key, 0.00);
+                    }
+                }
+                if (rowcol.equals("6")) {
+                    for (Map.Entry<String, String> en : totalSumMap.entrySet()) {
+                        String key = String.format("%s△%s△columnSum", en.getKey(), en.getValue());
+                        result.put(key, 0.00);
+                    }
+
+                    for (Map.Entry<String, String> en : sub_ttal.entrySet()) {
+                        String key = String.format("%s△%s△columnSum_subtotal_", en.getKey(), en.getValue());
+                        result.put(key, 0.00);
+                    }
+                }
+            }
+
+            return result;
         }
     }
 
@@ -310,7 +736,15 @@ public class RowColStat extends UDAF {
         }
     }
 
-    public static List<String> splitArray(List<String> arr, int a, int b) {
+    public static List<String> splitArray(String[] arr, int a, int b) {
+        List<String> newArr = new ArrayList<>();
+        for (int i = a; i < b; i++) {
+            newArr.add(arr[i]);
+        }
+        return newArr;
+    }
+
+    public static List<String> splitList(List<String> arr, int a, int b) {
         List<String> newArr = new ArrayList<>();
         for (int i = a; i < b; i++) {
             newArr.add(arr.get(i));
