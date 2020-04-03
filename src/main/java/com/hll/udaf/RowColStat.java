@@ -68,8 +68,9 @@ public class RowColStat extends UDAF {
             // dimension_length
             argsState.info.put("dimension_length", Integer.toString(dimensions.size()));
 
-            String dimension_key = dimensions.stream().reduce((a, b) -> String.format("%s%s", a, b)).get();
-            String compare_key = compare.stream().reduce((a, b) -> String.format("%s%s", a, b)).get();
+            String dimension_key = dimensions.stream().reduce((a, b) -> String.format("%s△%s", a, b)).get();
+            dimensions.addAll(compare);
+            String compare_key = dimensions.stream().reduce((a, b) -> String.format("%s△%s", a, b)).get();
             // compare_length
             argsState.info.put("compare_length", Integer.toString(compare.size()));
             // measure_length
@@ -79,7 +80,7 @@ public class RowColStat extends UDAF {
             argsState.info.put("rowsumtype", rowsum_type);
 
             //
-            argsState.info.put("measure_func", measure_func.stream().reduce((a, b) -> String.format("%s_%s", a, b)).get());
+            argsState.info.put("measure_func", measure_func.stream().reduce((a, b) -> String.format("%s,%s", a, b)).get());
 
             Map<String, String> measure = new HashMap<>();
             for (int i = 0; i < measure_func.size(); i++) {
@@ -195,8 +196,8 @@ public class RowColStat extends UDAF {
          * 如果需要聚合，则对iterator返回的结果处理，否则直接返回iterator的结果即可
          */
         public Map<String, Map<String, String>> terminatePartial() {
-            argsState.cat.put("dog", argsState.dog);
-            argsState.cat.put("info", argsState.info);
+//            argsState.cat.put("dog", argsState.dog);
+//            argsState.cat.put("info", argsState.info);
 
             return argsState.cat;
         }
@@ -206,7 +207,7 @@ public class RowColStat extends UDAF {
 
             Map<String, String> dog2 = mapOutput.getOrDefault("dog", new HashMap<>());
             if (dog2 == null || dog2.size() == 0) {
-                throw new RuntimeException("dog is null");
+                throw new RuntimeException("dog is null \r\n" + mapOutput.toString());
             }
 
             Map<String, String> info = mapOutput.getOrDefault("info", new HashMap<>());
@@ -230,7 +231,11 @@ public class RowColStat extends UDAF {
             // 列维度
             Set<String> key = cat1.keySet();
             List<String> list = new ArrayList<>(key);
-            list.addAll(cat2.keySet());
+            for (String str : cat2.keySet()) {
+                if (!list.contains(str)) {
+                    list.add(str);
+                }
+            }
 
             for (String k : list) {
 
@@ -239,7 +244,11 @@ public class RowColStat extends UDAF {
                 // ckey
                 Set<String> ckey = cat11.keySet();
                 List<String> clist = new ArrayList<>(ckey);
-                clist.addAll(cat21.keySet());
+                for (String str : cat21.keySet()) {
+                    if (!clist.contains(str)) {
+                        clist.add(str);
+                    }
+                }
 
                 for (String subk : clist) {
                     if (subk.contains("count")) {
@@ -297,7 +306,11 @@ public class RowColStat extends UDAF {
 
             Set<String> dkey = dog1.keySet();
             List<String> dlist = new ArrayList<>(dkey);
-            dlist.addAll(dog2.keySet());
+            for (String str : dog2.keySet()) {
+                if (!dlist.contains(str)) {
+                    dlist.add(str);
+                }
+            }
 
             for (String keyd : dlist) {
                 if (keyd.contains("count")) {
@@ -369,6 +382,7 @@ public class RowColStat extends UDAF {
             }
 
             Map<String, String> info = argsState.cat.getOrDefault("info", new HashMap<>());
+            System.out.println(info);
             if (info == null || info.size() == 0) {
                 throw new RuntimeException("info is null");
             }
@@ -388,16 +402,17 @@ public class RowColStat extends UDAF {
                 String key = f.getKey();
                 Map<String, String> value = f.getValue();
 
-
                 Map<String, Double> newValue = new HashMap<>();
                 for (Map.Entry<String, String> en : value.entrySet()) {
-                    if (p.matcher(en.getValue()).matches()) {
-                        newValue.put(en.getKey(), Double.parseDouble(en.getValue()));
-                    } else if (p2.matcher(en.getValue()).matches()) {
-                        String[] enarr = en.getValue().split(",");
-                        newValue.put(en.getKey(), Double.parseDouble(enarr[0]) / Double.parseDouble(enarr[1]));
+                    String k = en.getKey();
+                    String v = en.getValue();
+                    if (p.matcher(v).matches()) {
+                        newValue.put(k, Double.parseDouble(v));
+                    } else if (p2.matcher(v).matches()) {
+                        String[] enarr = v.split(",");
+                        newValue.put(k, Double.parseDouble(enarr[0]) / Double.parseDouble(enarr[1]));
                     } else {
-                        newValue.put(en.getKey(), Double.parseDouble(new String(en.getValue().split(",").length + "")));
+                        newValue.put(k, Double.parseDouble(new String(v.split(",").length + "")));
                     }
                 }
                 compare.put(key, newValue);
@@ -435,13 +450,14 @@ public class RowColStat extends UDAF {
             for (Map<String, Double> l : compare.values()) {
                 compareValue.putAll(l);
             }
-            Map<String, Double> result = new HashMap<>();
 
             String rowcol = info.get("rowcol");
-
+            // ============================
+            Map<String, Double> result = new HashMap<>();
             for (Map.Entry<String, Double> en : compareValue.entrySet()) {
 
                 String measure_key = en.getKey();
+                Double value = en.getValue();
 
                 String compare_key = measure_key.substring(0, measure_key.lastIndexOf("△"));
                 String compare_key_tmp = measure_key.substring(0, measure_key.lastIndexOf("△"));
@@ -451,11 +467,14 @@ public class RowColStat extends UDAF {
                 String dimensionKeys = all_keys[0];
                 for (int i = 1; i < dimension_length; i++) {
                     dimensionKeys = String.format("%s△%s", dimensionKeys, all_keys[i]);
-                }
 
-                String compareKeys = all_keys[dimension_length];
-                for (int i = (dimension_length + 1); i < (dimension_length + compare_length); i++) {
-                    compareKeys = compareKeys + "△" + all_keys[i];
+                }
+                String compareKeys = "";
+                if (compare_length > 0) {
+                    compareKeys = all_keys[dimension_length];
+                    for (int i = (dimension_length + 1); i < (dimension_length + compare_length); i++) {
+                        compareKeys = compareKeys + "△" + all_keys[i];
+                    }
                 }
 
                 double tmp_count = 0.00;
@@ -464,7 +483,13 @@ public class RowColStat extends UDAF {
                 for (int i = 0; i < measure_arr.length; i++) {
                     String s = measure_arr[i];
                     String tmp_key = String.format("%s△%s", compare_key, s);
+
                     double v = compareValue.getOrDefault(tmp_key, 0.00);
+//                    if (tmp_key.length() > 0) {
+//                        throw new RuntimeException(measure_key + "-======================tmp_key------------------" +
+//                                "--------------------------------" + tmp_key
+//                                + "------------" + v + "-------" + value);
+//                    }
                     tmp_count = tmp_count + v;
                     compare_key_tmp = String.format("%s△%s", compare_key_tmp, v);
                 }
@@ -498,7 +523,7 @@ public class RowColStat extends UDAF {
 
                 Map<String, String> totalSumMap = new HashMap<>();
                 String total_key = "总计";
-                for (int i = 0; i < dimension_length; i++) {
+                for (int i = 1; i < dimension_length; i++) {
                     total_key += "△";
                 }
                 for (String k : result.keySet()) {
@@ -507,7 +532,10 @@ public class RowColStat extends UDAF {
                     List<String> compare_list = splitArray(k.split("△"), dimension_length, dimension_length + compare_length);
                     List<String> measure_list = splitArray(k.split("△"), dimension_length + compare_length, dimension_length + compare_length + measure_length);
 
-                    String total_pre_key = String.format("%s△%s", total_key, compare_list.stream().reduce((a, b) -> String.format("%s△%s", a, b)).get());
+                    String total_pre_key = total_key;
+                    if (compare_list != null && compare_list.size() > 0) {
+                        total_pre_key = String.format("%s△%s", total_key, compare_list.stream().reduce((a, b) -> String.format("%s△%s", a, b)).get());
+                    }
 
                     String[] tt = totalSumMap.getOrDefault(total_pre_key, mea.toString()).split("△");
                     StringBuilder res = new StringBuilder();
@@ -538,8 +566,10 @@ public class RowColStat extends UDAF {
                             }
                         }
 
-                        String subtotal_tmp_key = dkey + "△" + compare_list.stream().reduce((a, b) -> a + "△" + b).get();
-
+                        String subtotal_tmp_key = dkey;
+                        if (compare_list != null && compare_list.size() > 0) {
+                            subtotal_tmp_key = dkey + "△" + compare_list.stream().reduce((a, b) -> a + "△" + b).get();
+                        }
                         String[] tt = sub_ttal.getOrDefault(subtotal_tmp_key, mea.toString()).split("△");
                         StringBuilder res = new StringBuilder();
                         for (int j = 0; j < measure_list.size(); j++) {
@@ -572,7 +602,7 @@ public class RowColStat extends UDAF {
                     }
                 }
                 String total_key = "总计";
-                for (int i = 0; i < dimension_length; i++) {
+                for (int i = 1; i < dimension_length; i++) {
                     total_key += "△";
                 }
 
@@ -581,7 +611,10 @@ public class RowColStat extends UDAF {
                     List<String> compare_list = splitArray(k.split("△"), dimension_length, dimension_length + compare_length);
                     List<String> measure_list = splitArray(k.split("△"), dimension_length + compare_length, dimension_length + compare_length + measure_length);
 
-                    String total_tmp_key = total_key + "△" + compare_list.stream().reduce((a, b) -> a + "△" + b).get();
+                    String total_tmp_key = total_key;
+                    if (compare_list != null && compare_list.size() > 0) {
+                        total_tmp_key = total_tmp_key + "△" + compare_list.stream().reduce((a, b) -> a + "△" + b).get();
+                    }
 
                     String[] tt = totalSumMap.getOrDefault(total_tmp_key, mea.toString()).split("△");
                     StringBuilder res = new StringBuilder();
@@ -609,7 +642,11 @@ public class RowColStat extends UDAF {
                             }
                         }
 
-                        String subtotal_tmp_key = dkey + "△" + compare_list.stream().reduce((a, b) -> a + "△" + b).get();
+                        String subtotal_tmp_key = dkey;
+                        String total_tmp_key = total_key;
+                        if (compare_list != null && compare_list.size() > 0) {
+                            subtotal_tmp_key = subtotal_tmp_key + "△" + compare_list.stream().reduce((a, b) -> a + "△" + b).get();
+                        }
 
                         String[] tt = sub_ttal.getOrDefault(subtotal_tmp_key, mea.toString()).split("△");
                         StringBuilder res = new StringBuilder();
@@ -750,6 +787,20 @@ public class RowColStat extends UDAF {
             newArr.add(arr.get(i));
         }
         return newArr;
+    }
+
+
+    public static String arrshow(String[] arr) {
+        StringBuilder sb = new StringBuilder();
+        if (arr != null && arr.length > 0) {
+
+            for (String s :
+                    arr) {
+                sb.append(s + "\t");
+
+            }
+        }
+        return sb.toString();
     }
 
 }
