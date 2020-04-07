@@ -1,4 +1,4 @@
-package com.hll.udf.dif;
+package com.hll.udf.v2.dif;
 
 import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;

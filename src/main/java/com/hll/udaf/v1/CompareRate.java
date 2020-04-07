@@ -1,4 +1,4 @@
-package com.hll.udaf;
+package com.hll.udaf.v1;
 
 import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDAF;

@@ -1,4 +1,4 @@
-package com.hll.udf.dif;
+package com.hll.udf.v2.dif;
 
 import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
@@ -6,19 +6,19 @@ import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.*;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
+import org.apache.hadoop.hive.serde2.objectinspector.primitive.TimestampObjectInspector;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDate;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 
-@Description(name = "udfhourdiff",
+@Description(name = "udfyeardiff",
         value = "_FUNC_(start, end) - " +
                 "date:Timestamp , day:Timestamp")
-public class UDFHourDiff extends GenericUDF {
-
+public class UDFYearDiff extends GenericUDF {
     private TimestampObjectInspector dateObjectInspector01;
     private TimestampObjectInspector dateObjectInspector02;
 
@@ -38,7 +38,7 @@ public class UDFHourDiff extends GenericUDF {
         this.dateObjectInspector01 = (TimestampObjectInspector) a;
         this.dateObjectInspector02 = (TimestampObjectInspector) b;
 
-        return PrimitiveObjectInspectorFactory.javaDoubleObjectInspector;
+        return PrimitiveObjectInspectorFactory.javaLongObjectInspector;
     }
 
 
@@ -55,23 +55,15 @@ public class UDFHourDiff extends GenericUDF {
         Calendar endCa = Calendar.getInstance();
         endCa.setTime(new Date(end.getTime()));
 
-        BigDecimal startSecond = new BigDecimal(startCa.getTime().getTime());
-        BigDecimal endSecond = new BigDecimal(endCa.getTime().getTime());
-        BigDecimal div = new BigDecimal(60 * 60 * 1000);
-        try {
-            BigDecimal result = endSecond.subtract(startSecond).divide(div).setScale(2, BigDecimal.ROUND_UP);
-            return result.doubleValue();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(String.format("math start %s end %s div %s", startSecond.toString(), endSecond, div));
-        }
+        LocalDate startDate = LocalDate.of(startCa.get(Calendar.YEAR), startCa.get(Calendar.MONTH) + 1, startCa.get(Calendar.DAY_OF_MONTH));
+        LocalDate endDate = LocalDate.of(endCa.get(Calendar.YEAR), endCa.get(Calendar.MONTH) + 1, endCa.get(Calendar.DAY_OF_MONTH));
 
+        return ChronoUnit.YEARS.between(startDate, endDate);
     }
 
     @Override
     public String getDisplayString(String[] children) {
         return children[0];
     }
-
 
 }

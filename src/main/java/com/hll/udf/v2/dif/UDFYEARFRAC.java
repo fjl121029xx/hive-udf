@@ -1,4 +1,4 @@
-package com.hll.udf.dif;
+package com.hll.udf.v2.dif;
 
 import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
@@ -6,7 +6,6 @@ import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDF;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
-import org.apache.hadoop.hive.serde2.objectinspector.primitive.DateObjectInspector;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorFactory;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.TimestampObjectInspector;
 
@@ -73,8 +72,8 @@ public class UDFYEARFRAC extends GenericUDF {
         LocalDate startDate = LocalDate.of(startCa.get(Calendar.YEAR), startCa.get(Calendar.MONTH) + 1, startCa.get(Calendar.DAY_OF_MONTH));
         LocalDate endDate = LocalDate.of(endCa.get(Calendar.YEAR), endCa.get(Calendar.MONTH) + 1, endCa.get(Calendar.DAY_OF_MONTH));
 
-        BigDecimal between = new BigDecimal(ChronoUnit.WEEKS.between(startDate, endDate));
-        return between.divide(days, RoundingMode.HALF_UP).doubleValue();
+        BigDecimal between = new BigDecimal(ChronoUnit.DAYS.between(startDate, endDate));
+        return between.divide(days,4, RoundingMode.HALF_UP).doubleValue();
     }
 
     @Override

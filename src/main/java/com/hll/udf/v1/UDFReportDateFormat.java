@@ -1,4 +1,4 @@
-package com.hll.udf;
+package com.hll.udf.v1;
 
 import org.apache.hadoop.hive.ql.exec.*;
 import org.apache.hadoop.hive.ql.metadata.HiveException;

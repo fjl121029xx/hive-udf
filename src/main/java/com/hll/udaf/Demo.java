@@ -1,5 +1,9 @@
 package com.hll.udaf;
 
+import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -17,21 +21,25 @@ public class Demo {
 
         Date startTime = sdf.parse("2020-01-01");
         Date endTime = sdf.parse("2020-02-08");
-        int i = 0;
-
-//        if (startTime.getTime() > endTime.getTime()) {
-//            Date tmp = startTime;
-//            startTime = endTime;
-//            endTime = tmp;
-//            i = -1;
-//        }
         Calendar startCa = Calendar.getInstance();
         startCa.setTime(startTime);
         Calendar endCa = Calendar.getInstance();
         endCa.setTime(endTime);
 
+        int year = startCa.get(Calendar.YEAR);
+        BigDecimal days;
+        if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0) {//闰年的判断规则
+            days = new BigDecimal(366);
+        } else {
+            days = new BigDecimal(365);
+        }
         LocalDate startDate = LocalDate.of(startCa.get(Calendar.YEAR), startCa.get(Calendar.MONTH) + 1, startCa.get(Calendar.DAY_OF_MONTH));
         LocalDate endDate = LocalDate.of(endCa.get(Calendar.YEAR), endCa.get(Calendar.MONTH) + 1, endCa.get(Calendar.DAY_OF_MONTH));
-        System.out.println(ChronoUnit.WEEKS.between(startDate,endDate));
+
+        BigDecimal between = new BigDecimal(ChronoUnit.DAYS.between(startDate, endDate));
+        System.out.println(between);
+        System.out.println(days);
+        BigDecimal divide = between.divide(days,3, RoundingMode.HALF_UP);
+        System.out.println(divide);
     }
 }

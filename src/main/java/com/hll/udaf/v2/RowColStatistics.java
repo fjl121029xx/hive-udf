@@ -1,4 +1,4 @@
-package com.hll.udaf;
+package com.hll.udaf.v2;
 
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.hadoop.hive.ql.exec.Description;

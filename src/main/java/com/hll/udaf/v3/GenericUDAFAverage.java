@@ -1,4 +1,4 @@
-package com.hll.udaf;
+package com.hll.udaf.v3;
 
 import java.util.ArrayList;
 
@@ -23,7 +23,6 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import org.apache.hadoop.hive.serde2.typeinfo.PrimitiveTypeInfo;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.MapFile;
 import org.apache.hadoop.util.StringUtils;
 
 /**
