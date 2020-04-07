@@ -70,8 +70,8 @@ public class UDFYEARFRAC extends GenericUDF {
         } else {
             days = new BigDecimal(365);
         }
-        LocalDate startDate = LocalDate.of(startCa.get(Calendar.YEAR), startCa.get(Calendar.MONTH), startCa.get(Calendar.DAY_OF_MONTH));
-        LocalDate endDate = LocalDate.of(startCa.get(Calendar.YEAR), startCa.get(Calendar.MONTH), startCa.get(Calendar.DAY_OF_MONTH));
+        LocalDate startDate = LocalDate.of(startCa.get(Calendar.YEAR), startCa.get(Calendar.MONTH) + 1, startCa.get(Calendar.DAY_OF_MONTH));
+        LocalDate endDate = LocalDate.of(endCa.get(Calendar.YEAR), endCa.get(Calendar.MONTH) + 1, endCa.get(Calendar.DAY_OF_MONTH));
 
         BigDecimal between = new BigDecimal(ChronoUnit.WEEKS.between(startDate, endDate));
         return between.divide(days, RoundingMode.HALF_UP).doubleValue();

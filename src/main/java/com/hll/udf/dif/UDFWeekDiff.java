@@ -50,15 +50,26 @@ public class UDFWeekDiff extends GenericUDF {
         if (start == null || end == null) {
             throw new UDFArgumentLengthException(String.format("args has null :=} start is %s end is %s", start, end));
         }
+        int i = 1;
+        long startTime = start.getTime();
+        long endTime = end.getTime();
+
         Calendar startCa = Calendar.getInstance();
-        startCa.setTime(new Date(start.getTime()));
+        startCa.setTime(new Date(startTime));
         Calendar endCa = Calendar.getInstance();
-        endCa.setTime(new Date(end.getTime()));
+        endCa.setTime(new Date(endTime));
 
-        LocalDate startDate = LocalDate.of(startCa.get(Calendar.YEAR),startCa.get(Calendar.MONTH), startCa.get(Calendar.DAY_OF_MONTH));
-        LocalDate endDate = LocalDate.of(startCa.get(Calendar.YEAR), startCa.get(Calendar.MONTH), startCa.get(Calendar.DAY_OF_MONTH));
+        try {
+            LocalDate startDate = LocalDate.of(startCa.get(Calendar.YEAR), startCa.get(Calendar.MONTH) + 1, startCa.get(Calendar.DAY_OF_MONTH));
+            LocalDate endDate = LocalDate.of(endCa.get(Calendar.YEAR), endCa.get(Calendar.MONTH) + 1, endCa.get(Calendar.DAY_OF_MONTH));
 
-        return ChronoUnit.WEEKS.between(startDate, endDate);
+            return ChronoUnit.WEEKS.between(startDate, endDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("startCa " + startCa + "\r\n" +
+                    "endCa " + endCa);
+        }
+
     }
 
     @Override

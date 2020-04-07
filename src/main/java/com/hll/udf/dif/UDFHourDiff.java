@@ -57,7 +57,7 @@ public class UDFHourDiff extends GenericUDF {
 
         BigDecimal startSecond = new BigDecimal(startCa.getTime().getTime());
         BigDecimal endSecond = new BigDecimal(endCa.getTime().getTime());
-        BigDecimal div = new BigDecimal(60 * 60);
+        BigDecimal div = new BigDecimal(60 * 60 * 1000);
         try {
             BigDecimal result = endSecond.subtract(startSecond).divide(div).setScale(2, BigDecimal.ROUND_UP);
             return result.doubleValue();

@@ -1,16 +1,12 @@
 package com.hll.udaf;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDAF;
 import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
 import org.apache.log4j.Logger;
-import org.stringtemplate.v4.ST;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,14 +14,16 @@ import java.util.stream.Collectors;
 
 @Description(name = "row_col_stat", value = "_FUNC_(dimension,measure,dimen_mode,time_diff_type,measure_name) - Returns the mean of a set of numbers")
 
-public class RowColStat extends UDAF {
+public class RowColStatistics extends UDAF {
 
-    public static Logger logger = Logger.getLogger(RowColStat.class);
+    public static Logger logger = Logger.getLogger(RowColStatistics.class);
 
     public static class ArgsState {
         private Map<String, Map<String, String>> cat;
         private Map<String, String> dog;
         private Map<String, String> info;
+        private Map<Integer, Object> buffer;
+
     }
 
     public static class Evaluator implements UDAFEvaluator {
@@ -39,15 +37,24 @@ public class RowColStat extends UDAF {
 
         // 初始化函数间传递的中间变量
         public void init() {
-            argsState.cat = new HashMap<>();
-            argsState.dog = new HashMap<>();
+            if (argsState.cat == null) {
+                argsState.cat = new HashMap<>();
+            }
+            if (argsState.dog == null) {
+                argsState.dog = new HashMap<>();
+            }
             // measure_func
             // rowcol
             // dimension_length
             // compare_length
             // measure_length
             // rowsumtype
-            argsState.info = new HashMap<>();
+            if (argsState.info == null) {
+                argsState.info = new HashMap<>();
+            }
+            if (argsState.buffer == null) {
+                argsState.buffer = new HashMap<>();
+            }
         }
 
         //map阶段，返回值为boolean类型，当为true则程序继续执行，当为false则程序退出
@@ -56,7 +63,9 @@ public class RowColStat extends UDAF {
 
             // 行统计维度 cat
             // 时间格式化 ymd ...
-            argsState.info.put("rowcol", rowcol_num);
+            Map<String, String> info = new HashMap<>();
+            Map<String, String> dog = new HashMap<>();
+            info.put("rowcol", rowcol_num);
             // dimensions
             // 行键
             List<String> dimensions = input0.stream().map(new Function<String, String>() {
@@ -66,21 +75,21 @@ public class RowColStat extends UDAF {
                 }
             }).collect(Collectors.toList());
             // dimension_length
-            argsState.info.put("dimension_length", Integer.toString(dimensions.size()));
+            info.put("dimension_length", Integer.toString(dimensions.size()));
 
             String dimension_key = dimensions.stream().reduce((a, b) -> String.format("%s△%s", a, b)).get();
             dimensions.addAll(compare);
             String compare_key = dimensions.stream().reduce((a, b) -> String.format("%s△%s", a, b)).get();
             // compare_length
-            argsState.info.put("compare_length", Integer.toString(compare.size()));
+            info.put("compare_length", Integer.toString(compare.size()));
             // measure_length
-            argsState.info.put("measure_length", Integer.toString(measure_value.size()));
+            info.put("measure_length", Integer.toString(measure_value.size()));
             // rowsumtype
             String rowsum_type = rowsumtype.stream().reduce((a, b) -> String.format("%s_%s", a, b)).get();
-            argsState.info.put("rowsumtype", rowsum_type);
+            info.put("rowsumtype", rowsum_type);
 
             //
-            argsState.info.put("measure_func", measure_func.stream().reduce((a, b) -> String.format("%s,%s", a, b)).get());
+            info.put("measure_func", measure_func.stream().reduce((a, b) -> String.format("%s,%s", a, b)).get());
 
             Map<String, String> measure = new HashMap<>();
             for (int i = 0; i < measure_func.size(); i++) {
@@ -187,17 +196,13 @@ public class RowColStat extends UDAF {
             }
 
             argsState.cat.put("dog", argsState.dog);
-            argsState.cat.put("info", argsState.info);
+            argsState.cat.put("info", info);
+
             return true;
         }
 
-        /**
-         * 类似于combiner,在map范围内做部分聚合，将结果传给merge函数中的形参mapOutput
-         * 如果需要聚合，则对iterator返回的结果处理，否则直接返回iterator的结果即可
-         */
+
         public Map<String, Map<String, String>> terminatePartial() {
-//            argsState.cat.put("dog", argsState.dog);
-//            argsState.cat.put("info", argsState.info);
 
             return argsState.cat;
         }
@@ -206,28 +211,32 @@ public class RowColStat extends UDAF {
         public boolean merge(Map<String, Map<String, String>> mapOutput) {
 
             Map<String, String> dog2 = mapOutput.getOrDefault("dog", new HashMap<>());
-            if (dog2 == null || dog2.size() == 0) {
-                throw new RuntimeException("dog is null \r\n" + mapOutput.toString());
+            Map<String, String> info2 = mapOutput.getOrDefault("info", new HashMap<>());
+            Map<String, Map<String, String>> cat2 = mapOutput;
+
+            Map<String, String> info1 = argsState.cat.getOrDefault("info", new HashMap<>());
+            Map<String, String> dog1 = argsState.cat.getOrDefault("dog", new HashMap<>());
+
+            if (info2 == null || info2.size() == 0) {
+                return true;
             }
 
-            Map<String, String> info = mapOutput.getOrDefault("info", new HashMap<>());
-            logger.info(info);
-            if (info == null || info.size() == 0) {
-                throw new RuntimeException("info is null");
-            }
             mapOutput.remove("dog");
             mapOutput.remove("info");
 
-            Map<String, Map<String, String>> cat2 = mapOutput;
-            if (cat2 == null || cat2.size() == 0) {
-                throw new RuntimeException("mapOutput is null");
-            }
-
-            Map<String, String> dog1 = argsState.cat.getOrDefault("dog", new HashMap<>());
             argsState.cat.remove("dog");
             argsState.cat.remove("info");
-            Map<String, Map<String, String>> cat1 = argsState.cat;
 
+            // 合并info
+//            Set<String> infoKey = info1.keySet();
+//            List<String> listInfo = new ArrayList<>(infoKey);
+//                for (String str : info2.keySet()) {
+//                if (!listInfo.contains(str)) {
+//                    info1.put(str, info2.get(str));
+//                }
+//            }
+
+            Map<String, Map<String, String>> cat1 = argsState.cat;
             // 列维度
             Set<String> key = cat1.keySet();
             List<String> list = new ArrayList<>(key);
@@ -302,7 +311,7 @@ public class RowColStat extends UDAF {
                 }
                 cat1.put(k, cat11);
             }
-            argsState.cat = cat1;
+            argsState.cat .putAll(cat1);
 
             Set<String> dkey = dog1.keySet();
             List<String> dlist = new ArrayList<>(dkey);
@@ -369,7 +378,10 @@ public class RowColStat extends UDAF {
             }
 
             argsState.cat.put("dog", dog1);
-            argsState.cat.put("info", info);
+//            if (0 == 0) {
+//                throw new RuntimeException(info1.toString() + "\r\n" + info2. toString());
+//            }
+            argsState.cat.put("info", info2);
             return true;
         }
 
@@ -377,15 +389,24 @@ public class RowColStat extends UDAF {
         public Map<String, Double> terminate() {
 
             Map<String, String> dog = argsState.cat.getOrDefault("dog", new HashMap<>());
-            if (dog == null || dog.size() == 0) {
-                throw new RuntimeException("dog is null");
-            }
+//            if (dog == null || dog.size() == 0) {
+//                throw new RuntimeException("dog is null" + argsState.cat.toString());
+//            }
 
             Map<String, String> info = argsState.cat.getOrDefault("info", new HashMap<>());
-            System.out.println(info);
             if (info == null || info.size() == 0) {
-                throw new RuntimeException("info is null");
+                throw new RuntimeException("info is null \r\n " + argsState.cat.toString());
             }
+
+            int dimension_length = Integer.parseInt(info.getOrDefault("dimension_length", "0"));
+            int compare_length = Integer.parseInt(info.getOrDefault("compare_length", "0"));
+            int measure_length = Integer.parseInt(info.getOrDefault("measure_length", "0"));
+//            measure_func
+            String measure_name = info.get("measure_func");
+            String[] measure_arr = measure_name.split(",");
+
+            String rowcol = info.get("rowcol");
+
             argsState.cat.remove("dog");
             argsState.cat.remove("info");
 
@@ -439,19 +460,12 @@ public class RowColStat extends UDAF {
             }
 
 
-            int dimension_length = Integer.parseInt(info.getOrDefault("dimension_length", "0"));
-            int compare_length = Integer.parseInt(info.getOrDefault("compare_length", "0"));
-            int measure_length = Integer.parseInt(info.getOrDefault("measure_length", "0"));
-//            measure_func
-            String measure_name = info.get("measure_func");
-            String[] measure_arr = measure_name.split(",");
-
             Map<String, Double> compareValue = new HashMap<>();
             for (Map<String, Double> l : compare.values()) {
                 compareValue.putAll(l);
             }
 
-            String rowcol = info.get("rowcol");
+
             // ============================
             Map<String, Double> result = new HashMap<>();
             for (Map.Entry<String, Double> en : compareValue.entrySet()) {
@@ -466,12 +480,19 @@ public class RowColStat extends UDAF {
 
                 String dimensionKeys = all_keys[0];
                 for (int i = 1; i < dimension_length; i++) {
-                    dimensionKeys = String.format("%s△%s", dimensionKeys, all_keys[i]);
+                    try {
+                        dimensionKeys = String.format("%s△%s", dimensionKeys, all_keys[i]);
+                    } catch (Exception e) {
+                        dimensionKeys = String.format("%s△%s", dimensionKeys, "");
+//                        throw new RuntimeException(measure_key + "-----------------"
+//                                + compare_key + "-----------------"
+//                                + i + "-------" + arrshow(all_keys) + "------------" + dimensionKeys);
+                    }
 
                 }
                 String compareKeys = "";
                 if (compare_length > 0) {
-                    compareKeys = all_keys[dimension_length];
+                    compareKeys = all_keys[0];
                     for (int i = (dimension_length + 1); i < (dimension_length + compare_length); i++) {
                         compareKeys = compareKeys + "△" + all_keys[i];
                     }

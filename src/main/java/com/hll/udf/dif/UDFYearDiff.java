@@ -56,8 +56,8 @@ public class UDFYearDiff extends GenericUDF {
         Calendar endCa = Calendar.getInstance();
         endCa.setTime(new Date(end.getTime()));
 
-        LocalDate startDate = LocalDate.of(startCa.get(Calendar.YEAR), startCa.get(Calendar.MONTH), startCa.get(Calendar.DAY_OF_MONTH));
-        LocalDate endDate = LocalDate.of(startCa.get(Calendar.YEAR), startCa.get(Calendar.MONTH), startCa.get(Calendar.DAY_OF_MONTH));
+        LocalDate startDate = LocalDate.of(startCa.get(Calendar.YEAR), startCa.get(Calendar.MONTH) + 1, startCa.get(Calendar.DAY_OF_MONTH));
+        LocalDate endDate = LocalDate.of(endCa.get(Calendar.YEAR), endCa.get(Calendar.MONTH) + 1, endCa.get(Calendar.DAY_OF_MONTH));
 
         return ChronoUnit.YEARS.between(startDate, endDate);
     }
