@@ -114,24 +114,38 @@ public class CompareRate extends UDAF {
             mapOutput.remove("time_diff_type");
 
             Map<String, String> cat1 = argsState.cat;
+            String measure_name1 = argsState.cat.get("measure_name");
+            String dimen_mode1 = argsState.cat.get("dimen_mode");
+            String time_diff_type1 = argsState.cat.get("time_diff_type");
+
+            measure_name = measure_name == null ? measure_name1 : measure_name;
+            dimen_mode = dimen_mode == null ? dimen_mode1 : dimen_mode;
+            time_diff_type = time_diff_type == null ? time_diff_type1 : time_diff_type;
+//            if (time_diff_type != null) {
+//                throw new RuntimeException(time_diff_type1 + "\r\n" + time_diff_type);
+//            }
+            argsState.cat.remove("measure_name");
+            argsState.cat.remove("dimen_mode");
+            argsState.cat.remove("time_diff_type");
             Map<String, String> cat2 = mapOutput;
 
+            String finalMeasure_name = measure_name;
             mapOutput.forEach((key, value) -> {
                 String b = cat1.getOrDefault(key, "");
                 String a = value;
-                if (measure_name.equals("count")) {
+                if (finalMeasure_name.equals("count")) {
                     if (b.equals("")) {
                         b = "0.00";
                     }
                     a = Double.toString(Double.parseDouble(a) + Double.parseDouble(b));
                     cat1.put(key, a);
-                } else if (measure_name.equals("sum")) {
+                } else if (finalMeasure_name.equals("sum")) {
                     if (b.equals("")) {
                         b = "0.00";
                     }
                     a = Double.toString(Double.parseDouble(a) + Double.parseDouble(b));
                     cat1.put(key, a);
-                } else if (measure_name.equals("max")) {
+                } else if (finalMeasure_name.equals("max")) {
                     if (b.equals("")) {
                         b = "0.00";
                     }
@@ -139,7 +153,7 @@ public class CompareRate extends UDAF {
                         a = b;
                     }
                     cat1.put(key, a);
-                } else if (measure_name.equals("min")) {
+                } else if (finalMeasure_name.equals("min")) {
                     if (b.equals("")) {
                         b = "999999999.00";
                     }
@@ -147,7 +161,7 @@ public class CompareRate extends UDAF {
                         a = b;
                     }
                     cat1.put(key, a);
-                } else if (measure_name.equals("avg")) {
+                } else if (finalMeasure_name.equals("avg")) {
                     String a1 = a.split(",")[0];
                     String a2 = a.split(",")[1];
                     String b1 = "0.00";
@@ -158,7 +172,7 @@ public class CompareRate extends UDAF {
                     }
                     a = (Double.parseDouble(a1) + Double.parseDouble(b1)) + "," + (Double.parseDouble(a2) + Double.parseDouble(b2));
                     cat1.put(key, a);
-                } else if (measure_name.equals("discount")) {
+                } else if (finalMeasure_name.equals("discount")) {
                     String[] b1_discount = b.split(",");
                     for (String str : b1_discount) {
                         if (a.equals("")) {
@@ -180,9 +194,15 @@ public class CompareRate extends UDAF {
             cat1.put("measure_name", measure_name);
             cat1.put("dimen_mode", dimen_mode);
             cat1.put("time_diff_type", time_diff_type);
-            argsState.cat = cat1;
-            //
-            return true;
+            if (measure_name == null || measure_name.equals("") ||
+                    dimen_mode == null || dimen_mode.equals("") ||
+                    time_diff_type == null || time_diff_type.equals("")) {
+                argsState.cat.putAll(cat1);
+                return true;
+            } else {
+                //
+                return true;
+            }
         }
 
         // 处理merge计算完成后的结果，即对merge完成后的结果做最后的业务处理
@@ -214,33 +234,34 @@ public class CompareRate extends UDAF {
             Map<String, String> result = new HashMap<>();
 
             if (dimen_mode.equals("y")) {
-                if (time_diff_type.equals("0")) {
-                    Map<String, Double> dog2 = new HashMap<>();
-                    dog.forEach((key, aDouble) -> {
-                        String[] k = key.split("_");
-                        String k_1 = Arrays.stream(k).reduce((a, b) -> String.format("%s_%s", a, b)).get();
-                        String rd = k[0];
-                        Calendar ca = Calendar.getInstance();
-                        ca.set(Integer.parseInt(rd.substring(0, 4)), 0, 1);
-                        ca.add(Calendar.YEAR, -1);
-                        String day = CompareRate.getTime(ca);
-                        k[0] = CompareRate.dayformat(day, dimen_mode);
-                        dog2.put(k_1, dog.getOrDefault(Arrays.stream(k).reduce((a, b) -> String.format("%s_%s", a, b)).get(), 0.00));
-                    });
-                    Map<String, String> result_dog = new HashMap<>();
-                    dog.forEach((key, value) -> {
-                        Double value2 = dog2.getOrDefault(key, 0.00);
-                        if (value2 == 0.0) {
-                            result_dog.put(key, "-");
-                        } else {
-                            result_dog.put(key, Double.toString((value - value2) / value2));
-                        }
+//                if (time_diff_type.equals("0")) {
+                time_diff_type = "0";
+                Map<String, Double> dog2 = new HashMap<>();
+                dog.forEach((key, aDouble) -> {
+                    String[] k = key.split("_");
+                    String k_1 = Arrays.stream(k).reduce((a, b) -> String.format("%s_%s", a, b)).get();
+                    String rd = k[0];
+                    Calendar ca = Calendar.getInstance();
+                    ca.set(Integer.parseInt(rd.substring(0, 4)), 0, 1);
+                    ca.add(Calendar.YEAR, -1);
+                    String day = CompareRate.getTime(ca);
+                    k[0] = CompareRate.dayformat(day, dimen_mode);
+                    dog2.put(k_1, dog.getOrDefault(Arrays.stream(k).reduce((a, b) -> String.format("%s_%s", a, b)).get(), 0.00));
+                });
+                Map<String, String> result_dog = new HashMap<>();
+                dog.forEach((key, value) -> {
+                    Double value2 = dog2.getOrDefault(key, 0.00);
+                    if (value2 == 0.0) {
+                        result_dog.put(key, "-");
+                    } else {
+                        result_dog.put(key, Double.toString((value - value2) / value2));
+                    }
 
-                    });
-                    return result_dog;
-                } else {
-                    throw new RuntimeException("dimen_mode y must match time_diff_type[0]");
-                }
+                });
+                return result_dog;
+//                } else {
+//                    throw new RuntimeException("dimen_mode y must match time_diff_type[0]");
+//                }
             } else if (dimen_mode.equals("ym")) {
                 if (time_diff_type.equals("1")) {
                     Map<String, Double> dog2 = new HashMap<>();
@@ -266,7 +287,8 @@ public class CompareRate extends UDAF {
                         }
                     });
                     return result_dog;
-                } else if (time_diff_type.equals("0")) {
+                } else/* if (time_diff_type.equals("0"))*/ {
+                    time_diff_type = "0";
                     Map<String, Double> dog2 = new HashMap<>();
                     dog.forEach((key, aDouble) -> {
                         String[] k = key.split("_");
@@ -290,9 +312,9 @@ public class CompareRate extends UDAF {
                         }
                     });
                     return result_dog;
-                } else {
+                } /*else {
                     throw new RuntimeException("dimen_mode ym must match time_diff_type[0,1]");
-                }
+                }*/
 
             } else if (dimen_mode.equals("yq")) {
                 if (time_diff_type.equals("1")) {
@@ -335,8 +357,8 @@ public class CompareRate extends UDAF {
                         }
                     });
                     return result_dog;
-                } else if (time_diff_type.equals("0")) {
-
+                } else/* if (time_diff_type.equals("0"))*/ {
+                    time_diff_type = "0";
                     Map<String, Double> dog2 = new HashMap<>();
                     dog.forEach((key, aDouble) -> {
                         String[] k = key.split("_");
@@ -376,9 +398,9 @@ public class CompareRate extends UDAF {
                         }
                     });
                     return result_dog;
-                } else {
+                } /*else {
                     throw new RuntimeException("dimen_mode yq must match time_diff_type[0,1]");
-                }
+                }*/
             } else if (dimen_mode.equals("yw")) {
                 if (time_diff_type.equals("1")) {
 
@@ -407,8 +429,8 @@ public class CompareRate extends UDAF {
                         }
                     });
                     return result_dog;
-                } else if (time_diff_type.equals("0")) {
-
+                } else /*if (time_diff_type.equals("0")) */ {
+                    time_diff_type = "0";
                     Map<String, Double> dog2 = new HashMap<>();
                     dog.forEach((key, aDouble) -> {
                         String[] k = key.split("_");
@@ -434,9 +456,9 @@ public class CompareRate extends UDAF {
                         }
                     });
                     return result_dog;
-                } else {
+                } /*else {
                     throw new RuntimeException("dimen_mode yw must match time_diff_type[0,1]");
-                }
+                }*/
             } else {
                 if (time_diff_type.equals("3")) {
 
@@ -489,7 +511,6 @@ public class CompareRate extends UDAF {
                     });
                     return result_dog;
                 } else if (time_diff_type.equals("1")) {
-
                     Map<String, Double> dog2 = new HashMap<>();
                     dog.forEach((key, aDouble) -> {
                         String[] k = key.split("_");
@@ -513,8 +534,8 @@ public class CompareRate extends UDAF {
                         }
                     });
                     return result_dog;
-                } else if (time_diff_type.equals("0")) {
-
+                } else /*if (time_diff_type.equals("0"))*/ {
+                    time_diff_type = "0";
                     Map<String, Double> dog2 = new HashMap<>();
                     dog.forEach((key, aDouble) -> {
                         String[] k = key.split("_");
@@ -538,10 +559,10 @@ public class CompareRate extends UDAF {
                         }
                     });
                     return result_dog;
-                } else {
+                }/* else {
                     throw new RuntimeException(
                             "dimen_mode ymd must match time_diff_type[0,1,2,3] " + time_diff_type);
-                }
+                }*/
             }
 
 

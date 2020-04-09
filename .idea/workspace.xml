@@ -2,20 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v3/CompareNoMath.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v3/CompareUdf.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/Compare.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v1/Compare.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/CompareRate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v1/CompareRate.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/Demo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/Demo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/GenericUDAFAverage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v3/GenericUDAFAverage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/RowColStatistics.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v2/RowColStatistics.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/UDFReportDateFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v1/UDFReportDateFormat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/UDFTimestampFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v1/UDFTimestampFormat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/dif/Demo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/Demo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/dif/UDFHourDiff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/UDFHourDiff.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/dif/UDFWeekDiff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/UDFWeekDiff.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/dif/UDFYEARFRAC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/UDFYEARFRAC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/dif/UDFYearDiff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/UDFYearDiff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v1/Compare.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v1/Compare.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v1/CompareRate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v1/CompareRate.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +70,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/com/hll/udf/v3" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -88,6 +81,7 @@
       <recent name="com.hll.udaf" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\work\java-worksparces\hive-udf\src\main\java\com\hll\udf\v3" />
       <recent name="D:\work\source\ReportDateFormat" />
     </key>
   </component>
@@ -221,7 +215,10 @@
       <workItem from="1585961208264" duration="258000" />
       <workItem from="1586223555180" duration="5459000" />
       <workItem from="1586231127302" duration="986000" />
-      <workItem from="1586240385765" duration="829000" />
+      <workItem from="1586240385765" duration="7113000" />
+      <workItem from="1586318013403" duration="5105000" />
+      <workItem from="1586327520713" duration="848000" />
+      <workItem from="1586333068603" duration="1800000" />
     </task>
     <task id="LOCAL-00001" summary="20200325   ...1">
       <created>1585103679259</created>
@@ -258,7 +255,14 @@
       <option name="project" value="LOCAL" />
       <updated>1586227173484</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="20200407   ...2">
+      <created>1586241243920</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1586241243920</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -270,7 +274,8 @@
     <MESSAGE value="20200330   ...1" />
     <MESSAGE value="20200403   ...1" />
     <MESSAGE value="20200407   ...1" />
-    <option name="LAST_COMMIT_MESSAGE" value="20200407   ...1" />
+    <MESSAGE value="20200407   ...2" />
+    <option name="LAST_COMMIT_MESSAGE" value="20200407   ...2" />
   </component>
   <component name="WindowStateProjectService">
     <state x="233" y="0" key="#Project_Structure" timestamp="1584352698150">
@@ -285,34 +290,34 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="403" y="143" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1280.680@0.0.1280.680" timestamp="1586235509192" />
-    <state x="446" y="51" key="#com.intellij.ide.util.MemberChooser" timestamp="1585722035521">
+    <state x="446" y="51" key="#com.intellij.ide.util.MemberChooser" timestamp="1586245696841">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="446" y="51" key="#com.intellij.ide.util.MemberChooser/0.0.1280.680@0.0.1280.680" timestamp="1585722035521" />
-    <state x="250" y="0" key="CommitChangelistDialog2" timestamp="1586227171957">
+    <state x="446" y="51" key="#com.intellij.ide.util.MemberChooser/0.0.1280.680@0.0.1280.680" timestamp="1586245696841" />
+    <state x="91" y="0" key="CommitChangelistDialog2" timestamp="1586241241372">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="250" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1586227171957" />
+    <state x="91" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1586241241372" />
     <state x="421" y="82" key="FileChooserDialogImpl" timestamp="1585204332540">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="421" y="82" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1585204332540" />
-    <state width="1237" height="163" key="GridCell.Tab.0.bottom" timestamp="1586235552110">
+    <state width="1237" height="163" key="GridCell.Tab.0.bottom" timestamp="1586323243307">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1586235552110" />
-    <state width="1237" height="163" key="GridCell.Tab.0.center" timestamp="1586235552110">
+    <state width="1237" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1586323243307" />
+    <state width="1237" height="163" key="GridCell.Tab.0.center" timestamp="1586323243307">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1586235552110" />
-    <state width="1237" height="163" key="GridCell.Tab.0.left" timestamp="1586235552109">
+    <state width="1237" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1586323243307" />
+    <state width="1237" height="163" key="GridCell.Tab.0.left" timestamp="1586323243307">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1586235552109" />
-    <state width="1237" height="163" key="GridCell.Tab.0.right" timestamp="1586235552110">
+    <state width="1237" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1586323243307" />
+    <state width="1237" height="163" key="GridCell.Tab.0.right" timestamp="1586323243307">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1586235552110" />
+    <state width="1237" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1586323243307" />
     <state width="1237" height="204" key="GridCell.Tab.1.bottom" timestamp="1585910641209">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -337,14 +342,14 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1586229412509" />
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1586227194860">
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1586241276920">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1586227194860" />
-    <state x="325" y="165" key="com.intellij.ide.util.TipDialog" timestamp="1586240385570">
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1586241276920" />
+    <state x="325" y="165" key="com.intellij.ide.util.TipDialog" timestamp="1586327523101">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="325" y="165" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1586240385570" />
+    <state x="325" y="165" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1586327523101" />
     <state x="28" y="36" key="new project wizard" timestamp="1585799422596">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
