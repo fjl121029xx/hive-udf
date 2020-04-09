@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v3/CompareNoMath.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v3/CompareUdf.java" afterDir="false" />
+    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20200409   ...1">
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v1/Compare.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v1/Compare.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v1/CompareRate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v1/CompareRate.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v2/RowColStatistics.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v2/RowColStatistics.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +67,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/com/hll/udf/v3" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/com/hll/udaf/v2" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -81,6 +78,7 @@
       <recent name="com.hll.udaf" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\work\java-worksparces\hive-udf\src\main\java\com\hll\udaf\v2" />
       <recent name="F:\work\java-worksparces\hive-udf\src\main\java\com\hll\udf\v3" />
       <recent name="D:\work\source\ReportDateFormat" />
     </key>
@@ -219,6 +217,9 @@
       <workItem from="1586318013403" duration="5105000" />
       <workItem from="1586327520713" duration="848000" />
       <workItem from="1586333068603" duration="1800000" />
+      <workItem from="1586399894953" duration="2165000" />
+      <workItem from="1586403880913" duration="11504000" />
+      <workItem from="1586427626212" duration="529000" />
     </task>
     <task id="LOCAL-00001" summary="20200325   ...1">
       <created>1585103679259</created>
@@ -294,6 +295,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="446" y="51" key="#com.intellij.ide.util.MemberChooser/0.0.1280.680@0.0.1280.680" timestamp="1586245696841" />
+    <state x="66" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1586401795799">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="66" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.680@0.0.1280.680" timestamp="1586401795799" />
     <state x="91" y="0" key="CommitChangelistDialog2" timestamp="1586241241372">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -302,22 +307,22 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="421" y="82" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1585204332540" />
-    <state width="1237" height="163" key="GridCell.Tab.0.bottom" timestamp="1586323243307">
+    <state width="1237" height="233" key="GridCell.Tab.0.bottom" timestamp="1586426603102">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1586323243307" />
-    <state width="1237" height="163" key="GridCell.Tab.0.center" timestamp="1586323243307">
+    <state width="1237" height="233" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1586426603102" />
+    <state width="1237" height="233" key="GridCell.Tab.0.center" timestamp="1586426603102">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1586323243307" />
-    <state width="1237" height="163" key="GridCell.Tab.0.left" timestamp="1586323243307">
+    <state width="1237" height="233" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1586426603102" />
+    <state width="1237" height="233" key="GridCell.Tab.0.left" timestamp="1586426603102">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1586323243307" />
-    <state width="1237" height="163" key="GridCell.Tab.0.right" timestamp="1586323243307">
+    <state width="1237" height="233" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1586426603102" />
+    <state width="1237" height="233" key="GridCell.Tab.0.right" timestamp="1586426603102">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1586323243307" />
+    <state width="1237" height="233" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1586426603102" />
     <state width="1237" height="204" key="GridCell.Tab.1.bottom" timestamp="1585910641209">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -334,10 +339,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state width="1237" height="204" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1585910641209" />
-    <state x="411" y="54" key="RollbackChangesDialog" timestamp="1585203234696">
+    <state x="411" y="54" key="RollbackChangesDialog" timestamp="1586405139026">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="411" y="54" key="RollbackChangesDialog/0.0.1280.680@0.0.1280.680" timestamp="1585203234696" />
+    <state x="411" y="54" key="RollbackChangesDialog/0.0.1280.680@0.0.1280.680" timestamp="1586405139026" />
     <state x="142" y="0" key="SettingsEditor" timestamp="1586229412509">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -346,10 +351,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1586241276920" />
-    <state x="325" y="165" key="com.intellij.ide.util.TipDialog" timestamp="1586327523101">
+    <state x="325" y="165" key="com.intellij.ide.util.TipDialog" timestamp="1586399893890">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="325" y="165" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1586327523101" />
+    <state x="325" y="165" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1586399893890" />
     <state x="28" y="36" key="new project wizard" timestamp="1585799422596">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -362,16 +367,5 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="303" y="1" width="672" height="678" key="search.everywhere.popup/0.0.1280.680@0.0.1280.680" timestamp="1585566551366" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/hll/udaf/v2/RowColStatistics.java</url>
-          <line>486</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>

@@ -22,20 +22,17 @@ public class RowColStatistics extends UDAF {
         private Map<String, Map<String, String>> cat;
         private Map<String, String> dog;
         private Map<String, String> info;
-        private Map<Integer, Object> buffer;
 
     }
 
     public static class Evaluator implements UDAFEvaluator {
         ArgsState argsState;
 
-        //初始化函数,map和reduce均会执行该函数,起到初始化所需要的变量的作用
         public Evaluator() {
             argsState = new ArgsState();
             init();
         }
 
-        // 初始化函数间传递的中间变量
         public void init() {
             if (argsState.cat == null) {
                 argsState.cat = new HashMap<>();
@@ -43,21 +40,11 @@ public class RowColStatistics extends UDAF {
             if (argsState.dog == null) {
                 argsState.dog = new HashMap<>();
             }
-            // measure_func
-            // rowcol
-            // dimension_length
-            // compare_length
-            // measure_length
-            // rowsumtype
             if (argsState.info == null) {
                 argsState.info = new HashMap<>();
             }
-            if (argsState.buffer == null) {
-                argsState.buffer = new HashMap<>();
-            }
         }
 
-        //map阶段，返回值为boolean类型，当为true则程序继续执行，当为false则程序退出
         public boolean iterate(List<String> input0, List<String> compare, List<String> measure_value,
                                String rowcol_num, String dimen_mode, List<String> measure_func, List<String> rowsumtype) {
 
@@ -96,9 +83,9 @@ public class RowColStatistics extends UDAF {
                 measure.put(measure_func.get(i), measure_value.get(i));
             }
 
-            final Map<String, String>[] subCat = new Map[]{argsState.cat.getOrDefault(dimension_key, new HashMap<String, String>())};
+            Map<String, String> subCat = argsState.cat.getOrDefault(dimension_key, new HashMap<String, String>());
+            for (Map.Entry<String, String> mea : measure.entrySet()) {
 
-            measure.entrySet().forEach(mea -> {
                 String key = mea.getKey();
                 String value = mea.getValue();
                 String[] key_arr = key.split("-");
@@ -106,45 +93,43 @@ public class RowColStatistics extends UDAF {
                 String mea_key = compare_key + "△" + key;
 
                 if (key_arr[1].equals("sum")) {
-                    double v = Double.parseDouble(subCat[0].getOrDefault(mea_key, "0.00"));
+                    double v = Double.parseDouble(subCat.getOrDefault(mea_key, "0.00"));
                     v = (v + Double.parseDouble(value));
-                    subCat[0].put(mea_key, Double.toString(v));
+                    subCat.put(mea_key, Double.toString(v));
 
                 } else if (key_arr[1].equals("count")) {
-                    double v = Double.parseDouble(subCat[0].getOrDefault(mea_key, "0.00"));
+                    double v = Double.parseDouble(subCat.getOrDefault(mea_key, "0.00"));
                     v = (v + 1);
-                    subCat[0].put(mea_key, Double.toString(v));
+                    subCat.put(mea_key, Double.toString(v));
                 } else if (key_arr[1].equals("max")) {
-                    double v = Double.parseDouble(subCat[0].getOrDefault(mea_key, "0.00"));
+                    double v = Double.parseDouble(subCat.getOrDefault(mea_key, "0.00"));
                     if (Double.parseDouble(value) > v) {
                         v = Double.parseDouble(value);
                     }
-                    subCat[0].put(mea_key, Double.toString(v));
+                    subCat.put(mea_key, Double.toString(v));
                 } else if (key_arr[1].equals("min")) {
-                    double v = Double.parseDouble(subCat[0].getOrDefault(mea_key, "0.00"));
+                    double v = Double.parseDouble(subCat.getOrDefault(mea_key, "0.00"));
                     if (Double.parseDouble(value) < v) {
                         v = Double.parseDouble(value);
                     }
-                    subCat[0].put(mea_key, Double.toString(v));
+                    subCat.put(mea_key, Double.toString(v));
                 } else if (key_arr[1].equals("avg")) {
-                    String v = subCat[0].getOrDefault(mea_key, "0,0");
+                    String v = subCat.getOrDefault(mea_key, "0,0");
                     double a = Double.parseDouble(v.split(",")[0]);
                     double b = Double.parseDouble(v.split(",")[1]) + 1.0;
                     a = a + Double.parseDouble(value);
-                    subCat[0].put(mea_key, String.format("%s,%s", a, b));
+                    subCat.put(mea_key, String.format("%s,%s", a, b));
                 } else {
-                    String v = subCat[0].getOrDefault(mea_key, "");
+                    String v = subCat.getOrDefault(mea_key, "");
                     if (v.equals("")) {
                         v = value;
                     } else if (!v.contains(value)) {
                         v = String.format("%s,%s", v, value);
                     }
-                    subCat[0].put(mea_key, v);
+                    subCat.put(mea_key, v);
                 }
-
-
-            });
-            argsState.cat.put(dimension_key, subCat[0]);
+            }
+            argsState.cat.put(dimension_key, subCat);
 
             // 行统计
             for (Map.Entry<String, String> en : measure.entrySet()) {
@@ -202,62 +187,43 @@ public class RowColStatistics extends UDAF {
         }
 
 
-        public Map<String, Map<String, String>> terminatePartial() {
+        public Map<String, Map<String, String>> terminatePartial(Map<String, Map<String, String>> mapOutput) {
+
 
             return argsState.cat;
         }
 
-        // reduce 阶段，用于逐个迭代处理map当中每个不同key对应的 terminatePartial的结果
         public boolean merge(Map<String, Map<String, String>> mapOutput) {
 
             Map<String, String> dog2 = mapOutput.getOrDefault("dog", new HashMap<>());
             Map<String, String> info2 = mapOutput.getOrDefault("info", new HashMap<>());
-            Map<String, Map<String, String>> cat2 = mapOutput;
-
-            Map<String, String> info1 = argsState.cat.getOrDefault("info", new HashMap<>());
-            Map<String, String> dog1 = argsState.cat.getOrDefault("dog", new HashMap<>());
-
             if (info2 == null || info2.size() == 0) {
                 return true;
             }
-
             mapOutput.remove("dog");
             mapOutput.remove("info");
 
+            Map<String, String> info1 = argsState.cat.getOrDefault("info", new HashMap<>());
+            Map<String, String> dog1 = argsState.cat.getOrDefault("dog", new HashMap<>());
             argsState.cat.remove("dog");
             argsState.cat.remove("info");
 
-            // 合并info
-//            Set<String> infoKey = info1.keySet();
-//            List<String> listInfo = new ArrayList<>(infoKey);
-//                for (String str : info2.keySet()) {
-//                if (!listInfo.contains(str)) {
-//                    info1.put(str, info2.get(str));
-//                }
-//            }
-
             Map<String, Map<String, String>> cat1 = argsState.cat;
+
             // 列维度
             Set<String> key = cat1.keySet();
-            List<String> list = new ArrayList<>(key);
-            for (String str : cat2.keySet()) {
-                if (!list.contains(str)) {
-                    list.add(str);
-                }
-            }
+            List<String> li = new ArrayList<>(key);
+            li.addAll(mapOutput.keySet());
+            List<String> list = new ArrayList<>(new HashSet<>(li));
 
             for (String k : list) {
-
                 Map<String, String> cat11 = cat1.getOrDefault(k, new HashMap<>());
-                Map<String, String> cat21 = cat2.getOrDefault(k, new HashMap<>());
+                Map<String, String> cat21 = mapOutput.getOrDefault(k, new HashMap<>());
                 // ckey
                 Set<String> ckey = cat11.keySet();
-                List<String> clist = new ArrayList<>(ckey);
-                for (String str : cat21.keySet()) {
-                    if (!clist.contains(str)) {
-                        clist.add(str);
-                    }
-                }
+                List<String> cli = new ArrayList<>(ckey);
+                cli.addAll(cat21.keySet());
+                List<String> clist = new ArrayList<>(new HashSet<>(cli));
 
                 for (String subk : clist) {
                     if (subk.contains("count")) {
@@ -311,15 +277,13 @@ public class RowColStatistics extends UDAF {
                 }
                 cat1.put(k, cat11);
             }
-            argsState.cat .putAll(cat1);
+            argsState.cat.putAll(cat1);
+
 
             Set<String> dkey = dog1.keySet();
-            List<String> dlist = new ArrayList<>(dkey);
-            for (String str : dog2.keySet()) {
-                if (!dlist.contains(str)) {
-                    dlist.add(str);
-                }
-            }
+            List<String> dli = new ArrayList<>(dkey);
+            dli.addAll(dog2.keySet());
+            List<String> dlist = new ArrayList<>(new HashSet<>(dli));
 
             for (String keyd : dlist) {
                 if (keyd.contains("count")) {
@@ -376,17 +340,14 @@ public class RowColStatistics extends UDAF {
                     dog1.put(keyd, Double.toString(result));
                 }
             }
-
             argsState.cat.put("dog", dog1);
-//            if (0 == 0) {
-//                throw new RuntimeException(info1.toString() + "\r\n" + info2. toString());
-//            }
             argsState.cat.put("info", info2);
             return true;
         }
 
         // 处理merge计算完成后的结果，即对merge完成后的结果做最后的业务处理
         public Map<String, Double> terminate() {
+
 
             Map<String, String> dog = argsState.cat.getOrDefault("dog", new HashMap<>());
 //            if (dog == null || dog.size() == 0) {
