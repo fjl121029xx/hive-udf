@@ -187,7 +187,7 @@ public class RowColStatistics extends UDAF {
         }
 
 
-        public Map<String, Map<String, String>> terminatePartial(Map<String, Map<String, String>> mapOutput) {
+        public Map<String, Map<String, String>> terminatePartial() {
 
 
             return argsState.cat;
