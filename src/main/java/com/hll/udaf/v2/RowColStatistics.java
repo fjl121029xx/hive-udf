@@ -211,21 +211,19 @@ public class RowColStatistics extends UDAF {
             Map<String, Map<String, String>> cat1 = argsState.cat;
 
             // 列维度
-            Set<String> key = cat1.keySet();
-            List<String> li = new ArrayList<>(key);
-            li.addAll(mapOutput.keySet());
-            List<String> list = new ArrayList<>(new HashSet<>(li));
+//            Set<String> key = cat1.keySet();
+//            List<String> li = new ArrayList<>(key);
+//            li.addAll(mapOutput.keySet());
+//            List<String> list = new ArrayList<>(new HashSet<>(li));
 
-            for (String k : list) {
-                Map<String, String> cat11 = cat1.getOrDefault(k, new HashMap<>());
-                Map<String, String> cat21 = mapOutput.getOrDefault(k, new HashMap<>());
-                // ckey
-                Set<String> ckey = cat11.keySet();
-                List<String> cli = new ArrayList<>(ckey);
-                cli.addAll(cat21.keySet());
-                List<String> clist = new ArrayList<>(new HashSet<>(cli));
+            for (Map.Entry<String, Map<String, String>> en : mapOutput.entrySet()) {
+                String outkey = en.getKey();
+                Map<String, String> cat21 = en.getValue();
+                Map<String, String> cat11 = cat1.getOrDefault(outkey, new HashMap<>());
 
-                for (String subk : clist) {
+                for (Map.Entry<String, String> inen : cat21.entrySet()) {
+                    String subk = inen.getKey();
+
                     if (subk.contains("count")) {
 
                         double dvalue = Double.parseDouble(cat11.getOrDefault(subk, "0.00")) +
@@ -273,19 +271,36 @@ public class RowColStatistics extends UDAF {
                                 Double.parseDouble(cat21.getOrDefault(subk, "0.00"));
                         cat11.put(subk, Double.toString(dvalue));
                     }
-
                 }
-                cat1.put(k, cat11);
+                cat1.put(outkey, cat11);
             }
+
+//            for (String k : list) {
+//                Map<String, String> cat11 = cat1.getOrDefault(k, new HashMap<>());
+//                Map<String, String> cat21 = mapOutput.getOrDefault(k, new HashMap<>());
+//                // ckey
+//                Set<String> ckey = cat11.keySet();
+//                List<String> cli = new ArrayList<>(ckey);
+//                cli.addAll(cat21.keySet());
+//                List<String> clist = new ArrayList<>(new HashSet<>(cli));
+//
+//                for (String subk : clist) {
+//
+//
+//                }
+//                cat1.put(k, cat11);
+//            }
             argsState.cat.putAll(cat1);
 
 
-            Set<String> dkey = dog1.keySet();
-            List<String> dli = new ArrayList<>(dkey);
-            dli.addAll(dog2.keySet());
-            List<String> dlist = new ArrayList<>(new HashSet<>(dli));
+//            Set<String> dkey = dog1.keySet();
+//            List<String> dli = new ArrayList<>(dkey);
+//            dli.addAll(dog2.keySet());
+//            List<String> dlist = new ArrayList<>(new HashSet<>(dli));
 
-            for (String keyd : dlist) {
+            for (Map.Entry<String, String> en : dog2.entrySet()) {
+                String keyd = en.getKey();
+
                 if (keyd.contains("count")) {
                     double v1 = Double.parseDouble(dog2.getOrDefault(keyd, "0.00"));
                     double v2 = Double.parseDouble(dog1.getOrDefault(keyd, "0.00"));
@@ -340,6 +355,9 @@ public class RowColStatistics extends UDAF {
                     dog1.put(keyd, Double.toString(result));
                 }
             }
+
+//            for (String keyd : dlist) {
+//            }
             argsState.cat.put("dog", dog1);
             argsState.cat.put("info", info2);
             return true;
@@ -348,12 +366,7 @@ public class RowColStatistics extends UDAF {
         // 处理merge计算完成后的结果，即对merge完成后的结果做最后的业务处理
         public Map<String, Double> terminate() {
 
-
             Map<String, String> dog = argsState.cat.getOrDefault("dog", new HashMap<>());
-//            if (dog == null || dog.size() == 0) {
-//                throw new RuntimeException("dog is null" + argsState.cat.toString());
-//            }
-
             Map<String, String> info = argsState.cat.getOrDefault("info", new HashMap<>());
             if (info == null || info.size() == 0) {
                 throw new RuntimeException("info is null \r\n " + argsState.cat.toString());
@@ -378,9 +391,9 @@ public class RowColStatistics extends UDAF {
             Pattern p = Pattern.compile("\\d+\\.\\d+$|-\\d+\\.\\d+$");
             Pattern p2 = Pattern.compile("\\d+\\.\\d+,\\d+\\.\\d+$");
 
+            Map<String, Double> result = new HashMap<>();
             Map<String, Map<String, Double>> compare = new HashMap<>();
-            for (Map.Entry<String, Map<String, String>> f :
-                    cat.entrySet()) {
+            for (Map.Entry<String, Map<String, String>> f : cat.entrySet()) {
                 String key = f.getKey();
                 Map<String, String> value = f.getValue();
 
@@ -390,11 +403,15 @@ public class RowColStatistics extends UDAF {
                     String v = en.getValue();
                     if (p.matcher(v).matches()) {
                         newValue.put(k, Double.parseDouble(v));
+
                     } else if (p2.matcher(v).matches()) {
                         String[] enarr = v.split(",");
                         newValue.put(k, Double.parseDouble(enarr[0]) / Double.parseDouble(enarr[1]));
+
                     } else {
                         newValue.put(k, Double.parseDouble(new String(v.split(",").length + "")));
+
+
                     }
                 }
                 compare.put(key, newValue);
@@ -412,6 +429,7 @@ public class RowColStatistics extends UDAF {
                     dimension.put(key, Double.parseDouble(value.split(",").length + ""));
                 }
             }
+
             if (compare == null || compare.size() == 0) {
                 throw new RuntimeException("compare is null");
             }
@@ -426,9 +444,7 @@ public class RowColStatistics extends UDAF {
                 compareValue.putAll(l);
             }
 
-
             // ============================
-            Map<String, Double> result = new HashMap<>();
             for (Map.Entry<String, Double> en : compareValue.entrySet()) {
 
                 String measure_key = en.getKey();
@@ -445,9 +461,6 @@ public class RowColStatistics extends UDAF {
                         dimensionKeys = String.format("%s△%s", dimensionKeys, all_keys[i]);
                     } catch (Exception e) {
                         dimensionKeys = String.format("%s△%s", dimensionKeys, "");
-//                        throw new RuntimeException(measure_key + "-----------------"
-//                                + compare_key + "-----------------"
-//                                + i + "-------" + arrshow(all_keys) + "------------" + dimensionKeys);
                     }
 
                 }
@@ -467,16 +480,9 @@ public class RowColStatistics extends UDAF {
                     String tmp_key = String.format("%s△%s", compare_key, s);
 
                     double v = compareValue.getOrDefault(tmp_key, 0.00);
-//                    if (tmp_key.length() > 0) {
-//                        throw new RuntimeException(measure_key + "-======================tmp_key------------------" +
-//                                "--------------------------------" + tmp_key
-//                                + "------------" + v + "-------" + value);
-//                    }
                     tmp_count = tmp_count + v;
                     compare_key_tmp = String.format("%s△%s", compare_key_tmp, v);
                 }
-
-                // 行合计
                 if (rowcol.equals("1") || rowcol.equals("7")) {
                     for (int i = 0; i < measure_arr.length; i++) {
                         String s = measure_arr[i];
@@ -493,6 +499,8 @@ public class RowColStatistics extends UDAF {
                 result.put(compare_key_tmp, 0.00);
             }
 
+
+            long start = System.currentTimeMillis();
             if (rowcol.equals("7")) {
                 StrBuilder mea = new StrBuilder();
                 for (int i = 0; i < measure_length; i++) {
@@ -669,7 +677,10 @@ public class RowColStatistics extends UDAF {
                     }
                 }
             }
-
+            long end = System.currentTimeMillis();
+            if (1 == 1) {
+                throw new RuntimeException("--------------------- " + (end - start));
+            }
             return result;
         }
     }
