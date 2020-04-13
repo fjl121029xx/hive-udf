@@ -83,7 +83,7 @@ public class RowColStatistics extends UDAF {
                 measure.put(measure_func.get(i), measure_value.get(i));
             }
 
-            Map<String, String> subCat = argsState.cat.getOrDefault(dimension_key, new HashMap<String, String>());
+            Map<String, String> subCat = argsState.cat.getOrDefault(dimension_key, new HashMap<>());
             for (Map.Entry<String, String> mea : measure.entrySet()) {
 
                 String key = mea.getKey();
@@ -215,6 +215,7 @@ public class RowColStatistics extends UDAF {
 //            List<String> li = new ArrayList<>(key);
 //            li.addAll(mapOutput.keySet());
 //            List<String> list = new ArrayList<>(new HashSet<>(li));
+            
 
             for (Map.Entry<String, Map<String, String>> en : mapOutput.entrySet()) {
                 String outkey = en.getKey();
@@ -356,11 +357,26 @@ public class RowColStatistics extends UDAF {
                 }
             }
 
-//            for (String keyd : dlist) {
-//            }
+//            argsState.cat.put("fish", fish);
             argsState.cat.put("dog", dog1);
             argsState.cat.put("info", info2);
             return true;
+        }
+
+
+
+        // str2double
+        public double str2double(String v) {
+            Pattern p = Pattern.compile("\\d+\\.\\d+$|-\\d+\\.\\d+$");
+            Pattern p2 = Pattern.compile("\\d+\\.\\d+,\\d+\\.\\d+$");
+            if (p.matcher(v).matches()) {
+                return Double.parseDouble(v);
+            } else if (p2.matcher(v).matches()) {
+                String[] enarr = v.split(",");
+                return Double.parseDouble(enarr[0]) / Double.parseDouble(enarr[1]);
+            } else {
+                return Double.parseDouble(new String(v.split(",").length + ""));
+            }
         }
 
         // 处理merge计算完成后的结果，即对merge完成后的结果做最后的业务处理
@@ -388,119 +404,39 @@ public class RowColStatistics extends UDAF {
             if (cat == null || cat.size() == 0) {
                 throw new RuntimeException("cat is null");
             }
-            Pattern p = Pattern.compile("\\d+\\.\\d+$|-\\d+\\.\\d+$");
-            Pattern p2 = Pattern.compile("\\d+\\.\\d+,\\d+\\.\\d+$");
-
-            Map<String, Double> result = new HashMap<>();
-            Map<String, Map<String, Double>> compare = new HashMap<>();
-            for (Map.Entry<String, Map<String, String>> f : cat.entrySet()) {
-                String key = f.getKey();
-                Map<String, String> value = f.getValue();
-
-                Map<String, Double> newValue = new HashMap<>();
-                for (Map.Entry<String, String> en : value.entrySet()) {
-                    String k = en.getKey();
-                    String v = en.getValue();
-                    if (p.matcher(v).matches()) {
-                        newValue.put(k, Double.parseDouble(v));
-
-                    } else if (p2.matcher(v).matches()) {
-                        String[] enarr = v.split(",");
-                        newValue.put(k, Double.parseDouble(enarr[0]) / Double.parseDouble(enarr[1]));
-
-                    } else {
-                        newValue.put(k, Double.parseDouble(new String(v.split(",").length + "")));
-
-
-                    }
-                }
-                compare.put(key, newValue);
-            }
 
             Map<String, Double> dimension = new HashMap<>();
             for (Map.Entry<String, String> en : dog.entrySet()) {
                 String value = en.getValue();
                 String key = en.getKey();
-                if (p.matcher(value).matches()) {
-                    dimension.put(key, Double.parseDouble(value));
-                } else if (p2.matcher(value).matches()) {
-                    dimension.put(key, (Double.parseDouble(value.split(",")[0]) / Double.parseDouble(value.split(",")[1])));
-                } else {
-                    dimension.put(key, Double.parseDouble(value.split(",").length + ""));
-                }
+                double v = str2double(value);
+                dimension.put(key, v);
             }
 
-            if (compare == null || compare.size() == 0) {
-                throw new RuntimeException("compare is null");
+
+            Map<String, Double> result = new HashMap<>();
+            Map<String, String> compareValue = new HashMap<>();
+            for (Map<String, String> l : cat.values()) {
+                compareValue.putAll(l);
             }
+
+//            long start = System.currentTimeMillis();
+            for (Map<String, String> value : cat.values()) {
+                for (String k : value.keySet()) {
+                    doCompare(dimension_length, compare_length, measure_arr, rowcol, result, dimension, compareValue, k);
+                }
+            }
+//            long end = System.currentTimeMillis();
+//            if (1 == 1) {
+//                throw new RuntimeException("--------------------- " + (end - start));
+//            }
+
 
             if (dimension == null || dimension.size() == 0) {
                 throw new RuntimeException("dimension is null");
             }
 
 
-            Map<String, Double> compareValue = new HashMap<>();
-            for (Map<String, Double> l : compare.values()) {
-                compareValue.putAll(l);
-            }
-
-            // ============================
-            for (Map.Entry<String, Double> en : compareValue.entrySet()) {
-
-                String measure_key = en.getKey();
-                Double value = en.getValue();
-
-                String compare_key = measure_key.substring(0, measure_key.lastIndexOf("△"));
-                String compare_key_tmp = measure_key.substring(0, measure_key.lastIndexOf("△"));
-
-                String[] all_keys = compare_key.split("△");
-
-                String dimensionKeys = all_keys[0];
-                for (int i = 1; i < dimension_length; i++) {
-                    try {
-                        dimensionKeys = String.format("%s△%s", dimensionKeys, all_keys[i]);
-                    } catch (Exception e) {
-                        dimensionKeys = String.format("%s△%s", dimensionKeys, "");
-                    }
-
-                }
-                String compareKeys = "";
-                if (compare_length > 0) {
-                    compareKeys = all_keys[0];
-                    for (int i = (dimension_length + 1); i < (dimension_length + compare_length); i++) {
-                        compareKeys = compareKeys + "△" + all_keys[i];
-                    }
-                }
-
-                double tmp_count = 0.00;
-                double tmp_count2 = 0.00;
-
-                for (int i = 0; i < measure_arr.length; i++) {
-                    String s = measure_arr[i];
-                    String tmp_key = String.format("%s△%s", compare_key, s);
-
-                    double v = compareValue.getOrDefault(tmp_key, 0.00);
-                    tmp_count = tmp_count + v;
-                    compare_key_tmp = String.format("%s△%s", compare_key_tmp, v);
-                }
-                if (rowcol.equals("1") || rowcol.equals("7")) {
-                    for (int i = 0; i < measure_arr.length; i++) {
-                        String s = measure_arr[i];
-                        double v = dimension.getOrDefault(dimensionKeys + "△" + s, 0.00);
-                        tmp_count2 = tmp_count2 + v;
-                        compare_key_tmp = String.format("%s△%s", compare_key_tmp, v);
-                    }
-
-                    compare_key_tmp = String.format("%s△%s", compare_key_tmp, tmp_count2);
-                    compare_key_tmp = String.format("%s△%s△", compare_key_tmp, tmp_count);
-                } else {
-                    compare_key_tmp = String.format("%s△", compare_key_tmp);
-                }
-                result.put(compare_key_tmp, 0.00);
-            }
-
-
-            long start = System.currentTimeMillis();
             if (rowcol.equals("7")) {
                 StrBuilder mea = new StrBuilder();
                 for (int i = 0; i < measure_length; i++) {
@@ -677,11 +613,65 @@ public class RowColStatistics extends UDAF {
                     }
                 }
             }
-            long end = System.currentTimeMillis();
-            if (1 == 1) {
-                throw new RuntimeException("--------------------- " + (end - start));
-            }
+
             return result;
+        }
+
+        private static void doCompare(int dimension_length,
+                                      int compare_length,
+                                      String[] measure_arr,
+                                      String rowcol,
+                                      Map<String, Double> result,
+                                      Map<String, Double> dimension,
+                                      Map<String, String> compareValue,
+                                      String measure_key) {
+            String compare_key = measure_key.substring(0, measure_key.lastIndexOf("△"));
+            String compare_key_tmp = measure_key.substring(0, measure_key.lastIndexOf("△"));
+
+            String[] all_keys = compare_key.split("△");
+
+            String dimensionKeys = all_keys[0];
+            for (int i = 1; i < dimension_length; i++) {
+                try {
+                    dimensionKeys = String.format("%s△%s", dimensionKeys, all_keys[i]);
+                } catch (Exception e) {
+                    dimensionKeys = String.format("%s△%s", dimensionKeys, "");
+                }
+
+            }
+            String compareKeys = "";
+            if (compare_length > 0) {
+                compareKeys = all_keys[0];
+                for (int i = (dimension_length + 1); i < (dimension_length + compare_length); i++) {
+                    compareKeys = compareKeys + "△" + all_keys[i];
+                }
+            }
+
+            double tmp_count = 0.00;
+            double tmp_count2 = 0.00;
+
+            for (int i = 0; i < measure_arr.length; i++) {
+                String s = measure_arr[i];
+                String tmp_key = String.format("%s△%s", compare_key, s);
+
+                double v = Double.parseDouble(compareValue.getOrDefault(tmp_key, "0.00"));
+                tmp_count = tmp_count + v;
+                compare_key_tmp = String.format("%s△%s", compare_key_tmp, v);
+            }
+            if (rowcol.equals("1") || rowcol.equals("7")) {
+                for (int i = 0; i < measure_arr.length; i++) {
+                    String s = measure_arr[i];
+                    double v = dimension.getOrDefault(dimensionKeys + "△" + s, 0.00);
+                    tmp_count2 = tmp_count2 + v;
+                    compare_key_tmp = String.format("%s△%s", compare_key_tmp, v);
+                }
+
+                compare_key_tmp = String.format("%s△%s", compare_key_tmp, tmp_count2);
+                compare_key_tmp = String.format("%s△%s△", compare_key_tmp, tmp_count);
+            } else {
+                compare_key_tmp = String.format("%s△", compare_key_tmp);
+            }
+            result.put(compare_key_tmp, 0.00);
         }
     }
 
