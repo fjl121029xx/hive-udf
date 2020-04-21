@@ -55,12 +55,7 @@ public class RowColStatisticsV2 extends UDAF {
             info.put("rowcol", rowcol_num);
             // dimensions
             // 行键
-            List<String> dimensions = input0.stream().map(new Function<String, String>() {
-                @Override
-                public String apply(String d) {
-                    return hasRD(d) > 7 ? dayformat(d, dimen_mode, hasRD(d)) : d;
-                }
-            }).collect(Collectors.toList());
+            List<String> dimensions = input0.stream().map(d -> hasRD(d) > 7 ? dayformat(d, dimen_mode, hasRD(d)) : d).collect(Collectors.toList());
             // dimension_length
             info.put("dimension_length", Integer.toString(dimensions.size()));
 

@@ -29,11 +29,25 @@ public class AdvancedComputing extends UDAF {
 
         // 初始化函数间传递的中间变量
         public void init() {
+            MutableAggregationBuffer.PartialResult = new HashMap<>();
         }
 
         //map阶段，返回值为boolean类型，当为true则程序继续执行，当为false则程序退出
-        public boolean iterate(List<String> dimensions, List<String> measure, List<String> high_math) {
+        public boolean iterate(List<String> dimensions, List<String> measure, List<String> mathFunction) {
+            String dimenKey = dimensions.stream().reduce((a, b) -> a + "," + b).get();
+            if (!supportMath(mathFunction) || (measure.size() != mathFunction.size()))
+                throw new RuntimeException("un support math ");
+            Map<String, Map<String, String>> cat = MutableAggregationBuffer.PartialResult;
 
+            for (int i = 0; i < measure.size(); i++) {
+                String value = measure.get(i);
+                String name = mathFunction.get(i);
+
+                Map<String, String> inMap = cat.getOrDefault(name, new HashMap<>());
+                inMap.put(dimenKey, value);
+                cat.put(name, inMap);
+            }
+            MutableAggregationBuffer.PartialResult.putAll(cat);
             return true;
         }
 
@@ -41,16 +55,63 @@ public class AdvancedComputing extends UDAF {
             return MutableAggregationBuffer.PartialResult;
         }
 
-        public boolean merge(Map<String, String> mapOutput) {
+        public boolean merge(Map<String, Map<String, String>> mapOutput) {
 
+            Map<String, Map<String, String>> cat1 = MutableAggregationBuffer.PartialResult;
+            Map<String, Map<String, String>> cat2 = mapOutput;
+            for (Map.Entry<String, Map<String, String>> en : cat2.entrySet()) {
 
+                String key = en.getKey();
+                Map<String, String> value2 = en.getValue();
+                Map<String, String> value1 = cat1.getOrDefault(key, new HashMap<>());
+                value1.putAll(value2);
+
+                cat1.put(key, value1);
+            }
             return true;
         }
 
-        public String terminate() {
-            return null;
+        public Map<String, String>  terminate() {
+            Map<String, Map<String, String>> cat = MutableAggregationBuffer.PartialResult;
+            Set<String> mathFunc = cat.keySet();
+            Map<String, String> finalResule = new HashMap<>();
+            for (String whatMath : mathFunc) {
+                if (whatMath.startsWith("compare")) {
+                    Map<String, String> map = doCompare(cat.getOrDefault(whatMath, new HashMap<>()), whatMath.split("-")[0], Integer.parseInt(whatMath.split("-")[1]), Integer.parseInt(whatMath.split("-")[2]));
+                    finalResule = mergerMap(finalResule, map);
+                } else {
+                    finalResule = mergerMap(finalResule, cat.get(whatMath));
+                }
+            }
+            return finalResule;
         }
 
+        public Map<String, String> doCompare(Map<String, String> compare, String _type, int whitch, int what) {
+
+            Map<String, String> finalResule = new HashMap<>();
+            for (String key : compare.keySet()) {
+                Calendar timt = findTime(key);
+                String timttype = findTimeType(key);
+
+                double v1 = Double.parseDouble(compare.getOrDefault(key, "0.00"));
+                String newKey = key.replaceFirst(caFormat(timt, timttype), caFormat(timeSub(timt, _type + "-" + whitch), timttype));
+                double v2 = Double.parseDouble(compare.getOrDefault(newKey, "0.00"));
+                if (what == 1) {
+                    String r = "-";
+                    if (v2 != 0) {
+                        r = Double.toString(((v1 - v2) / v2));
+                    }
+                    finalResule.put(key, r);
+                } else if (what == 2) {
+                    // 项
+                    finalResule.put(key, Double.toString(v2));
+                } else {
+                    // 值
+                    finalResule.put(key, Double.toString((v1 - v2)));
+                }
+            }
+            return finalResule;
+        }
 
         public Boolean supportMath(List<String> mathList) {
             Boolean flag = true;
