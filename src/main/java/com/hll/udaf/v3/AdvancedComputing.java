@@ -15,7 +15,7 @@ public class AdvancedComputing extends UDAF {
     public static Logger logger = Logger.getLogger(CompareRate.class);
 
     public static class MutableAggregationBuffer {
-        private static Map<String, Map<String, String>> PartialResult;
+        private Map<String, Map<String, String>> PartialResult;
     }
 
     public static class Evaluator implements UDAFEvaluator {
@@ -29,15 +29,17 @@ public class AdvancedComputing extends UDAF {
 
         // 初始化函数间传递的中间变量
         public void init() {
-            MutableAggregationBuffer.PartialResult = new HashMap<>();
+            buffer.PartialResult = new HashMap<>();
         }
 
         //map阶段，返回值为boolean类型，当为true则程序继续执行，当为false则程序退出
         public boolean iterate(List<String> dimensions, List<String> measure, List<String> mathFunction) {
+
+
             String dimenKey = dimensions.stream().reduce((a, b) -> a + "," + b).get();
             if (!supportMath(mathFunction) || (measure.size() != mathFunction.size()))
                 throw new RuntimeException("un support math ");
-            Map<String, Map<String, String>> cat = MutableAggregationBuffer.PartialResult;
+            Map<String, Map<String, String>> cat = buffer.PartialResult;
 
             for (int i = 0; i < measure.size(); i++) {
                 String value = measure.get(i);
@@ -47,17 +49,37 @@ public class AdvancedComputing extends UDAF {
                 inMap.put(dimenKey, value);
                 cat.put(name, inMap);
             }
-            MutableAggregationBuffer.PartialResult.putAll(cat);
+            buffer.PartialResult.putAll(cat);
+            ////
+            String mathFuncStr = mathFunction.stream().reduce((a, b) -> a + "," + b).get();
+            Map<String, String> tmp = new HashMap<>();
+            tmp.put("mathFuncStr", mathFuncStr);
+            buffer.PartialResult.put("mathFuncStr", tmp);
+
             return true;
         }
 
         public Map<String, Map<String, String>> terminatePartial() {
-            return MutableAggregationBuffer.PartialResult;
+            return buffer.PartialResult;
         }
 
         public boolean merge(Map<String, Map<String, String>> mapOutput) {
 
-            Map<String, Map<String, String>> cat1 = MutableAggregationBuffer.PartialResult;
+            if (mapOutput == null || mapOutput.size() == 0) {
+                return true;
+            }
+            String mathFuncStr = "";
+            try {
+                mathFuncStr = buffer.PartialResult.get("mathFuncStr").get("mathFuncStr");
+                buffer.PartialResult.remove("mathFuncStr");
+            } catch (Exception e) {
+                System.out.println();
+            }
+
+            String mathFuncStr2 = mapOutput.get("mathFuncStr").get("mathFuncStr");
+            mapOutput.remove("mathFuncStr");
+
+            Map<String, Map<String, String>> cat1 = buffer.PartialResult;
             Map<String, Map<String, String>> cat2 = mapOutput;
             for (Map.Entry<String, Map<String, String>> en : cat2.entrySet()) {
 
@@ -68,12 +90,28 @@ public class AdvancedComputing extends UDAF {
 
                 cat1.put(key, value1);
             }
+            buffer.PartialResult.putAll(cat1);
+
+            if (mathFuncStr == null || mathFuncStr.length() == 0) {
+                mathFuncStr = mathFuncStr2;
+            }
+            Map<String, String> tmp = new HashMap<>();
+            tmp.put("mathFuncStr", mathFuncStr);
+            buffer.PartialResult.put("mathFuncStr", tmp);
+
             return true;
         }
 
-        public Map<String, String>  terminate() {
-            Map<String, Map<String, String>> cat = MutableAggregationBuffer.PartialResult;
-            Set<String> mathFunc = cat.keySet();
+        public Map<String, String> terminate() {
+
+
+            String mathFuncStr = buffer.PartialResult.get("mathFuncStr").get("mathFuncStr");
+            buffer.PartialResult.remove("mathFuncStr");
+
+            Map<String, Map<String, String>> cat = buffer.PartialResult;
+
+            String[] mathFunc = mathFuncStr.split(",");
+
             Map<String, String> finalResule = new HashMap<>();
             for (String whatMath : mathFunc) {
                 if (whatMath.startsWith("compare")) {
@@ -143,7 +181,16 @@ public class AdvancedComputing extends UDAF {
                     case "avg":
                         flag = true;
                         break;
-                    case "discount":
+                    case "uniqueCount":
+                        flag = true;
+                        break;
+                    case "percentile_25":
+                        flag = true;
+                        break;
+                    case "percentile_75":
+                        flag = true;
+                        break;
+                    case "percentile_50":
                         flag = true;
                         break;
                     default: {
