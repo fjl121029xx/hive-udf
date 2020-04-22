@@ -150,6 +150,13 @@ public class AdvancedComputing extends UDAF {
             }
             return finalResule;
         }
+        public Map<String, String> doRow_account(Map<String, String> compare, String _type, int whitch, int what) {
+
+            Map<String, String> finalResule = new HashMap<>();
+
+
+            return finalResule;
+        }
 
         public Boolean supportMath(List<String> mathList) {
             Boolean flag = true;

@@ -557,7 +557,11 @@ public class RowColStatisticsV2 extends UDAF {
 
                 double rowsum = rowsumMap.getOrDefault(dkey, 0.00);
                 if (rowsumtype[0].equals("sum-1") || rowsumtype[0].equals("avg-1")) {
-                    rowsum = rowsum / (comsize / measure_length);
+                    int did = 1;
+                    if ((comsize / measure_length) != 0) {
+                        did = comsize / measure_length;
+                    }
+                    rowsum = rowsum / did;
                 }
 
                 if (rowsumtype[0].equals("avg-1")) {
