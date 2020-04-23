@@ -67,10 +67,14 @@ public class UDFReportDateFormat extends GenericUDF {
                     Integer.parseInt(date.substring(8, 10)),
                     0, 0, 0};
         } else {
-            return new Integer[]{Integer.parseInt(date.substring(0, 4)),
-                    (Integer.parseInt(date.substring(4, 6)) - 1),
-                    Integer.parseInt(date.substring(6, 8)),
-                    0, 0, 0};
+            try {
+                return new Integer[]{Integer.parseInt(date.substring(0, 4)),
+                        (Integer.parseInt(date.substring(4, 6)) - 1),
+                        Integer.parseInt(date.substring(6, 8)),
+                        0, 0, 0};
+            } catch (Exception e) {
+                throw new RuntimeException(date);
+            }
         }
     }
 

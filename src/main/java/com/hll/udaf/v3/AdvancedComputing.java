@@ -376,5 +376,9 @@ public class AdvancedComputing extends UDAF {
                     throw new RuntimeException("nonexistent dimen_mode. [y,yq,ym,yw,ymd]]");
             }
         }
+
+        public static void main(String[] args) {
+
+        }
     }
 }
