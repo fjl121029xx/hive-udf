@@ -10,6 +10,7 @@ import java.util.Map;
 public class ProxyUDF implements Udf {
 
     Udf udf;
+
     public ProxyUDF(Udf udf) {
         this.udf = udf;
     }
@@ -58,7 +59,7 @@ public class ProxyUDF implements Udf {
     }
 
     @Override
-    public Map<String, String> terminate() {
-        return udf.terminate();
+    public Map<String, String> terminate(Map<String, Map<String, String>> PartialResult) {
+        return udf.terminate(PartialResult);
     }
 }

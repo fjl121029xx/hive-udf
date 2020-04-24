@@ -15,5 +15,5 @@ public interface Udf {
     boolean merge(Map<String, Map<String, String>> PartialResult, Map<String, Map<String, String>> mapOutput);
 
     // terminate
-    Map<String, String> terminate();
+    Map<String, String> terminate(Map<String, Map<String, String>> PartialResult);
 }

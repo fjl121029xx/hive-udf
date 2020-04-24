@@ -2,21 +2,16 @@ package com.hll.udf.v2.dif;
 
 import java.math.BigDecimal;
 
+import static java.math.BigDecimal.ROUND_HALF_DOWN;
+
 public class Demo {
     public static void main(String[] args) {
 
-//        Calendar startCa = Calendar.getInstance();
-//        startCa.set(start.getYear(), start.getMonth(), start.getDay(), start.getHours(), start.getMinutes(), start.getSeconds());
+        BigDecimal startSecond = new BigDecimal(1530955370.0);
+        BigDecimal endSecond = new BigDecimal(1530955402.0);
+        BigDecimal div = new BigDecimal(3600000.0);
+        BigDecimal result = endSecond.subtract(startSecond).divide(div, 2, ROUND_HALF_DOWN).setScale(2, BigDecimal.ROUND_UP);
+        System.out.println(result);
 //
-//        Calendar endCa = Calendar.getInstance();
-//        endCa.set(end.getYear(), end.getMonth(), end.getDay(), end.getHours(), end.getMinutes(), end.getSeconds());
-
-//        System.out.println("startCa " + startCa);
-//        System.out.println("endCa " + endCa);
-//        System.out.println("startCa.getTime().getTime() " + startCa.getTime().getTime());
-//        System.out.println("endCa.getTime().getTime() " + endCa.getTime().getTime());
-//        BigDecimal startSecond = new BigDecimal(startCa.getTime().getTime());
-//        BigDecimal endSecond = new BigDecimal(endCa.getTime().getTime());
-        BigDecimal div = new BigDecimal(60 * 60);
     }
 }

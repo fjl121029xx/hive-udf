@@ -2,14 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/test/ProxyUDF.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/test/TestMain.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/test/Udf.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/test/UdfImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/util/FuncUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/col.txt" beforeDir="false" afterPath="$PROJECT_DIR$/col.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/test/GenerateColData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/test/GenerateColData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/test/ProxyUDF.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/test/ProxyUDF.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/test/TestMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/test/TestMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/test/Udf.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/test/Udf.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/test/UdfImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/test/UdfImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v3/AdvancedComputing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v3/AdvancedComputing.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/Demo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/Demo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/UDFHourDiff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/UDFHourDiff.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -91,7 +93,7 @@
       <recent name="D:\work\source\ReportDateFormat" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestMain">
+  <component name="RunManager" selected="Application.Demo">
     <configuration name="Demo (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.hll.udaf.Demo" />
       <module name="hive-udf" />
@@ -185,10 +187,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Demo" />
         <item itemvalue="Application.TestMain" />
         <item itemvalue="Application.GenerateColData" />
         <item itemvalue="Application.Demo (1)" />
-        <item itemvalue="Application.Demo" />
         <item itemvalue="Application.UDFHourDiff" />
       </list>
     </recent_temporary>
@@ -281,7 +283,9 @@
       <workItem from="1587537325564" duration="372000" />
       <workItem from="1587544118118" duration="735000" />
       <workItem from="1587635855584" duration="1899000" />
-      <workItem from="1587694001715" duration="3866000" />
+      <workItem from="1587694001715" duration="5526000" />
+      <workItem from="1587713403653" duration="6714000" />
+      <workItem from="1587723495624" duration="406000" />
     </task>
     <task id="LOCAL-00001" summary="20200325   ...1">
       <created>1585103679259</created>
@@ -402,7 +406,14 @@
       <option name="project" value="LOCAL" />
       <updated>1587638129000</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="20200424   ...代理测试">
+      <created>1587698213262</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1587698213262</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -426,7 +437,8 @@
     <MESSAGE value="20200421   ...2" />
     <MESSAGE value="20200422   ...1" />
     <MESSAGE value="20200423   ...1" />
-    <option name="LAST_COMMIT_MESSAGE" value="20200423   ...1" />
+    <MESSAGE value="20200424   ...代理测试" />
+    <option name="LAST_COMMIT_MESSAGE" value="20200424   ...代理测试" />
   </component>
   <component name="WindowStateProjectService">
     <state x="233" y="0" key="#Project_Structure" timestamp="1584352698150">
@@ -449,46 +461,46 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="66" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.680@0.0.1280.680" timestamp="1586401795799" />
-    <state x="91" y="0" key="CommitChangelistDialog2" timestamp="1587638128375">
+    <state x="91" y="0" key="CommitChangelistDialog2" timestamp="1587698212412">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="91" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1587638128375" />
+    <state x="91" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1587698212412" />
     <state x="421" y="78" key="FileChooserDialogImpl" timestamp="1586943257797">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="421" y="78" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1586943257797" />
-    <state width="1237" height="137" key="GridCell.Tab.0.bottom" timestamp="1587698028268">
+    <state width="1237" height="138" key="GridCell.Tab.0.bottom" timestamp="1587723769710">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="137" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1587698028268" />
-    <state width="1237" height="137" key="GridCell.Tab.0.center" timestamp="1587698028268">
+    <state width="1237" height="138" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1587723769710" />
+    <state width="1237" height="138" key="GridCell.Tab.0.center" timestamp="1587723769710">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="137" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1587698028268" />
-    <state width="1237" height="137" key="GridCell.Tab.0.left" timestamp="1587698028268">
+    <state width="1237" height="138" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1587723769710" />
+    <state width="1237" height="138" key="GridCell.Tab.0.left" timestamp="1587723769710">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="137" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1587698028268" />
-    <state width="1237" height="137" key="GridCell.Tab.0.right" timestamp="1587698028268">
+    <state width="1237" height="138" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1587723769710" />
+    <state width="1237" height="138" key="GridCell.Tab.0.right" timestamp="1587723769710">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="137" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1587698028268" />
-    <state width="1237" height="204" key="GridCell.Tab.1.bottom" timestamp="1586917637131">
+    <state width="1237" height="138" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1587723769710" />
+    <state width="1237" height="204" key="GridCell.Tab.1.bottom" timestamp="1587715805421">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="204" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1586917637131" />
-    <state width="1237" height="204" key="GridCell.Tab.1.center" timestamp="1586917637131">
+    <state width="1237" height="204" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1587715805421" />
+    <state width="1237" height="204" key="GridCell.Tab.1.center" timestamp="1587715805421">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="204" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1586917637131" />
-    <state width="1237" height="204" key="GridCell.Tab.1.left" timestamp="1586917637131">
+    <state width="1237" height="204" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1587715805421" />
+    <state width="1237" height="204" key="GridCell.Tab.1.left" timestamp="1587715805421">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="204" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1586917637131" />
-    <state width="1237" height="204" key="GridCell.Tab.1.right" timestamp="1586917637131">
+    <state width="1237" height="204" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1587715805421" />
+    <state width="1237" height="204" key="GridCell.Tab.1.right" timestamp="1587715805421">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="204" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1586917637131" />
+    <state width="1237" height="204" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1587715805421" />
     <state x="288" y="38" key="NewModule_or_Project.wizard" timestamp="1586943260201">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -501,14 +513,18 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1586943066126" />
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1587638130140">
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1587698216138">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1587638130140" />
-    <state x="325" y="165" key="com.intellij.ide.util.TipDialog" timestamp="1587617746710">
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1587698216138" />
+    <state x="93" y="93" width="1095" height="495" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587719916623">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="325" y="165" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1587617746710" />
+    <state x="93" y="93" width="1095" height="495" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1280.680@0.0.1280.680" timestamp="1587719916623" />
+    <state x="325" y="165" key="com.intellij.ide.util.TipDialog" timestamp="1587723505955">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="325" y="165" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1587723505955" />
     <state x="741" y="107" key="extract.method.dialog" timestamp="1586487629794">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -525,5 +541,21 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="303" y="1" width="672" height="678" key="search.everywhere.popup/0.0.1280.680@0.0.1280.680" timestamp="1585566551366" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hll/test/UdfImpl.java</url>
+          <line>81</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hll/util/FuncUtil.java</url>
+          <line>194</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

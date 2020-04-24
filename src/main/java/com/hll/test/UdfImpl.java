@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.hll.util.FuncUtil.doCompare;
+import static com.hll.util.FuncUtil.mergerMap;
+
 public class UdfImpl implements Udf {
 
 
@@ -38,11 +41,60 @@ public class UdfImpl implements Udf {
 
     @Override
     public boolean merge(Map<String, Map<String, String>> PartialResult, Map<String, Map<String, String>> mapOutput) {
-        return false;
+
+        if (mapOutput == null || mapOutput.size() == 0) {
+            return true;
+        }
+        String mathFuncStr = "";
+        if (PartialResult != null && PartialResult.containsKey("mathFuncStr")) {
+            mathFuncStr = PartialResult.get("mathFuncStr").get("mathFuncStr");
+            PartialResult.remove("mathFuncStr");
+        }
+        String mathFuncStr2 = mapOutput.get("mathFuncStr").get("mathFuncStr");
+        mapOutput.remove("mathFuncStr");
+
+        Map<String, Map<String, String>> cat1 = PartialResult;
+        Map<String, Map<String, String>> cat2 = mapOutput;
+        for (Map.Entry<String, Map<String, String>> en : cat2.entrySet()) {
+
+            String key = en.getKey();
+            Map<String, String> value2 = en.getValue();
+            Map<String, String> value1 = cat1.getOrDefault(key, new HashMap<>());
+            value1.putAll(value2);
+
+            cat1.put(key, value1);
+        }
+        PartialResult.putAll(cat1);
+
+        if (mathFuncStr == null || mathFuncStr.length() == 0) {
+            mathFuncStr = mathFuncStr2;
+        }
+        Map<String, String> tmp = new HashMap<>();
+        tmp.put("mathFuncStr", mathFuncStr);
+        PartialResult.put("mathFuncStr", tmp);
+
+        return true;
     }
 
     @Override
-    public Map<String, String> terminate() {
-        return null;
+    public Map<String, String> terminate(Map<String, Map<String, String>> PartialResult) {
+
+        String mathFuncStr = PartialResult.get("mathFuncStr").get("mathFuncStr");
+        PartialResult.remove("mathFuncStr");
+
+        Map<String, Map<String, String>> cat = PartialResult;
+
+        String[] mathFunc = mathFuncStr.split(",");
+
+        Map<String, String> finalResule = new HashMap<>();
+        for (String whatMath : mathFunc) {
+            if (whatMath.startsWith("compare")) {
+                Map<String, String> map = doCompare(cat.getOrDefault(whatMath, new HashMap<>()), whatMath.split("-")[0], Integer.parseInt(whatMath.split("-")[1]), Integer.parseInt(whatMath.split("-")[2]));
+                finalResule = mergerMap(finalResule, map);
+            } else {
+                finalResule = mergerMap(finalResule, cat.get(whatMath));
+            }
+        }
+        return finalResule;
     }
 }
