@@ -1,6 +1,10 @@
 package com.hll.test;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GenerateColData {
 
@@ -16,16 +20,27 @@ public class GenerateColData {
         ) {
             String line;
             while ((line = br.readLine()) != null) {
-                String[] larr = line.split("\t");
-                for (String s :larr) {
-                    System.out.print(s);
-                    System.out.print("--");
-                }
-                System.out.println();
-
+                String[] larr = line.split(",");
+                List<String> args01 = new ArrayList<>();
+                List<String> args02 = new ArrayList<>();
+                List<String> args03 = new ArrayList<>();
+                args01.add(larr[0]);
+                args01.add(larr[0]);
+                args01.add(larr[0]);
+                args02.add(larr[6]);
+                args02.add(larr[7]);
+                args02.add(larr[8]);
+                args03.add("compare-5-0-");
+                args03.add("compare-5-1-");
+                args03.add("compare-5-2-");
             }
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
+
 }
