@@ -1,6 +1,7 @@
 package com.hll.udaf.v3;
 
 import com.hll.udaf.v1.CompareRate;
+import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDAF;
 import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
 import org.apache.log4j.Logger;
@@ -9,6 +10,9 @@ import java.util.*;
 
 import static com.hll.util.FuncUtil.*;
 
+@Description(name = "udadvancedcomputing",
+        value = "_func_(dimensions, measures, measurefunc) - " +
+                " list<string> , list<string> , list<string>")
 public class AdvancedComputing extends UDAF {
     public static Logger logger = Logger.getLogger(CompareRate.class);
 
@@ -102,15 +106,21 @@ public class AdvancedComputing extends UDAF {
 
         public Map<String, String> terminate() {
 
-
-            String mathFuncStr = buffer.PartialResult.get("mathFuncStr").get("mathFuncStr");
+            Map<String, String> finalResule = new HashMap<>();
+            Map<String, String> map1 = buffer.PartialResult.get("mathFuncStr");
+            if (map1 == null || map1.size() == 0) {
+                return finalResule;
+            }
+            String mathFuncStr = map1.get("mathFuncStr");
             buffer.PartialResult.remove("mathFuncStr");
 
             Map<String, Map<String, String>> cat = buffer.PartialResult;
-
+            if (cat == null || cat.size() == 0) {
+                return finalResule;
+            }
             String[] mathFunc = mathFuncStr.split(",");
 
-            Map<String, String> finalResule = new HashMap<>();
+
             for (String whatMath : mathFunc) {
                 if (whatMath.startsWith("compare")) {
                     Map<String, String> map = doCompare(cat.getOrDefault(whatMath, new HashMap<>()), whatMath.split("-")[0], Integer.parseInt(whatMath.split("-")[1]), Integer.parseInt(whatMath.split("-")[2]));
