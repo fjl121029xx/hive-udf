@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/UDFWeekDiff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/UDFWeekDiff.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/UDFYEARFRAC.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/UDFYEARFRAC.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/UDFYearDiff.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v2/dif/UDFYearDiff.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -281,7 +280,7 @@
       <workItem from="1587723495624" duration="817000" />
       <workItem from="1587897037534" duration="751000" />
       <workItem from="1587958955419" duration="666000" />
-      <workItem from="1588039038344" duration="1177000" />
+      <workItem from="1588039038344" duration="2500000" />
     </task>
     <task id="LOCAL-00001" summary="20200325   ...1">
       <created>1585103679259</created>
@@ -423,7 +422,14 @@
       <option name="project" value="LOCAL" />
       <updated>1588044414664</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="20200428   &gt;..2">
+      <created>1588044944196</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1588044944196</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -450,7 +456,8 @@
     <MESSAGE value="20200424   ...代理测试" />
     <MESSAGE value="20200424   ...1" />
     <MESSAGE value="20200428   &gt;..1" />
-    <option name="LAST_COMMIT_MESSAGE" value="20200428   &gt;..1" />
+    <MESSAGE value="20200428   &gt;..2" />
+    <option name="LAST_COMMIT_MESSAGE" value="20200428   &gt;..2" />
   </component>
   <component name="WindowStateProjectService">
     <state x="233" y="0" key="#Project_Structure" timestamp="1584352698150">
@@ -473,10 +480,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="66" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.680@0.0.1280.680" timestamp="1586401795799" />
-    <state x="91" y="0" key="CommitChangelistDialog2" timestamp="1588044413734">
+    <state x="91" y="0" key="CommitChangelistDialog2" timestamp="1588044943269">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="91" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1588044413734" />
+    <state x="91" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1588044943269" />
     <state x="93" y="93" width="1095" height="495" key="DiffContextDialog" timestamp="1588044395567">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -529,10 +536,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1586943066126" />
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1588044415972">
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1588044947436">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1588044415972" />
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1588044947436" />
     <state x="93" y="93" width="1095" height="495" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587719916623">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
