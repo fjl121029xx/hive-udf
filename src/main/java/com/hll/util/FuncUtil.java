@@ -37,7 +37,7 @@ public class FuncUtil {
         return finalResule;
     }
 
-    public static Map<String, String> doRow_account(Map<String, String> row_account, String what) {
+    public static Map<String, String> doRolAccount(Map<String, String> row_account) {
         Map<String, String> finalResule = new HashMap<>();
         double sum_value = 0.00;
         for (String v : row_account.values()) {
@@ -52,7 +52,7 @@ public class FuncUtil {
         return finalResule;
     }
 
-    public static Map<String, String> doAdd_up(Map<String, String> add_up, String what) {
+    public static Map<String, String> doAddUp(Map<String, String> add_up, String what) {
 
         Map<String, String> finalResule = new HashMap<>();
         String[] whatArr = what.split("-");
