@@ -1,6 +1,10 @@
 package com.hll.util;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class FuncUtil {
 
@@ -33,13 +37,66 @@ public class FuncUtil {
         return finalResule;
     }
 
-    public static Map<String, String> doRow_account(Map<String, String> compare, String _type, int whitch, int what) {
+    public static Map<String, String> doRow_account(Map<String, String> row_account, String what) {
+        Map<String, String> finalResule = new HashMap<>();
+        double sum_value = 0.00;
+        for (String v : row_account.values()) {
+            sum_value += Double.parseDouble(v);
+        }
+        BigDecimal b = new BigDecimal(sum_value);
+        for (Map.Entry<String, String> en : row_account.entrySet()) {
+            BigDecimal a = new BigDecimal(en.getValue());
+            BigDecimal result = a.divide(b, 6, RoundingMode.HALF_UP).setScale(6, BigDecimal.ROUND_UP);
+            finalResule.put(en.getKey(), result.toString());
+        }
+        return finalResule;
+    }
+
+    public static Map<String, String> doAdd_up(Map<String, String> add_up, String what) {
 
         Map<String, String> finalResule = new HashMap<>();
+        String[] whatArr = what.split("-");
+        String dateFormat = whatArr[2];
+        int which = Integer.parseInt(whatArr[1]);
 
+        for (String f : add_up.keySet()) {
+            final double[] sum = {0.00};
+            Calendar now = DateUtil.findTime(f, ",");
+            String k1 = DateUtil.formatCalender(now, dateFormat);
+            Calendar monthdat;
+            switch (which) {
+                case 1:
+                    monthdat = DateUtil.getFirstDayOfWeek(now);
+                    break;
+                case 2:
+                    monthdat = DateUtil.getFirstDayOfMonth(now);
+                    break;
+                case 3:
+                    monthdat = DateUtil.getFirstDayOfQuarter(now);
+                    break;
+                case 4:
+                    monthdat = DateUtil.getFirstDayOfYear(now);
+                    break;
+                default: {
+                    Calendar ca = Calendar.getInstance();
+                    ca.set(Calendar.YEAR, 1970);
+                    monthdat = ca;
+                }
+            }
+            Set<String> uniqueValues = new HashSet<>();
+            for (String s : DateUtil.getDays(monthdat, now)) {
+                String a = DateUtil.formatDateStr(s, dateFormat);
+                if (uniqueValues.add(a)) {
+                    String tmp = f;
+                    sum[0] = sum[0] + Double.parseDouble(add_up.getOrDefault(tmp.replace(k1, a), "0.00"));
+                }
+            }
+            finalResule.put(f, sum.toString());
+        }
 
         return finalResule;
     }
+
 
     public static Boolean supportMath(List<String> mathList) {
         Boolean flag = true;
