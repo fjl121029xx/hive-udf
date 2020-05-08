@@ -1,8 +1,6 @@
 package com.hll.udaf.v4;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NewAddStat {
     private List<String> add_up;
@@ -14,8 +12,15 @@ public class NewAddStat {
     public Map<String, String> compute() {
 
         Map<String, String> returnMap = new HashMap<>();
-
-        byte[][] bits = new byte[add_up.size()][getIndex(add_up.size()) + 1];
+        Set<String> c = new HashSet<>();
+        Set<String> v = new HashSet<>();
+        for (String s :
+                add_up) {
+            String[] split = s.split(":");
+            c.add(split[0]);
+            v.add(split[1]);
+        }
+        byte[][] bits = new byte[c.size() + 1][getIndex(v.size()) + 1];
 
         Map<String, Integer> dmap = new HashMap<>();
         Map<String, Integer> mmap = new HashMap<>();
@@ -77,6 +82,20 @@ public class NewAddStat {
         int newAdd = 0;
 
         byte[] bitnext_tmp = formatByte(new byte[bits[from].length]);
+
+        for (int j = 0; j <= from; j++) {
+            byte[] bit = formatByte(bits[j]);
+            for (int i = 0; i < bitnext_tmp.length; i++) {
+                byte e = bitnext_tmp[i];
+                byte s = bit[i];
+                int tmp;
+                if ((tmp = e | s) == 1) {
+                    bitnext_tmp[i] = 1;
+                } else {
+                    bitnext_tmp[i] = 0;
+                }
+            }
+        }
 
         for (int j = 0; j < from; j++) {
 

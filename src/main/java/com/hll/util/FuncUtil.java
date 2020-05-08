@@ -91,7 +91,7 @@ public class FuncUtil {
                     sum[0] = sum[0] + Double.parseDouble(add_up.getOrDefault(tmp.replace(k1, a), "0.00"));
                 }
             }
-            finalResule.put(f, sum.toString());
+            finalResule.put(f, Double.toString(sum[0]));
         }
 
         return finalResule;
@@ -108,6 +108,9 @@ public class FuncUtil {
                     flag = true;
                     break;
                 case "row_account":
+                    flag = true;
+                    break;
+                case "add_up":
                     flag = true;
                     break;
                 case "calculate_move":
@@ -138,6 +141,9 @@ public class FuncUtil {
                     flag = true;
                     break;
                 case "percentile_50":
+                    flag = true;
+                    break;
+                case "undo":
                     flag = true;
                     break;
                 default: {

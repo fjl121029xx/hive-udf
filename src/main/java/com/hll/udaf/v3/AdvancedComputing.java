@@ -40,7 +40,7 @@ public class AdvancedComputing extends UDAF {
 
             String dimenKey = dimensions.stream().reduce((a, b) -> a + "," + b).get();
             if (!supportMath(mathFunction) || (measure.size() != mathFunction.size()))
-                throw new RuntimeException("un support math ");
+                throw new RuntimeException("un support math " + mathFunction);
             Map<String, Map<String, String>> cat = buffer.PartialResult;
 
             for (int i = 0; i < measure.size(); i++) {

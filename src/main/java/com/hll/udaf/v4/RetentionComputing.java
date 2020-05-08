@@ -14,7 +14,6 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.StringObjectInspector;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 import org.apache.hadoop.io.*;
-import org.apache.hadoop.util.StringUtils;
 
 import java.util.*;
 
@@ -55,9 +54,9 @@ public class RetentionComputing extends AbstractGenericUDAFResolver {
 
         //1.1.定义全局输入输出数据的类型OI实例，用于解析输入输出数据
         // input For PARTIAL1 and COMPLETE
-        StandardListObjectInspector dimensions;
-        StandardListObjectInspector measure;
-        StandardListObjectInspector high_math;
+        StandardListObjectInspector dimensionsInspector;
+        StandardListObjectInspector measureInspector;
+        StandardListObjectInspector highMathInspector;
 
         // input For PARTIAL2 and FINAL
         // output For PARTIAL1 and PARTIAL2
@@ -78,13 +77,13 @@ public class RetentionComputing extends AbstractGenericUDAFResolver {
         @Override
         public ObjectInspector init(Mode mode, ObjectInspector[] parameters)
                 throws HiveException {
-            assert (parameters.length == 1);
+            assert (parameters.length == 3);
             super.init(mode, parameters);
 
             if (mode == Mode.PARTIAL1 || mode == Mode.COMPLETE) {
-                dimensions = (StandardListObjectInspector) parameters[0];
-                measure = (StandardListObjectInspector) parameters[1];
-                high_math = (StandardListObjectInspector) parameters[1];
+                dimensionsInspector = (StandardListObjectInspector) parameters[0];
+                measureInspector = (StandardListObjectInspector) parameters[1];
+                highMathInspector = (StandardListObjectInspector) parameters[1];
             } else {
                 //部分数据作为输入参数时，用到的struct的OI实例，指定输入数据类型，用于解析数据
                 soi = (StructObjectInspector) parameters[0];
@@ -100,7 +99,7 @@ public class RetentionComputing extends AbstractGenericUDAFResolver {
 
                 partialResult = new Object[2];
                 partialResult[0] = new LinkedList<String>();
-                partialResult[1] = new String();
+                partialResult[1] = "";
 
                 ArrayList<String> fname = new ArrayList<String>();
                 fname.add("cat");
@@ -145,10 +144,14 @@ public class RetentionComputing extends AbstractGenericUDAFResolver {
             assert (parameters.length == 3);
 
             AverageAgg myagg = (AverageAgg) agg;
-            if (parameters[0] != null && parameters[1] != null && parameters[2] != null) {
-                List<String> dimension = (ArrayList<String>) parameters[0];
-                List<String> measure = (ArrayList<String>) parameters[1];
-                List<String> match_func = (ArrayList<String>) parameters[2];
+            Object p1 = parameters[0];
+            Object p2 = parameters[1];
+            Object p3 = parameters[2];
+            if (p1 != null && p2 != null && p3 != null) {
+
+                List<String> dimension = (List<String>) ObjectInspectorUtils.copyToStandardJavaObject(p1, dimensionsInspector);
+                List<String> measure = (List<String>) ObjectInspectorUtils.copyToStandardJavaObject(p2, measureInspector);
+                List<String> match_func = (List<String>) ObjectInspectorUtils.copyToStandardJavaObject(p3, highMathInspector);
 
                 for (int i = 0; i < Math.min(dimension.size(), measure.size()); i++) {
                     String a = dimension.get(i);
