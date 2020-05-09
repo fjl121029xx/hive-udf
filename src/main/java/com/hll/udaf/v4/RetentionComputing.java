@@ -186,7 +186,7 @@ public class RetentionComputing extends AbstractGenericUDAFResolver {
                 List<String> cat = (List<String>) catFieldOI.getList(partialCat);
                 String dog = dogFieldOI.getPrimitiveJavaObject(partialDog);
                 myagg.cat.addAll(cat);
-                myagg.dog = dog;
+                myagg.dog = (dog != null && !dog.equals("")) ? dog : myagg.dog;
             }
         }
 
@@ -197,10 +197,11 @@ public class RetentionComputing extends AbstractGenericUDAFResolver {
             List<String> cat = myagg.cat;
             cat.sort(String::compareTo);
             LOG.info("  ---- > " + cat.size());
+            LOG.info("  ---- > " + myagg.dog);
 
             String dog = myagg.dog;
 
-            NewAddStat newAddStat = new NewAddStat(cat);
+            NewAddStat newAddStat = new NewAddStat(cat, dog);
             return newAddStat.compute();
         }
     }
