@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v3/AdvancedComputing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v3/AdvancedComputing.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v4/NewAddStat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v4/NewAddStat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v4/RetentionComputing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v4/RetentionComputing.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v6/RowColStatisticsV3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v6/RowColStatisticsV3.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +67,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/com/hll/udaf/v4" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -77,12 +75,14 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.hll.udaf.v6" />
       <recent name="com.hll.udaf.v4" />
       <recent name="com.hll.udf.v3" />
       <recent name="com.hll.udaf.v2" />
       <recent name="com.hll.udaf" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\work\java-worksparces\hive-udf\src\main\java\com\hll\udaf\v4" />
       <recent name="F:\work\java-worksparces\hive-udf" />
       <recent name="F:\work\java-worksparces\hive-udf\src\main\java\com\hll\udaf\v2" />
       <recent name="F:\work\java-worksparces\hive-udf\src\main\java\com\hll\udf\v3" />
@@ -90,12 +90,12 @@
     </key>
   </component>
   <component name="RunManager" selected="Application.Demo">
-    <configuration name="Demo (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.hll.udaf.Demo" />
+    <configuration name="Demo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.hll.udf.v2.dif.Demo" />
       <module name="hive-udf" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.hll.udaf.*" />
+          <option name="PATTERN" value="com.hll.udf.v2.dif.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -104,11 +104,11 @@
       </method>
     </configuration>
     <configuration name="Demo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.hll.udf.v2.dif.Demo" />
+      <option name="MAIN_CLASS_NAME" value="com.hll.udaf.Demo" />
       <module name="hive-udf" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.hll.udf.v2.dif.*" />
+          <option name="PATTERN" value="com.hll.udaf.v5.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -186,7 +186,6 @@
         <item itemvalue="Application.Demo" />
         <item itemvalue="Application.TestMain" />
         <item itemvalue="Application.GenerateColData" />
-        <item itemvalue="Application.Demo (1)" />
         <item itemvalue="Application.UDFHourDiff" />
       </list>
     </recent_temporary>
@@ -294,7 +293,13 @@
       <workItem from="1588818013514" duration="4694000" />
       <workItem from="1588906916078" duration="7468000" />
       <workItem from="1588993453502" duration="2984000" />
-      <workItem from="1589010096888" duration="4043000" />
+      <workItem from="1589010096888" duration="5995000" />
+      <workItem from="1589162661478" duration="1735000" />
+      <workItem from="1589165115526" duration="1155000" />
+      <workItem from="1589166567550" duration="1547000" />
+      <workItem from="1589177719208" duration="10248000" />
+      <workItem from="1589248298855" duration="723000" />
+      <workItem from="1589266139704" duration="2687000" />
     </task>
     <task id="LOCAL-00001" summary="20200325   ...1">
       <created>1585103679259</created>
@@ -499,7 +504,28 @@
       <option name="project" value="LOCAL" />
       <updated>1588926178762</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="20200509   &gt;..·1">
+      <created>1589017515204</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1589017515204</updated>
+    </task>
+    <task id="LOCAL-00031" summary="20200511   &gt;..·1">
+      <created>1589164792976</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1589164792976</updated>
+    </task>
+    <task id="LOCAL-00032" summary="20200512   &gt;..·1">
+      <created>1589281020435</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1589281020435</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -507,9 +533,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="20200403   ...1" />
-    <MESSAGE value="20200407   ...1" />
-    <MESSAGE value="20200407   ...2" />
     <MESSAGE value="20200409   ...2" />
     <MESSAGE value="20200410   ...1" />
     <MESSAGE value="20200413   ...1" />
@@ -532,7 +555,10 @@
     <MESSAGE value="20200507   &gt;..3" />
     <MESSAGE value="20200507   &gt;..4" />
     <MESSAGE value="20200508   &gt;..·1" />
-    <option name="LAST_COMMIT_MESSAGE" value="20200508   &gt;..·1" />
+    <MESSAGE value="20200509   &gt;..·1" />
+    <MESSAGE value="20200511   &gt;..·1" />
+    <MESSAGE value="20200512   &gt;..·1" />
+    <option name="LAST_COMMIT_MESSAGE" value="20200512   &gt;..·1" />
   </component>
   <component name="WindowStateProjectService">
     <state x="233" y="0" key="#Project_Structure" timestamp="1584352698150">
@@ -563,34 +589,34 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="66" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.680@0.0.1280.680" timestamp="1586401795799" />
-    <state x="91" y="0" key="CommitChangelistDialog2" timestamp="1588926174248">
+    <state x="91" y="0" key="CommitChangelistDialog2" timestamp="1589281326549">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="91" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1588926174248" />
-    <state x="93" y="93" width="1095" height="495" key="DiffContextDialog" timestamp="1588044395567">
+    <state x="91" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1589281326549" />
+    <state x="93" y="93" width="1095" height="495" key="DiffContextDialog" timestamp="1589281007256">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="93" y="93" width="1095" height="495" key="DiffContextDialog/0.0.1280.680@0.0.1280.680" timestamp="1588044395567" />
+    <state x="93" y="93" width="1095" height="495" key="DiffContextDialog/0.0.1280.680@0.0.1280.680" timestamp="1589281007256" />
     <state x="421" y="78" key="FileChooserDialogImpl" timestamp="1586943257797">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="421" y="78" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1586943257797" />
-    <state width="1237" height="307" key="GridCell.Tab.0.bottom" timestamp="1589017498461">
+    <state width="1237" height="307" key="GridCell.Tab.0.bottom" timestamp="1589165083426">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="307" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1589017498461" />
-    <state width="1237" height="307" key="GridCell.Tab.0.center" timestamp="1589017498461">
+    <state width="1237" height="307" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1589165083426" />
+    <state width="1237" height="307" key="GridCell.Tab.0.center" timestamp="1589165083425">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="307" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1589017498461" />
-    <state width="1237" height="307" key="GridCell.Tab.0.left" timestamp="1589017498461">
+    <state width="1237" height="307" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1589165083425" />
+    <state width="1237" height="307" key="GridCell.Tab.0.left" timestamp="1589165083425">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="307" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1589017498461" />
-    <state width="1237" height="307" key="GridCell.Tab.0.right" timestamp="1589017498461">
+    <state width="1237" height="307" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1589165083425" />
+    <state width="1237" height="307" key="GridCell.Tab.0.right" timestamp="1589165083426">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="307" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1589017498461" />
+    <state width="1237" height="307" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1589165083426" />
     <state width="1237" height="204" key="GridCell.Tab.1.bottom" timestamp="1587715805421">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -619,10 +645,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1588065801055" />
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1588926182725">
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1589281334522">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1588926182725" />
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1589281334522" />
     <state x="93" y="93" width="1095" height="495" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587719916623">
       <screen x="0" y="0" width="1280" height="680" />
     </state>

@@ -64,7 +64,6 @@ public class NewAddStat {
     private Map<String, String> zeroSave(byte[][] bits, Map<Integer, String> dayNumMap, Map<String, Integer> keyMap) {
 
         Map<String, String> returnMap = new HashMap<>();
-
         byte[] first = formatByte(bits[0]);
         int count = 0;
         for (byte b : first) {
@@ -122,12 +121,12 @@ public class NewAddStat {
     }
 
 
-    private Map<String, String> otherSave(String dog, byte[][] bits, Map<Integer, String> dayNumMap, Map<String, Integer> mmap) {
+    private Map<String, String> otherSave(String dog, byte[][] bits, Map<Integer, String> dayNumMap, Map<String, Integer> keyMap) {
 
         Map<String, String> returnMap = new HashMap<>();
 
         int dogInt = Integer.parseInt(dog);
-        for (int i = 0; i < mmap.size(); i++) {
+        for (int i = 0; i < keyMap.size(); i++) {
 
             byte[] dayNewly = getDayNewly(bits, i);
             int sum_bit = sumBit(dayNewly);
@@ -234,11 +233,15 @@ public class NewAddStat {
     }
 
     public static byte[] formatByte(byte[] b) {
-        byte[] array = new byte[8 * b.length];
+        byte[] newb = new byte[b.length];
+        for (int n = 0; n < newb.length; n++) {
+            newb[n] = b[n];
+        }
+        byte[] array = new byte[8 * newb.length];
         for (int j = 0; j < b.length; j++) {
             for (int i = (7 + j * 8); i >= (0 + j * 8); i--) {
-                array[i] = (byte) (b[j] & 1);
-                b[j] = (byte) (b[j] >> 1);
+                array[i] = (byte) (newb[j] & 1);
+                newb[j] = (byte) (newb[j] >> 1);
             }
         }
         return array;

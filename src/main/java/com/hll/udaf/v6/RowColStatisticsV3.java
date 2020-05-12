@@ -1,22 +1,21 @@
-package com.hll.udaf.v2;
+package com.hll.udaf.v6;
 
+import com.hll.udaf.v2.RowColStatisticsV2;
 import org.apache.commons.lang.text.StrBuilder;
 import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDAF;
 import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
 import org.apache.log4j.Logger;
-import org.stringtemplate.v4.ST;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Description(name = "row_col_stat", value = "_FUNC_(dimension,measure,dimen_mode,time_diff_type,measure_name) - Returns the mean of a set of numbers")
-public class RowColStatisticsV2 extends UDAF {
+public class RowColStatisticsV3 extends UDAF {
 
-    public static Logger logger = Logger.getLogger(RowColStatisticsV2.class);
+    public static Logger logger = Logger.getLogger(RowColStatisticsV3.class);
 
     public static class ArgsState {
         private Map<String, Map<String, String>> cat;
