@@ -45,12 +45,12 @@ public class RowColStatisticsV3 extends UDAF {
         }
 
         public boolean iterate(List<String> input0, List<String> compare, List<String> measure_value,
-                               String rowcol_num, String dimen_mode, List<String> measure_func, List<String> rowsumtype) {
-
+                               String rowcol_num, String dimen_mode, List<String> measure_func,
+                               List<String> row_func,
+                               List<String> col_func) {
             // 行统计维度 cat
             // 时间格式化 ymd ...
             Map<String, String> info = new HashMap<>();
-            Map<String, String> dog = new HashMap<>();
             info.put("rowcol", rowcol_num);
             // dimensions
             // 行键
@@ -65,9 +65,11 @@ public class RowColStatisticsV3 extends UDAF {
             info.put("compare_length", Integer.toString(compare.size()));
             // measure_length
             info.put("measure_length", Integer.toString(measure_value.size()));
-            // rowsumtype
-            String rowsum_type = rowsumtype.stream().reduce((a, b) -> String.format("%s_%s", a, b)).get();
-            info.put("rowsumtype", rowsum_type);
+            // row_func
+            String row_func_str = row_func.stream().reduce((a, b) -> String.format("%s_%s", a, b)).get();
+            info.put("row_func", row_func_str);
+            String col_func_str = col_func.stream().reduce((a, b) -> String.format("%s_%s", a, b)).get();
+            info.put("col_func", col_func_str);
 
             //
             info.put("measure_func", measure_func.stream().reduce((a, b) -> String.format("%s,%s", a, b)).get());
@@ -179,7 +181,6 @@ public class RowColStatisticsV3 extends UDAF {
 
             return true;
         }
-
 
         public Map<String, Map<String, String>> terminatePartial() {
             return argsState.cat;
@@ -327,7 +328,6 @@ public class RowColStatisticsV3 extends UDAF {
             return true;
         }
 
-        // str2double
         public double str2double(String key, String v) {
             if (key.contains("avg")) {
                 String[] enarr = v.split(",");
@@ -339,7 +339,6 @@ public class RowColStatisticsV3 extends UDAF {
             }
         }
 
-        // 处理merge计算完成后的结果，即对merge完成后的结果做最后的业务处理
         public Map<String, Double> terminate() {
 
             Map<String, String> dog = argsState.cat.getOrDefault("dog", new HashMap<>());
@@ -355,10 +354,22 @@ public class RowColStatisticsV3 extends UDAF {
             String measure_name = info.get("measure_func");
             String[] measure_arr = measure_name.split(",");
 
-            String[] rowsumtype = info.getOrDefault("rowsumtype", "").split("_");
-            if (rowsumtype.length == 0) {
-                throw new RuntimeException("rowsumtype size is 0");
+            String[] row_func = info.getOrDefault("row_func", "").split("_");
+            String[] col_func = info.getOrDefault("col_func", "").split("_");
+            if (row_func.length == 0) {
+                throw new RuntimeException("row_func size is 0");
             }
+            if (col_func.length == 0) {
+                throw new RuntimeException("col_func size is 0");
+            }
+
+            logger.info("measure_arr " + arrshow(measure_arr));
+            logger.info("row_func " + arrshow(row_func));
+            logger.info("col_func " + arrshow(col_func));
+            logger.info("dimension_length " + dimension_length);
+            logger.info("compare_length " + compare_length);
+            logger.info("measure_length " + measure_length);
+
             String rowcol = info.get("rowcol");
 
             argsState.cat.remove("dog");
@@ -379,7 +390,6 @@ public class RowColStatisticsV3 extends UDAF {
 
 
             Map<String, Double> result = new HashMap<>();
-
             // 行合计
             Map<String, Double> rowsumMap = new HashMap<>();
             // 分列小计
@@ -387,7 +397,6 @@ public class RowColStatisticsV3 extends UDAF {
             Map<String, Integer> dimenkey2compareSize = new HashMap<>();
             // 数值小计
             Map<String, Double> subMeasureSum = new HashMap<>();
-
 
             Map<String, String> compareValue = new HashMap<>();
             for (Map<String, String> l : cat.values()) {
@@ -426,16 +435,16 @@ public class RowColStatisticsV3 extends UDAF {
                     }
 
                     double rowsum = rowsumMap.getOrDefault(dimensionKeys, 0.00);
-                    if (rowsum == 0.00 && rowsumtype[0].equals("max-1")) {
+                    if (rowsum == 0.00 && row_func[0].equals("max-1")) {
                         rowsum = -9999999;
-                    } else if (rowsum == 0.00 && rowsumtype[0].equals("min-1")) {
+                    } else if (rowsum == 0.00 && row_func[0].equals("min-1")) {
                         rowsum = 9999999;
                     }
 
                     double measure_total = measure_totalMap.getOrDefault(compare_key, 0.00);
-                    if (measure_total == 0.00 && rowsumtype[rowsumtype.length - 1].equals("max-1")) {
+                    if (measure_total == 0.00 && row_func[row_func.length - 1].equals("max-1")) {
                         measure_total = -9999999;
-                    } else if (measure_total == 0.00 && rowsumtype[rowsumtype.length - 1].equals("min-1")) {
+                    } else if (measure_total == 0.00 && row_func[row_func.length - 1].equals("min-1")) {
                         measure_total = 9999999;
                     }
 
@@ -460,32 +469,32 @@ public class RowColStatisticsV3 extends UDAF {
                         }
 
                         double submeasure = subMeasureSum.getOrDefault(dimensionKeys + "△" + s, 0.00);
-                        if (submeasure == 0.00 && rowsumtype[i + 1].equals("max-1")) {
+                        if (submeasure == 0.00 && row_func[i + 1].equals("max-1")) {
                             submeasure = -9999999999999.0;
-                        } else if (submeasure == 0.00 && rowsumtype[i + 1].equals("min-1")) {
+                        } else if (submeasure == 0.00 && row_func[i + 1].equals("min-1")) {
                             submeasure = 9999999999.0;
                         }
 
-                        if (rowsumtype[i + 1].equals("sum-1") || rowsumtype[i + 1].equals("avg-1")) {
+                        if (row_func[i + 1].equals("sum-1") || row_func[i + 1].equals("avg-1")) {
                             submeasure = submeasure + v / measure_length;
                             subMeasureSum.put(String.format("%s△%s", dimensionKeys, s), submeasure);
-                        } else if (rowsumtype[i + 1].equals("max-1")) {
+                        } else if (row_func[i + 1].equals("max-1")) {
                             if (v > submeasure) {
                                 submeasure = v;
                             }
                             subMeasureSum.put(String.format("%s△%s", dimensionKeys, s), submeasure);
-                        } else if (rowsumtype[i + 1].equals("min-1")) {
+                        } else if (row_func[i + 1].equals("min-1")) {
                             if (v < submeasure) {
                                 submeasure = v;
                             }
                             subMeasureSum.put(String.format("%s△%s", dimensionKeys, s), submeasure);
                         }
 
-                        if (rowsumtype[rowsumtype.length - 1].equals("max-1")) {
+                        if (row_func[row_func.length - 1].equals("max-1")) {
                             if (v > measure_total) {
                                 measure_total = v;
                             }
-                        } else if (rowsumtype[rowsumtype.length - 1].equals("min-1")) {
+                        } else if (row_func[row_func.length - 1].equals("min-1")) {
                             if (v < measure_total) {
                                 measure_total = v;
                             }
@@ -494,8 +503,8 @@ public class RowColStatisticsV3 extends UDAF {
                         }
                         measure_totalMap.put(compare_key, measure_total);
 
-                        if (rowsumtype[0].equals("max-1")) {
-                            if (rowsumtype[rowsumtype.length - 1].split("-")[1].equals("1")) {
+                        if (row_func[0].equals("max-1")) {
+                            if (row_func[row_func.length - 1].split("-")[1].equals("1")) {
                                 if (measure_total > rowsum) {
                                     rowsum = measure_total;
                                 }
@@ -503,12 +512,11 @@ public class RowColStatisticsV3 extends UDAF {
                             if (v > rowsum) {
                                 rowsum = v;
                             }
-                        } else if (rowsumtype[0].equals("min-1")) {
+                        } else if (row_func[0].equals("min-1")) {
                             if (v < rowsum) {
                                 rowsum = v;
                             }
                         }
-//                        measure_total = measure_total + v;
                         compare_key_tmp = String.format("%s△%s", compare_key_tmp, v);
                     }
 
@@ -516,7 +524,7 @@ public class RowColStatisticsV3 extends UDAF {
                     for (int i = 0; i < measure_arr.length; i++) {
                         String s = measure_arr[i];
                         double v = dimension.getOrDefault(dimensionKeys + "△" + s, 0.00);
-                        if (rowsumtype[0].equals("sum-1") || rowsumtype[0].equals("avg-1")) {
+                        if (row_func[0].equals("sum-1") || row_func[0].equals("avg-1")) {
                             rowsum = rowsum + v / measure_length;
                         }
                     }
@@ -530,7 +538,6 @@ public class RowColStatisticsV3 extends UDAF {
                 throw new RuntimeException("dimension is null");
             }
 
-
             Map<String, Double> result_bak = new HashMap<>();
             for (Map.Entry<String, Double> en : result.entrySet()) {
 
@@ -540,7 +547,7 @@ public class RowColStatisticsV3 extends UDAF {
                 for (int i = 0; i < measure_arr.length; i++) {
                     double v = subMeasureSum.getOrDefault(dkey + "△" + measure_arr[i], 0.00);
 
-                    if (rowsumtype[i + 1].equals("avg-1")) {
+                    if (row_func[i + 1].equals("avg-1")) {
                         v /= ((double) size / measure_length);
                     }
                     r = r + "△" + v;
@@ -550,7 +557,7 @@ public class RowColStatisticsV3 extends UDAF {
                 int comsize = dimenkey2compareSize.getOrDefault(dkey, 0);
 
                 double rowsum = rowsumMap.getOrDefault(dkey, 0.00);
-                if (rowsumtype[0].equals("sum-1") || rowsumtype[0].equals("avg-1")) {
+                if (row_func[0].equals("sum-1") || row_func[0].equals("avg-1")) {
                     int did = 1;
                     if ((comsize / measure_length) != 0) {
                         did = comsize / measure_length;
@@ -558,11 +565,11 @@ public class RowColStatisticsV3 extends UDAF {
                     rowsum = rowsum / did;
                 }
 
-                if (rowsumtype[0].equals("avg-1")) {
+                if (row_func[0].equals("avg-1")) {
                     rowsum = rowsum / size;
                 }
                 double measure_total = measure_totalMap.get(ckey);
-                if (rowsumtype[rowsumtype.length - 1].equals("avg-1")) {
+                if (row_func[row_func.length - 1].equals("avg-1")) {
                     measure_total = measure_total / measure_length;
                 }
 
@@ -590,9 +597,9 @@ public class RowColStatisticsV3 extends UDAF {
                 for (int i = 1; i < dimension_length; i++) {
                     total_key += "△";
                 }
+                int y = 0;
                 for (String k : result_bak.keySet()) {
 
-                    String[] all_key = k.split("△");
                     List<String> compare_list = splitArray(k.split("△"), dimension_length, dimension_length + compare_length);
                     List<String> measure_list = splitArray(k.split("△"), dimension_length + compare_length, dimension_length + compare_length + measure_length);
 
@@ -604,28 +611,52 @@ public class RowColStatisticsV3 extends UDAF {
                     String[] tt = totalSumMap.getOrDefault(total_pre_key, mea.toString()).split("△");
                     StringBuilder res = new StringBuilder();
                     for (int i = 0; i < measure_list.size(); i++) {
-                        double d = Double.parseDouble(tt[i]) + Double.parseDouble(measure_list.get(i));
+                        double o = Double.parseDouble(tt[i]);
+                        double p = Double.parseDouble(measure_list.get(i));
+                        String func = col_func[i];
+
+                        if (func.equals("max-1")) {
+                            if (p > o) {
+                                o = p;
+                            }
+                        } else if (func.equals("min-1")) {
+                            if (y == 0) {
+                                o = 99999999;
+                            }
+                            if (p < o) {
+                                o = p;
+                            }
+                        } else if (func.equals("sum-1")) {
+                            o = o + p;
+                        } else if (func.equals("avg-1")) {
+                            if (y == result_bak.size()) {
+                                o = o / y;
+                            } else {
+                                o = o + p;
+                            }
+                        }
+
                         if (i == measure_list.size() - 1) {
-                            res.append(d);
+                            res.append(o);
                         } else {
-                            res.append(d).append("△");
+                            res.append(o).append("△");
                         }
                     }
-                    Double sumRes = Arrays.stream(res.toString().split("△")).map(Double::parseDouble).reduce((a, b) -> a + b).get();
-                    totalSumMap.put(total_pre_key, String.format("%s△%s△%s△%s△columnSum", res, res, sumRes, sumRes));
+                    y++;
+                    totalSumMap.put(total_pre_key, String.format("%s", res));
                 }
 
-                Map<String, Double> total_rowsumMap7 = new HashMap();
-                Map<String, Double> total_measure_totalMap7 = new HashMap();
-                Map<String, Integer> total_dimenkey2compareSize7 = new HashMap();
-                Map<String, Double> total_subMeasureSum7 = new HashMap();
+                // 行合计
+                Map<String, Double> total_line_together = new HashMap<>();
+                // 分列小计
+                Map<String, Double> total_respectively_subtotal = new HashMap<>();
+                Map<String, Integer> total_dimenkey2compareSize7 = new HashMap<>();
+                // 数值小计
+                Map<String, Double> total_numerical_subtotal = new HashMap<>();
 
                 for (Map.Entry<String, String> en : totalSumMap.entrySet()) {
                     String key = en.getKey();
                     String value = en.getValue();
-
-                    String[] valueArr = value.split("△");
-                    int valueArrlength = valueArr.length;
 
                     String dkey = getKey(key, dimension_length);
                     String ckey = getKey(key, dimension_length + compare_length);
@@ -634,25 +665,23 @@ public class RowColStatisticsV3 extends UDAF {
                     dimenCompareSize += 1;
                     total_dimenkey2compareSize7.put(dkey, dimenCompareSize);
 
-                    double rowsumTmp = total_rowsumMap7.getOrDefault(dkey, 0.0);
-                    if (rowsumTmp == 0.00 && rowsumtype[0].equals("max-1")) {
+                    double rowsumTmp = total_line_together.getOrDefault(dkey, 0.0);
+                    if (rowsumTmp == 0.00 && row_func[0].equals("max-1")) {
                         rowsumTmp = -9999999;
-                    } else if (rowsumTmp == 0.00 && rowsumtype[0].equals("min-1")) {
+                    } else if (rowsumTmp == 0.00 && row_func[0].equals("min-1")) {
                         rowsumTmp = 9999999;
                     }
-                    double measure_totalTmp = total_measure_totalMap7.getOrDefault(ckey, 0.0);
-                    if (measure_totalTmp == 0.00 && rowsumtype[rowsumtype.length - 1].equals("max-1")) {
+                    double measure_totalTmp = total_respectively_subtotal.getOrDefault(ckey, 0.0);
+                    if (measure_totalTmp == 0.00 && row_func[row_func.length - 1].equals("max-1")) {
                         measure_totalTmp = -9999999;
-                    } else if (measure_totalTmp == 0.00 && rowsumtype[rowsumtype.length - 1].equals("min-1")) {
+                    } else if (measure_totalTmp == 0.00 && row_func[row_func.length - 1].equals("min-1")) {
                         measure_totalTmp = 9999999;
                     }
 
                     String[] measure_value = getKey(value, measure_length).split("△");
-                    String rowsum = valueArr[valueArrlength - 1 - 1 - 1];
-                    String mesure_total = valueArr[valueArrlength - 1 - 1];
 
-                    String rowsumCol = rowsumtype[0];
-                    String mesure_totalCol = rowsumtype[rowsumtype.length - 1];
+                    String rowsumCol = row_func[0];
+                    String mesure_totalCol = row_func[row_func.length - 1];
 
                     //  行合计
                     if (rowsumCol.equals("max-1")) {
@@ -662,7 +691,7 @@ public class RowColStatisticsV3 extends UDAF {
                                 rowsumTmp = v;
                             }
                         }
-                        total_rowsumMap7.put(dkey, rowsumTmp);
+                        total_line_together.put(dkey, rowsumTmp);
                     } else if (rowsumCol.equals("min-1")) {
                         for (String i : measure_value) {
                             double v = Double.parseDouble(i);
@@ -670,12 +699,12 @@ public class RowColStatisticsV3 extends UDAF {
                                 rowsumTmp = v;
                             }
                         }
-                        total_rowsumMap7.put(dkey, rowsumTmp);
+                        total_line_together.put(dkey, rowsumTmp);
                     } else {
                         for (String i : measure_value) {
                             rowsumTmp += Double.parseDouble(i);
                         }
-                        total_rowsumMap7.put(dkey, rowsumTmp);
+                        total_line_together.put(dkey, rowsumTmp);
                     }
 
                     //分列小计
@@ -686,7 +715,7 @@ public class RowColStatisticsV3 extends UDAF {
                                 measure_totalTmp = v;
                             }
                         }
-                        total_measure_totalMap7.put(ckey, measure_totalTmp);
+                        total_respectively_subtotal.put(ckey, measure_totalTmp);
                     } else if (mesure_totalCol.equals("min-1")) {
                         for (String i : measure_value) {
                             double v = Double.parseDouble(i);
@@ -694,46 +723,47 @@ public class RowColStatisticsV3 extends UDAF {
                                 measure_totalTmp = v;
                             }
                         }
-                        total_measure_totalMap7.put(ckey, measure_totalTmp);
+                        total_respectively_subtotal.put(ckey, measure_totalTmp);
                     } else {
                         for (String i : measure_value) {
                             measure_totalTmp += Double.parseDouble(i);
                         }
-                        total_measure_totalMap7.put(ckey, measure_totalTmp);
+                        total_respectively_subtotal.put(ckey, measure_totalTmp);
                     }
 
                     // 数值小计
                     for (int j = 0; j < measure_arr.length; j++) {
 
                         String submeasureKey = dkey + "△" + measure_arr[j];
-                        double submeasureTmp = total_subMeasureSum7.getOrDefault(submeasureKey, 0.00);
-                        if (submeasureTmp == 0.00 && rowsumtype[j + 1].equals("max-1")) {
+                        double submeasureTmp = total_numerical_subtotal.getOrDefault(submeasureKey, 0.00);
+                        if (submeasureTmp == 0.00 && row_func[j + 1].equals("max-1")) {
                             submeasureTmp = -9999999999999.0;
-                        } else if (submeasureTmp == 0.00 && rowsumtype[j + 1].equals("min-1")) {
+                        } else if (submeasureTmp == 0.00 && row_func[j + 1].equals("min-1")) {
                             submeasureTmp = 9999999999.0;
                         }
 
-                        if (rowsumtype[j + 1].equals("max-1")) {
+                        if (row_func[j + 1].equals("max-1")) {
                             double v = Double.parseDouble(measure_value[j]);
                             if (v > submeasureTmp) {
                                 submeasureTmp = v;
                             }
-                            total_subMeasureSum7.put(submeasureKey, submeasureTmp);
-                        } else if (rowsumtype[j + 1].equals("min-1")) {
+                            total_numerical_subtotal.put(submeasureKey, submeasureTmp);
+                        } else if (row_func[j + 1].equals("min-1")) {
                             double v = Double.parseDouble(measure_value[j]);
                             if (v < submeasureTmp) {
                                 submeasureTmp = v;
                             }
-                            total_subMeasureSum7.put(submeasureKey, submeasureTmp);
+                            total_numerical_subtotal.put(submeasureKey, submeasureTmp);
                         } else {
                             double v = Double.parseDouble(measure_value[j]);
                             submeasureTmp += v;
-                            total_subMeasureSum7.put(submeasureKey, submeasureTmp);
+                            total_numerical_subtotal.put(submeasureKey, submeasureTmp);
                         }
                     }
                 }
 
                 // ===== 分类小计
+                Map<String, Integer> subtotal_tmp_keyCount = new HashMap<>();
                 Map<String, String> sub_ttal = new HashMap<>();
                 for (String k : result_bak.keySet()) {
                     List<String> dimension_list = splitArray(k.split("△"), 0, dimension_length);
@@ -752,25 +782,48 @@ public class RowColStatisticsV3 extends UDAF {
                         if (compare_list != null && compare_list.size() > 0) {
                             subtotal_tmp_key = dkey + "△" + compare_list.stream().reduce((a, b) -> a + "△" + b).get();
                         }
+                        Integer count = subtotal_tmp_keyCount.getOrDefault(subtotal_tmp_key, 0);
+
                         String[] tt = sub_ttal.getOrDefault(subtotal_tmp_key, mea.toString()).split("△");
                         StringBuilder res = new StringBuilder();
+                        String func2 = splitArray(col_func, measure_length, measure_length + 1).get(0);
                         for (int j = 0; j < measure_list.size(); j++) {
-                            double d = Double.parseDouble(tt[j]) + Double.parseDouble(measure_list.get(j));
+                            double o = Double.parseDouble(tt[j]);
+                            double p = Double.parseDouble(measure_list.get(j));
+                            if (func2.equals("max-1")) {
+                                if (p > o) {
+                                    o = p;
+                                }
+                            } else if (func2.equals("min-1")) {
+                                if (count == 0) {
+                                    o = 99999999;
+                                }
+                                if (p < o) {
+                                    o = p;
+                                }
+                            } else if (func2.equals("sum-1")) {
+                                o = o + p;
+                            } else if (func2.equals("avg-1")) {
+                                o = o + p;
+                            }
+
                             if (j == measure_list.size() - 1) {
-                                res.append(d);
+                                res.append(o);
                             } else {
-                                res.append(d).append("△");
+                                res.append(o).append("△");
                             }
                         }
-                        Double sumRes = Arrays.stream(res.toString().split("△")).map(Double::parseDouble).reduce((a, b) -> a + b).get();
-                        sub_ttal.put(subtotal_tmp_key, res + "△" + res + "△" + sumRes + "△" + sumRes + "△columnSum_subtotal_");
+                        count++;
+                        subtotal_tmp_keyCount.put(subtotal_tmp_key, count);
+                        sub_ttal.put(subtotal_tmp_key, String.format("%s", res));
                     }
                 }
 
-                Map<String, Double> sub_total_rowsumMap7 = new HashMap();
-                Map<String, Double> sub_total_measure_totalMap7 = new HashMap();
-                Map<String, Integer> sub_total_dimenkey2compareSize7 = new HashMap();
-                Map<String, Double> sub_total_subMeasureSum7 = new HashMap();
+                Map<String, Double> sub_line_together = new HashMap();
+                Map<String, Double> sub_respectively_subtotal = new HashMap();
+                Map<String, Integer> sub_dimenkey2compareSize7 = new HashMap();
+                Map<String, Double> sub_numerical_subtotal = new HashMap();
+
                 for (Map.Entry<String, String> en : sub_ttal.entrySet()) {
                     String key = en.getKey();
                     String value = en.getValue();
@@ -782,32 +835,30 @@ public class RowColStatisticsV3 extends UDAF {
                     String ckey = getKey(key, dimension_length + compare_length);
 
 
-                    int dimenCompareSize = sub_total_dimenkey2compareSize7.getOrDefault(dkey, 0);
+                    int dimenCompareSize = sub_dimenkey2compareSize7.getOrDefault(dkey, 0);
                     dimenCompareSize += 1;
                     dimenkey2compareSize.put(dkey, dimenCompareSize);
 
 
-                    double rowsumTmp = sub_total_rowsumMap7.getOrDefault(dkey, 0.0);
-                    double measure_totalTmp = sub_total_measure_totalMap7.getOrDefault(ckey, 0.0);
+                    double rowsumTmp = sub_line_together.getOrDefault(dkey, 0.0);
+                    double measure_totalTmp = sub_respectively_subtotal.getOrDefault(ckey, 0.0);
 
-                    if (rowsumTmp == 0.00 && rowsumtype[0].equals("max-1")) {
+                    if (rowsumTmp == 0.00 && row_func[0].equals("max-1")) {
                         rowsumTmp = -9999999;
-                    } else if (rowsumTmp == 0.00 && rowsumtype[0].equals("min-1")) {
+                    } else if (rowsumTmp == 0.00 && row_func[0].equals("min-1")) {
                         rowsumTmp = 9999999;
                     }
-                    if (measure_totalTmp == 0.00 && rowsumtype[rowsumtype.length - 1].equals("max-1")) {
+                    if (measure_totalTmp == 0.00 && row_func[row_func.length - 1].equals("max-1")) {
                         measure_totalTmp = -9999999;
-                    } else if (measure_totalTmp == 0.00 && rowsumtype[rowsumtype.length - 1].equals("min-1")) {
+                    } else if (measure_totalTmp == 0.00 && row_func[row_func.length - 1].equals("min-1")) {
                         measure_totalTmp = 9999999;
                     }
 
 
                     String[] measure_value = getKey(value, measure_length).split("△");
-                    String rowsum = valueArr[valueArrlength - 1 - 1 - 1];
-                    String mesure_total = valueArr[valueArrlength - 1 - 1];
 
-                    String rowsumCol = rowsumtype[0];
-                    String mesure_totalCol = rowsumtype[rowsumtype.length - 1];
+                    String rowsumCol = row_func[0];
+                    String mesure_totalCol = row_func[row_func.length - 1];
 
                     //  行合计
                     if (rowsumCol.equals("max-1")) {
@@ -817,7 +868,7 @@ public class RowColStatisticsV3 extends UDAF {
                                 rowsumTmp = v;
                             }
                         }
-                        sub_total_rowsumMap7.put(dkey, rowsumTmp);
+                        sub_line_together.put(dkey, rowsumTmp);
                     } else if (rowsumCol.equals("min-1")) {
                         for (String i : measure_value) {
                             double v = Double.parseDouble(i);
@@ -825,12 +876,12 @@ public class RowColStatisticsV3 extends UDAF {
                                 rowsumTmp = v;
                             }
                         }
-                        sub_total_rowsumMap7.put(dkey, rowsumTmp);
+                        sub_line_together.put(dkey, rowsumTmp);
                     } else {
                         for (String i : measure_value) {
                             rowsumTmp += Double.parseDouble(i);
                         }
-                        sub_total_rowsumMap7.put(dkey, rowsumTmp);
+                        sub_line_together.put(dkey, rowsumTmp);
                     }
 
                     //分列小计
@@ -841,7 +892,7 @@ public class RowColStatisticsV3 extends UDAF {
                                 measure_totalTmp = v;
                             }
                         }
-                        sub_total_measure_totalMap7.put(ckey, measure_totalTmp);
+                        sub_respectively_subtotal.put(ckey, measure_totalTmp);
                     } else if (mesure_totalCol.equals("min-1")) {
                         for (String i : measure_value) {
                             double v = Double.parseDouble(i);
@@ -849,41 +900,41 @@ public class RowColStatisticsV3 extends UDAF {
                                 measure_totalTmp = v;
                             }
                         }
-                        sub_total_measure_totalMap7.put(ckey, measure_totalTmp);
+                        sub_respectively_subtotal.put(ckey, measure_totalTmp);
                     } else {
                         for (String i : measure_value) {
                             measure_totalTmp += Double.parseDouble(i);
                         }
-                        sub_total_measure_totalMap7.put(ckey, measure_totalTmp);
+                        sub_respectively_subtotal.put(ckey, measure_totalTmp);
                     }
 
                     // 数值小计
                     for (int j = 0; j < measure_arr.length; j++) {
 
                         String submeasureKey = dkey + "△" + measure_arr[j];
-                        double submeasureTmp = sub_total_subMeasureSum7.getOrDefault(submeasureKey, 0.00);
-                        if (submeasureTmp == 0.00 && rowsumtype[j + 1].equals("max-1")) {
+                        double submeasureTmp = sub_numerical_subtotal.getOrDefault(submeasureKey, 0.00);
+                        if (submeasureTmp == 0.00 && row_func[j + 1].equals("max-1")) {
                             submeasureTmp = -9999999;
-                        } else if (submeasureTmp == 0.00 && rowsumtype[j + 1].equals("min-1")) {
+                        } else if (submeasureTmp == 0.00 && row_func[j + 1].equals("min-1")) {
                             submeasureTmp = 9999999;
                         }
 
-                        if (rowsumtype[j + 1].equals("max-1")) {
+                        if (row_func[j + 1].equals("max-1")) {
                             double v = Double.parseDouble(measure_value[j]);
                             if (v > submeasureTmp) {
                                 submeasureTmp = v;
                             }
-                            sub_total_subMeasureSum7.put(submeasureKey, submeasureTmp);
-                        } else if (rowsumtype[j + 1].equals("min-1")) {
+                            sub_numerical_subtotal.put(submeasureKey, submeasureTmp);
+                        } else if (row_func[j + 1].equals("min-1")) {
                             double v = Double.parseDouble(measure_value[j]);
                             if (v < submeasureTmp) {
                                 submeasureTmp = v;
                             }
-                            sub_total_subMeasureSum7.put(submeasureKey, submeasureTmp);
+                            sub_numerical_subtotal.put(submeasureKey, submeasureTmp);
                         } else {
                             double v = Double.parseDouble(measure_value[j]);
                             submeasureTmp += v;
-                            sub_total_subMeasureSum7.put(submeasureKey, submeasureTmp);
+                            sub_numerical_subtotal.put(submeasureKey, submeasureTmp);
                         }
                     }
                 }
@@ -897,8 +948,8 @@ public class RowColStatisticsV3 extends UDAF {
                     int size = total_dimenkey2compareSize7.getOrDefault(dkey, 1);
                     String submeasure = "△";
                     for (int j = 0; j < measure_arr.length; j++) {
-                        double v = total_subMeasureSum7.getOrDefault(dkey + "△" + measure_arr[j], 0.00) / size;
-                        if (rowsumtype[j + 1].equals("avg-1")) {
+                        double v = total_numerical_subtotal.getOrDefault(dkey + "△" + measure_arr[j], 0.00) / size;
+                        if (row_func[j + 1].equals("avg-1")) {
                             v = v / (size);
                         } else {
                             v = v;
@@ -906,15 +957,15 @@ public class RowColStatisticsV3 extends UDAF {
                         submeasure = submeasure + (v) + "△";
                     }
 
-                    double rowsum = total_rowsumMap7.getOrDefault(dkey, 0.00);
-                    double measure_total = total_measure_totalMap7.getOrDefault(ckey, 0.00);
+                    double rowsum = total_line_together.getOrDefault(dkey, 0.00);
+                    double measure_total = total_respectively_subtotal.getOrDefault(ckey, 0.00);
 
-                    if (rowsumtype[0].equals("avg-1")) {
+                    if (row_func[0].equals("avg-1")) {
                         rowsum = rowsum / (size * measure_length);
                     } else {
                         rowsum = rowsum / (size);
                     }
-                    if (rowsumtype[rowsumtype.length - 1].equals("avg-1")) {
+                    if (row_func[row_func.length - 1].equals("avg-1")) {
                         measure_total = measure_total / (measure_length);
                     }
 
@@ -928,11 +979,11 @@ public class RowColStatisticsV3 extends UDAF {
                     String ckey = getKey(key, dimension_length + compare_length);
                     String measure = getKey(i.getValue(), measure_length);
                     String submeasure = "△";
-                    int size = sub_total_dimenkey2compareSize7.getOrDefault(dkey, 1);
+                    int size = sub_dimenkey2compareSize7.getOrDefault(dkey, 1);
 
                     for (int j = 0; j < measure_arr.length; j++) {
-                        double v = sub_total_subMeasureSum7.getOrDefault(dkey + "△" + measure_arr[j], 0.00) / size;
-                        if (rowsumtype[j + 1].equals("avg-1")) {
+                        double v = sub_numerical_subtotal.getOrDefault(dkey + "△" + measure_arr[j], 0.00) / size;
+                        if (row_func[j + 1].equals("avg-1")) {
                             v = v / (size);
                         } else {
                             v = v;
@@ -940,16 +991,16 @@ public class RowColStatisticsV3 extends UDAF {
                         submeasure = submeasure + v + "△";
                     }
 
-                    double rowsum = sub_total_rowsumMap7.getOrDefault(dkey, 0.00);
-                    double measure_total = sub_total_measure_totalMap7.getOrDefault(ckey, 0.00);
+                    double rowsum = sub_line_together.getOrDefault(dkey, 0.00);
+                    double measure_total = sub_respectively_subtotal.getOrDefault(ckey, 0.00);
 
-//                    int size = sub_total_dimenkey2compareSize7.getOrDefault(dkey, 1);
-                    if (rowsumtype[0].equals("avg-1")) {
+//                    int size = sub_dimenkey2compareSize7.getOrDefault(dkey, 1);
+                    if (row_func[0].equals("avg-1")) {
                         rowsum = rowsum / (size * measure_length);
-                    } else /*if (rowsumtype[0].equals("sum-1"))*/ {
+                    } else /*if (row_func[0].equals("sum-1"))*/ {
                         rowsum = rowsum / (size);
                     }
-                    if (rowsumtype[rowsumtype.length - 1].equals("avg-1")) {
+                    if (row_func[row_func.length - 1].equals("avg-1")) {
                         measure_total = measure_total / (measure_length);
                     }
                     result_bak.put(i.getKey() + "△" + measure + "" + submeasure + "" + rowsum + "△" + measure_total + "△columnSum_subtotal_", 0.00);
@@ -991,6 +1042,8 @@ public class RowColStatisticsV3 extends UDAF {
                     }
                     totalSumMap.put(total_tmp_key, res.toString());
                 }
+
+
                 Map<String, String> sub_ttal = new HashMap<>();
                 for (String k : result_bak.keySet()) {
                     List<String> dimension_list = splitArray(k.split("△"), 0, dimension_length);
@@ -1023,7 +1076,6 @@ public class RowColStatisticsV3 extends UDAF {
                         }
                         sub_ttal.put(subtotal_tmp_key, res.toString());
                     }
-
                 }
 
                 if (rowcol.equals("4") && !rowcol.equals("2")) {
@@ -1055,8 +1107,8 @@ public class RowColStatisticsV3 extends UDAF {
         }
 
 
-
     }
+
     private static String getKey(String key, int i) {
         int index = -1;
         for (int j = 0; j < i; j++) {
