@@ -8,6 +8,7 @@ import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -597,7 +598,7 @@ public class RowColStatisticsV3 extends UDAF {
                 for (int i = 1; i < dimension_length; i++) {
                     total_key += "△";
                 }
-                int y = 0;
+                Map<String, Integer> total_keyCount = new HashMap<>();
                 for (String k : result_bak.keySet()) {
 
                     List<String> compare_list = splitArray(k.split("△"), dimension_length, dimension_length + compare_length);
@@ -609,6 +610,8 @@ public class RowColStatisticsV3 extends UDAF {
                     }
 
                     String[] tt = totalSumMap.getOrDefault(total_pre_key, mea.toString()).split("△");
+                    Integer y = total_keyCount.getOrDefault(total_pre_key, 0);
+
                     StringBuilder res = new StringBuilder();
                     for (int i = 0; i < measure_list.size(); i++) {
                         double o = Double.parseDouble(tt[i]);
@@ -626,14 +629,8 @@ public class RowColStatisticsV3 extends UDAF {
                             if (p < o) {
                                 o = p;
                             }
-                        } else if (func.equals("sum-1")) {
+                        } else if (func.equals("sum-1") || func.equals("avg-1")) {
                             o = o + p;
-                        } else if (func.equals("avg-1")) {
-                            if (y == result_bak.size()) {
-                                o = o / y;
-                            } else {
-                                o = o + p;
-                            }
                         }
 
                         if (i == measure_list.size() - 1) {
@@ -643,7 +640,28 @@ public class RowColStatisticsV3 extends UDAF {
                         }
                     }
                     y++;
+                    total_keyCount.put(total_pre_key, y);
                     totalSumMap.put(total_pre_key, String.format("%s", res));
+                }
+
+                List<String> cf = splitArray(col_func, 0, measure_length);
+                logger.info(total_keyCount);
+                logger.info(totalSumMap);
+                for (Map.Entry<String, Integer> en : total_keyCount.entrySet()) {
+                    String key = en.getKey();
+                    int i = en.getValue();
+                    String value = totalSumMap.getOrDefault(key, "0△0");
+                    String[] vrr = value.split("△");
+                    for (int j = 0; j < cf.size(); j++) {
+                        if (cf.get(j).equals("avg-1")) {
+                            String v = (Double.parseDouble(vrr[j]) / i) + "";
+                            vrr[j] = v;
+                        }
+                    }
+                    if (totalSumMap.containsKey(key)) {
+                        totalSumMap.put(key, vrr[0] + "△" + vrr[1]);
+                    }
+
                 }
 
                 // 行合计
@@ -1005,8 +1023,7 @@ public class RowColStatisticsV3 extends UDAF {
                     }
                     result_bak.put(i.getKey() + "△" + measure + "" + submeasure + "" + rowsum + "△" + measure_total + "△columnSum_subtotal_", 0.00);
                 }
-            }
-            else if (rowcol.equals("6") || rowcol.equals("4") || rowcol.equals("2")) {
+            } else if (rowcol.equals("6") || rowcol.equals("4") || rowcol.equals("2")) {
                 StrBuilder mea = new StrBuilder();
                 for (int i = 0; i < measure_length; i++) {
                     if (i == measure_length - 1) {
