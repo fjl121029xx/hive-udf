@@ -643,7 +643,7 @@ public class RowColStatisticsV3 extends UDAF {
                     total_keyCount.put(total_pre_key, y);
                     totalSumMap.put(total_pre_key, String.format("%s", res));
                 }
-
+                // 平均值
                 List<String> cf = splitArray(col_func, 0, measure_length);
                 logger.info(total_keyCount);
                 logger.info(totalSumMap);
@@ -661,8 +661,8 @@ public class RowColStatisticsV3 extends UDAF {
                     if (totalSumMap.containsKey(key)) {
                         totalSumMap.put(key, vrr[0] + "△" + vrr[1]);
                     }
-
                 }
+                // =====
 
                 // 行合计
                 Map<String, Double> total_line_together = new HashMap<>();
@@ -819,12 +819,9 @@ public class RowColStatisticsV3 extends UDAF {
                                 if (p < o) {
                                     o = p;
                                 }
-                            } else if (func2.equals("sum-1")) {
-                                o = o + p;
-                            } else if (func2.equals("avg-1")) {
+                            } else if (func2.equals("sum-1") || func2.equals("avg-1")) {
                                 o = o + p;
                             }
-
                             if (j == measure_list.size() - 1) {
                                 res.append(o);
                             } else {
@@ -837,6 +834,25 @@ public class RowColStatisticsV3 extends UDAF {
                     }
                 }
 
+                logger.info(subtotal_tmp_keyCount);
+                List<String> sub_cf = splitArray(col_func, measure_length, measure_length + 1);
+                for (Map.Entry<String, Integer> en : subtotal_tmp_keyCount.entrySet()) {
+                    String key = en.getKey();
+                    int i = en.getValue();
+                    String value = sub_ttal.getOrDefault(key, "0△0");
+                    String[] vrr = value.split("△");
+                    for (int j = 0; j < vrr.length; j++) {
+                        if (sub_cf.get(0).equals("avg-1")) {
+                            String v = (Double.parseDouble(vrr[j]) / i) + "";
+                            vrr[j] = v;
+                        }
+                    }
+                    if (sub_ttal.containsKey(key)) {
+                        sub_ttal.put(key, vrr[0] + "△" + vrr[1]);
+                    }
+                }
+
+
                 Map<String, Double> sub_line_together = new HashMap();
                 Map<String, Double> sub_respectively_subtotal = new HashMap();
                 Map<String, Integer> sub_dimenkey2compareSize7 = new HashMap();
@@ -847,7 +863,6 @@ public class RowColStatisticsV3 extends UDAF {
                     String value = en.getValue();
 
                     String[] valueArr = value.split("△");
-                    int valueArrlength = valueArr.length;
 
                     String dkey = getKey(key, dimension_length);
                     String ckey = getKey(key, dimension_length + compare_length);
@@ -1036,7 +1051,7 @@ public class RowColStatisticsV3 extends UDAF {
                 for (int i = 1; i < dimension_length; i++) {
                     total_key += "△";
                 }
-
+                Map<String, Integer> total_keyCount = new HashMap<>();
                 Map<String, String> totalSumMap = new HashMap<>();
                 for (String k : result_bak.keySet()) {
                     List<String> compare_list = splitArray(k.split("△"), dimension_length, dimension_length + compare_length);
@@ -1046,21 +1061,57 @@ public class RowColStatisticsV3 extends UDAF {
                     if (compare_list != null && compare_list.size() > 0) {
                         total_tmp_key = total_tmp_key + "△" + compare_list.stream().reduce((a, b) -> a + "△" + b).get();
                     }
-
+                    Integer y = total_keyCount.getOrDefault(total_tmp_key, 0);
                     String[] tt = totalSumMap.getOrDefault(total_tmp_key, mea.toString()).split("△");
                     StringBuilder res = new StringBuilder();
                     for (int j = 0; j < measure_list.size(); j++) {
-                        double d = Double.parseDouble(tt[j]) + Double.parseDouble(measure_list.get(j));
+                        double o = Double.parseDouble(tt[j]);
+                        double p = Double.parseDouble(measure_list.get(j));
+                        String func = col_func[j];
+
+                        if (func.equals("max-1")) {
+                            if (p > o) {
+                                o = p;
+                            }
+                        } else if (func.equals("min-1")) {
+                            if (y == 0) {
+                                o = 99999999;
+                            }
+                            if (p < o) {
+                                o = p;
+                            }
+                        } else if (func.equals("sum-1") || func.equals("avg-1")) {
+                            o = o + p;
+                        }
+
                         if (j == measure_list.size() - 1) {
-                            res.append(d);
+                            res.append(o);
                         } else {
-                            res.append(d).append("△");
+                            res.append(o).append("△");
                         }
                     }
+                    y++;
+                    total_keyCount.put(total_tmp_key, y);
                     totalSumMap.put(total_tmp_key, res.toString());
                 }
+                List<String> cf = splitArray(col_func, 0, measure_length);
+                for (Map.Entry<String, Integer> en : total_keyCount.entrySet()) {
+                    String key = en.getKey();
+                    int i = en.getValue();
+                    String value = totalSumMap.getOrDefault(key, "0△0");
+                    String[] vrr = value.split("△");
+                    for (int j = 0; j < cf.size(); j++) {
+                        if (cf.get(j).equals("avg-1")) {
+                            String v = (Double.parseDouble(vrr[j]) / i) + "";
+                            vrr[j] = v;
+                        }
+                    }
+                    if (totalSumMap.containsKey(key)) {
+                        totalSumMap.put(key, vrr[0] + "△" + vrr[1]);
+                    }
+                }
 
-
+                Map<String, Integer> subtotal_tmp_keyCount = new HashMap<>();
                 Map<String, String> sub_ttal = new HashMap<>();
                 for (String k : result_bak.keySet()) {
                     List<String> dimension_list = splitArray(k.split("△"), 0, dimension_length);
@@ -1080,18 +1131,53 @@ public class RowColStatisticsV3 extends UDAF {
                         if (compare_list != null && compare_list.size() > 0) {
                             subtotal_tmp_key = subtotal_tmp_key + "△" + compare_list.stream().reduce((a, b) -> a + "△" + b).get();
                         }
-
+                        Integer count = subtotal_tmp_keyCount.getOrDefault(subtotal_tmp_key, 0);
                         String[] tt = sub_ttal.getOrDefault(subtotal_tmp_key, mea.toString()).split("△");
+                        String func2 = splitArray(col_func, measure_length, measure_length + 1).get(0);
                         StringBuilder res = new StringBuilder();
                         for (int j = 0; j < measure_list.size(); j++) {
-                            double d = Double.parseDouble(tt[j]) + Double.parseDouble(measure_list.get(j));
+                            double o = Double.parseDouble(tt[j]);
+                            double p = Double.parseDouble(measure_list.get(j));
+                            if (func2.equals("max-1")) {
+                                if (p > o) {
+                                    o = p;
+                                }
+                            } else if (func2.equals("min-1")) {
+                                if (count == 0) {
+                                    o = 99999999;
+                                }
+                                if (p < o) {
+                                    o = p;
+                                }
+                            } else if (func2.equals("sum-1") || func2.equals("avg-1")) {
+                                o = o + p;
+                            }
                             if (j == measure_list.size() - 1) {
-                                res.append(d);
+                                res.append(o);
                             } else {
-                                res.append(d).append("△");
+                                res.append(o).append("△");
                             }
                         }
+                        count++;
+                        subtotal_tmp_keyCount.put(subtotal_tmp_key, count);
                         sub_ttal.put(subtotal_tmp_key, res.toString());
+                    }
+                }
+
+                List<String> sub_cf = splitArray(col_func, measure_length, measure_length + 1);
+                for (Map.Entry<String, Integer> en : subtotal_tmp_keyCount.entrySet()) {
+                    String key = en.getKey();
+                    int i = en.getValue();
+                    String value = sub_ttal.getOrDefault(key, "0△0");
+                    String[] vrr = value.split("△");
+                    for (int j = 0; j < vrr.length; j++) {
+                        if (sub_cf.get(0).equals("avg-1")) {
+                            String v = (Double.parseDouble(vrr[j]) / i) + "";
+                            vrr[j] = v;
+                        }
+                    }
+                    if (sub_ttal.containsKey(key)) {
+                        sub_ttal.put(key, vrr[0] + "△" + vrr[1]);
                     }
                 }
 
