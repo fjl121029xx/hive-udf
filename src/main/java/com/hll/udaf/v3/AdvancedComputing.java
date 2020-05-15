@@ -37,8 +37,22 @@ public class AdvancedComputing extends UDAF {
         //map阶段，返回值为boolean类型，当为true则程序继续执行，当为false则程序退出
         public boolean iterate(List<String> dimensions, List<String> measure, List<String> mathFunction) {
 
+            logger.info(dimensions + "\t" + measure + "\t" + mathFunction);
+            StringBuilder sb = new StringBuilder();
+            if (dimensions != null && dimensions.size() > 0) {
+                for (String l : dimensions) {
+                    if (l == null) {
+                        sb.append("0").append(",");
+                    } else {
+                        sb.append(l).append(",");
+                    }
 
-            String dimenKey = dimensions.stream().reduce((a, b) -> a + "," + b).get();
+                }
+            } else {
+                return true;
+            }
+            String dimenKey = sb.toString().substring(0, sb.length());
+
             if (!supportMath(mathFunction)) {
                 throw new RuntimeException("un support math 【" + mathFunction + "】");
             } else if (measure.size() != mathFunction.size()) {

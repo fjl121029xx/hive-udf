@@ -659,7 +659,12 @@ public class RowColStatisticsV3 extends UDAF {
                         }
                     }
                     if (totalSumMap.containsKey(key)) {
-                        totalSumMap.put(key, vrr[0] + "△" + vrr[1]);
+//                        totalSumMap.put(key, vrr[0] + "△" + vrr[1]);
+                        StringBuilder sb =new StringBuilder();
+                        for (int j = 0; j < vrr.length; j++) {
+                            sb.append(vrr[j]).append("△");
+                        }
+                        totalSumMap.put(key,sb.toString().substring(0,sb.length()-1));
                     }
                 }
                 // =====
@@ -848,7 +853,13 @@ public class RowColStatisticsV3 extends UDAF {
                         }
                     }
                     if (sub_ttal.containsKey(key)) {
-                        sub_ttal.put(key, vrr[0] + "△" + vrr[1]);
+//                        sub_ttal.put(key, vrr[0] + "△" + vrr[1]);
+                        StringBuilder sb =new StringBuilder();
+                        for (int j = 0; j < vrr.length; j++) {
+                            sb.append(vrr[j]).append("△");
+                        }
+                        sub_ttal.put(key,sb.toString().substring(0,sb.length()-1));
+
                     }
                 }
 
@@ -1107,7 +1118,11 @@ public class RowColStatisticsV3 extends UDAF {
                         }
                     }
                     if (totalSumMap.containsKey(key)) {
-                        totalSumMap.put(key, vrr[0] + "△" + vrr[1]);
+                        StringBuilder sb =new StringBuilder();
+                        for (int j = 0; j < vrr.length; j++) {
+                            sb.append(vrr[j]).append("△");
+                        }
+                        totalSumMap.put(key,sb.toString().substring(0,sb.length()-1));
                     }
                 }
 
@@ -1177,7 +1192,12 @@ public class RowColStatisticsV3 extends UDAF {
                         }
                     }
                     if (sub_ttal.containsKey(key)) {
-                        sub_ttal.put(key, vrr[0] + "△" + vrr[1]);
+
+                        StringBuilder sb =new StringBuilder();
+                        for (int j = 0; j < vrr.length; j++) {
+                            sb.append(vrr[j]).append("△");
+                        }
+                        sub_ttal.put(key,sb.toString().substring(0,sb.length()-1));
                     }
                 }
 
