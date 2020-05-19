@@ -242,8 +242,7 @@ public class ActiveComputing extends AbstractGenericUDAFResolver {
             GenericUDAFAverageEvaluator.AverageAgg myagg = (GenericUDAFAverageEvaluator.AverageAgg) agg;
 
             List<String> cat = myagg.cat;
-            cat.sort(String::compareTo);
-
+//            cat.sort(String::compareTo);
             String dog = myagg.dog;
 
             ActiveStat activestat = new ActiveStat(cat, dog, myagg.fish.keySet(), myagg.pig.keySet());

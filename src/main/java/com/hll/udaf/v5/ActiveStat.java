@@ -7,10 +7,7 @@ public class ActiveStat {
     private List<String> add_up;
     private String dog;
     private boolean isValue;
-    private byte[] current_bitMap;
-    private byte[] current_bitMap2;
-    private int current_index = 0;
-    //
+
     private Set<String> keyList;
     private Set<String> idList;
 
@@ -20,7 +17,6 @@ public class ActiveStat {
         this.dog = split[0];
         this.isValue = split[1].equals("value");
 
-        //
         this.keyList = keyList;
         this.idList = idList;
     }
@@ -29,7 +25,7 @@ public class ActiveStat {
         for (String en : add) {
             String key = en.split(":")[0];
             int index = Integer.parseInt(en.split(":")[1]);
-            add(bits, keyMap.get(key), index);
+            this.add(bits, keyMap.get(key), index);
         }
     }
 
@@ -54,8 +50,6 @@ public class ActiveStat {
 
         long l1 = System.currentTimeMillis();
         int size = add_up.size();
-        System.out.println("size " + add_up.size());
-
         int count = 8;
         int quotient = size / count;
         List<Thread> threads = new ArrayList<>();
@@ -63,15 +57,13 @@ public class ActiveStat {
             int finalI = i;
             Thread thread = new Thread(() -> {
                 try {
-                    int end = (finalI + 1) * quotient;
-                    int start = finalI * quotient;
 
-                    if (end >= size && start <= size) {
-                        fillBitMap(bits, keyMap, add_up.subList(start, size));
-                        System.out.println("执行子线程 add_up.subList(" + start + ", " + size + ")");
+                    if ((finalI + 1) * quotient >= add_up.size() && finalI * quotient <= add_up.size()) {
+                        fillBitMap(bits, keyMap, add_up.subList(finalI * quotient, add_up.size()));
+                        System.out.println("执行子线程 add_up.subList(" + (finalI * quotient) + ", " + add_up.size() + ")");
                     } else {
-                        fillBitMap(bits, keyMap, add_up.subList(start, end));
-                        System.out.println("执行子线程 add_up.subList(" + start + ", " + end + ")");
+                        fillBitMap(bits, keyMap, add_up.subList(finalI * quotient, (finalI + 1) * quotient));
+                        System.out.println("执行子线程 add_up.subList(" + (finalI * quotient) + ", " + ((finalI + 1) * quotient) + ")");
                     }
 
                 } catch (Exception e) {
@@ -97,51 +89,161 @@ public class ActiveStat {
         long e = System.currentTimeMillis();
         System.out.println("反转耗时 " + (e - l2));
 
-        return countActive(dog, bits, dayNumMap, keyMap);
+        return countActive(dog, bits, dayNumMap);
     }
 
-    public Map<String, String> countActive(String dog, byte[][] bits, Map<Integer, String> dayNumMap, Map<String, Integer> kMap) {
+    private void quickCount(Map<String, String> returnMap, String dog, byte[][] bits, Map<Integer, String> dayNumMap) throws InterruptedException {
+
+        int dogInt = Integer.parseInt(dog);
+        int length = bits.length;
+
+        int count = 8;
+        int quotient = length / count;
+        List<Thread> threads = new ArrayList<>();
+        for (int k = 0; k < count; k++) {
+
+            int finalK = k;
+            Thread thread = new Thread(() -> {
+                int end = Math.min((finalK + 1) * quotient, length);
+                int start = finalK * quotient;
+                System.out.println("执行子线程 quickCount(" + start + ", " + end + ")");
+
+                long l = System.currentTimeMillis();
+                for (int i = start; i < end; i++) {
+                    int activeCount = 0;
+
+                    int afterDays = i + dogInt;
+                    byte[] b = formatByte(bits[i]);
+
+                    byte[] s;
+                    if (afterDays > length - 1) {
+                        s = formatByte(new byte[bits[0].length]);
+                    } else {
+                        s = formatByte(bits[afterDays]);
+                    }
+
+                    for (int j = 0; j < b.length; j++) {
+                        if (b[j] == 1 && s[j] == 1) {
+                            activeCount++;
+                        }
+                    }
+
+                    String day = dayNumMap.get(i);
+                    if (day != null) {
+                        if (isValue) {
+                            returnMap.put(day, Integer.toString(activeCount));
+                        } else {
+                            int sum_bit = sumBit(b);
+                            BigDecimal n = new BigDecimal(activeCount);
+                            BigDecimal m = new BigDecimal(sum_bit);
+                            if (sum_bit != 0) {
+                                returnMap.put(day, n.divide(m, 9, BigDecimal.ROUND_HALF_UP).toString());
+                            } else {
+                                returnMap.put(day, Double.toString(0.00));
+                            }
+                        }
+
+                    }
+
+                }
+                long l2 = System.currentTimeMillis();
+                System.out.println("" + start + "," + end + " 执行 " + (l2 - l));
+            });
+            thread.start();
+            threads.add(thread);
+        }
+
+        for (int i = 0; i < count; i++) {
+            threads.get(i).join();
+        }
+        System.out.println("执行主线程");
+
+//        for (int i = 0; i < length; i++) {
+//            int activeCount = 0;
+//
+//            int afterDays = i + dogInt;
+//            byte[] b = formatByte(bits[i]);
+//
+//            byte[] s;
+//            if (afterDays > length - 1) {
+//                s = formatByte(new byte[bits[0].length]);
+//            } else {
+//                s = formatByte(bits[afterDays]);
+//            }
+//
+//            for (int j = 0; j < b.length; j++) {
+//                if (b[j] == 1 && s[j] == 1) {
+//                    activeCount++;
+//                }
+//            }
+//
+//            String day = dayNumMap.get(i);
+//            if (day != null) {
+//                if (isValue) {
+//                    returnMap.put(day, Integer.toString(activeCount));
+//                } else {
+//                    int sum_bit = sumBit(b);
+//                    BigDecimal n = new BigDecimal(activeCount);
+//                    BigDecimal m = new BigDecimal(sum_bit);
+//                    if (sum_bit != 0) {
+//                        returnMap.put(day, n.divide(m, 9, BigDecimal.ROUND_HALF_UP).toString());
+//                    } else {
+//                        returnMap.put(day, Double.toString(0.00));
+//                    }
+//                }
+//
+//            }
+//        }
+    }
+
+    public Map<String, String> countActive(String dog, byte[][] bits, Map<Integer, String> dayNumMap) {
 
         Map<String, String> returnMap = new HashMap<>();
         int dogInt = Integer.parseInt(dog);
+        try {
+            long l = System.currentTimeMillis();
+//            quickCount(returnMap, dog, bits, dayNumMap);
+            for (int i = 0; i < bits.length; i++) {
+                int activeCount = 0;
 
-        for (int i = 0; i < bits.length; i++) {
-            int activeCount = 0;
+                int afterDays = i + dogInt;
+                byte[] b = formatByte(bits[i]);
 
-            int afterDays = i + dogInt;
-            byte[] b = formatByte(bits[i]);
-
-            byte[] s;
-            if (afterDays > bits.length - 1) {
-                s = formatByte(new byte[bits[0].length]);
-            } else {
-                s = formatByte(bits[afterDays]);
-            }
-
-            for (int j = 0; j < b.length; j++) {
-                if (b[j] == 1 && s[j] == 1) {
-                    activeCount++;
-                }
-            }
-
-            String day = dayNumMap.get(i);
-            if (day != null) {
-                if (isValue) {
-                    returnMap.put(day, Integer.toString(activeCount));
+                byte[] s;
+                if (afterDays > bits.length - 1) {
+                    s = formatByte(new byte[bits[0].length]);
                 } else {
-                    int sum_bit = sumBit(b);
-                    BigDecimal n = new BigDecimal(activeCount);
-                    BigDecimal m = new BigDecimal(sum_bit);
-                    if (sum_bit != 0) {
-                        returnMap.put(day, n.divide(m, 9, BigDecimal.ROUND_HALF_UP).toString());
-                    } else {
-                        returnMap.put(day, Double.toString(0.00));
+                    s = formatByte(bits[afterDays]);
+                }
+
+                for (int j = 0; j < b.length; j++) {
+                    if (b[j] == 1 && s[j] == 1) {
+                        activeCount++;
                     }
                 }
 
+                String day = dayNumMap.get(i);
+                if (day != null) {
+                    if (isValue) {
+                        returnMap.put(day, Integer.toString(activeCount));
+                    } else {
+                        int sum_bit = sumBit(b);
+                        BigDecimal n = new BigDecimal(activeCount);
+                        BigDecimal m = new BigDecimal(sum_bit);
+                        if (sum_bit != 0) {
+                            returnMap.put(day, n.divide(m, 9, BigDecimal.ROUND_HALF_UP).toString());
+                        } else {
+                            returnMap.put(day, Double.toString(0.00));
+                        }
+                    }
+                }
             }
-
+            long l2 = System.currentTimeMillis();
+            System.out.println("countActive " + (l2 - l));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+//
 
 
         return returnMap;
