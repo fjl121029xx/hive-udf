@@ -66,9 +66,13 @@ public class ActiveComputing extends AbstractGenericUDAFResolver {
         StructObjectInspector soi;
         StructField catField;
         StructField dogField;
+        StructField fishField;
+        StructField pigField;
 
         StandardListObjectInspector catFieldOI;
         StringObjectInspector dogFieldOI;
+        StandardMapObjectInspector fishFieldOI;
+        StandardMapObjectInspector pigFieldOI;
 
         //1.2.定义全局输出数据的类型，用于存储实际数据
         // output For PARTIAL1 and PARTIAL2
@@ -92,26 +96,41 @@ public class ActiveComputing extends AbstractGenericUDAFResolver {
                 soi = (StructObjectInspector) parameters[0];
                 catField = soi.getStructFieldRef("cat");
                 dogField = soi.getStructFieldRef("dog");
+                fishField = soi.getStructFieldRef("fish");
+                pigField = soi.getStructFieldRef("pig");
                 //数组中的每个数据，需要其各自的基本类型OI实例解析
                 catFieldOI = (StandardListObjectInspector) catField.getFieldObjectInspector();
                 dogFieldOI = (StringObjectInspector) dogField.getFieldObjectInspector();
+                fishFieldOI = (StandardMapObjectInspector) fishField.getFieldObjectInspector();
+                pigFieldOI = (StandardMapObjectInspector) pigField.getFieldObjectInspector();
             }
 
             // init output
             if (mode == Mode.PARTIAL1 || mode == Mode.PARTIAL2) {
 
-                partialResult = new Object[2];
+                partialResult = new Object[4];
                 partialResult[0] = new LinkedList<String>();
                 partialResult[1] = "";
+                partialResult[2] = new HashMap<String, Integer>();
+                partialResult[3] = new HashMap<String, Integer>();
 
                 ArrayList<String> fname = new ArrayList<String>();
                 fname.add("cat");
                 fname.add("dog");
+                fname.add("fish");
+                fname.add("pig");
 
                 ArrayList<ObjectInspector> foi = new ArrayList<>();
                 foi.add(ObjectInspectorFactory.getStandardListObjectInspector(
                         PrimitiveObjectInspectorFactory.javaStringObjectInspector));
                 foi.add(PrimitiveObjectInspectorFactory.javaStringObjectInspector);
+                // fish
+                foi.add(ObjectInspectorFactory.getStandardMapObjectInspector(
+                        PrimitiveObjectInspectorFactory.javaStringObjectInspector, PrimitiveObjectInspectorFactory.javaIntObjectInspector));
+                // pig
+                foi.add(ObjectInspectorFactory.getStandardMapObjectInspector(
+                        PrimitiveObjectInspectorFactory.javaStringObjectInspector, PrimitiveObjectInspectorFactory.javaIntObjectInspector));
+
                 return ObjectInspectorFactory.getStandardStructObjectInspector(fname, foi);
             } else {
                 result = new MapWritable();
@@ -124,6 +143,8 @@ public class ActiveComputing extends AbstractGenericUDAFResolver {
         static class AverageAgg implements AggregationBuffer {
             List<String> cat;
             String dog;
+            HashMap<String, Integer> fish;
+            HashMap<String, Integer> pig;
         }
 
         @Override
@@ -138,6 +159,8 @@ public class ActiveComputing extends AbstractGenericUDAFResolver {
             GenericUDAFAverageEvaluator.AverageAgg myagg = (GenericUDAFAverageEvaluator.AverageAgg) agg;
             myagg.cat = new LinkedList<>();
             myagg.dog = "";
+            myagg.fish = new HashMap<>();
+            myagg.pig = new HashMap<>();
         }
 
 
@@ -162,6 +185,9 @@ public class ActiveComputing extends AbstractGenericUDAFResolver {
                     myagg.cat.add(a + ":" + b);
                 }
                 myagg.dog = match_func.get(0);
+
+                myagg.fish.put(dimension.get(0), 1);
+                myagg.pig.put(measure.get(0), 1);
             }
         }
 
@@ -174,6 +200,12 @@ public class ActiveComputing extends AbstractGenericUDAFResolver {
                 list.add(cat.get(i));
             }
             partialResult[1] = myagg.dog;
+
+            HashMap<String, Integer> fish = (HashMap<String, Integer>) partialResult[2];
+            fish.putAll(myagg.fish);
+
+            HashMap<String, Integer> pig = (HashMap<String, Integer>) partialResult[3];
+            pig.putAll(myagg.pig);
             return partialResult;
         }
 
@@ -186,10 +218,22 @@ public class ActiveComputing extends AbstractGenericUDAFResolver {
                 Object partialCat = soi.getStructFieldData(partial, catField);
                 Object partialDog = soi.getStructFieldData(partial, dogField);
 
+                Object partialFish = soi.getStructFieldData(partial, fishField);
+                Object partialPig = soi.getStructFieldData(partial, pigField);
+
+
                 List<String> cat = (List<String>) catFieldOI.getList(partialCat);
                 String dog = dogFieldOI.getPrimitiveJavaObject(partialDog);
                 myagg.cat.addAll(cat);
                 myagg.dog = (dog != null && !dog.equals("")) ? dog : myagg.dog;
+
+
+                HashMap<String, Integer> fish = (HashMap<String, Integer>) fishFieldOI.getMap(partialFish);
+                myagg.fish.putAll(fish);
+
+                HashMap<String, Integer> pig = (HashMap<String, Integer>) pigFieldOI.getMap(partialPig);
+                myagg.pig.putAll(pig);
+
             }
         }
 
@@ -199,13 +243,16 @@ public class ActiveComputing extends AbstractGenericUDAFResolver {
 
             List<String> cat = myagg.cat;
             cat.sort(String::compareTo);
-            LOG.info("  ---- > " + cat.size());
-            LOG.info("  ---- > " + myagg.dog);
 
             String dog = myagg.dog;
 
-            ActiveStat activestat = new ActiveStat(cat, dog);
-            return activestat.compute();
+            ActiveStat activestat = new ActiveStat(cat, dog, myagg.fish.keySet(), myagg.pig.keySet());
+            try {
+                return activestat.compute();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return new HashMap<>();
+            }
         }
     }
 

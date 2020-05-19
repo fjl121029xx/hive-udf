@@ -1,17 +1,12 @@
 package com.hll.udaf.v4;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class NewAddStat {
     private List<String> add_up;
     private String dog;
     private boolean isValue;
-    private byte[] current_bitMap;
-    private byte[] current_bitMap2;
-    private int current_index = 0;
-
     //
     private Set<String> keyList;
     private Set<String> idList;
@@ -27,22 +22,17 @@ public class NewAddStat {
         this.idList = idList;
     }
 
-    public Map<String, String> compute() {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    public void fillBitMap(byte[][] bits, Map<String, Integer> keyMap, List<String> add) {
+        for (String en : add) {
+            String key = en.split(":")[0];
+            int index = Integer.parseInt(en.split(":")[1]);
+            add(bits, keyMap.get(key), index);
+        }
+    }
 
-        System.out.println("start compute " + sdf.format(new Date()));
+    public Map<String, String> compute() throws InterruptedException {
 
         byte[][] bits = new byte[keyList.size() + 1][getIndex(idList.size()) + 1];
-
-//        long a1 = System.currentTimeMillis();
-//        Map<String, Integer> idMap = new HashMap<>();
-//        for (String en : idList) {
-//            String[] err = en.split(":");
-//            idMap.put(err[0], Integer.parseInt(err[1]));
-//        }
-//        long a2 = System.currentTimeMillis();
-//        System.out.println("idMap 耗时 " + (a2 - a1));
-//        System.out.println("id 标记 " + idMap.size());
 
         long a3 = System.currentTimeMillis();
         Map<String, Integer> keyMap = new HashMap<>();
@@ -59,36 +49,51 @@ public class NewAddStat {
         System.out.println("keyMap 耗时 " + (a4 - a3));
         System.out.println("key 标记 " + keyMap.size());
 
-        long a = System.currentTimeMillis();
-        long abc = 0;
+        long l1 = System.currentTimeMillis();
+        int size = add_up.size();
 
-        for (String en : add_up) {
-            long l1 = System.currentTimeMillis();
-            String key = en.split(":")[0];
-            int index = Integer.parseInt(en.split(":")[1]);
-            add(bits, keyMap.get(key), index);
+        int count = 1;
+        int quotient = size / count;
+        List<Thread> threads = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            int finalI = i;
+            Thread thread = new Thread(() -> {
+                try {
 
-            long l2 = System.currentTimeMillis();
-            abc += (l2 - l1);
+                    if ((finalI + 1) * quotient >= add_up.size() && finalI * quotient <= add_up.size()) {
+                        fillBitMap(bits, keyMap, add_up.subList(finalI * quotient, add_up.size()));
+                        System.out.println("执行子线程 add_up.subList(" + (finalI * quotient) + ", " + add_up.size() + ")");
+                    } else {
+                        fillBitMap(bits, keyMap, add_up.subList(finalI * quotient, (finalI + 1) * quotient));
+                        System.out.println("执行子线程 add_up.subList(" + (finalI * quotient) + ", " + ((finalI + 1) * quotient) + ")");
+                    }
 
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            thread.start();
+            threads.add(thread);
         }
-        System.out.println("abc 耗时 " + abc);
+        for (int i = 0; i < count; i++) {
+            threads.get(i).join();
+        }
+        System.out.println("执行主线程");
 
+        long l2 = System.currentTimeMillis();
+        System.out.println("add 耗时 " + (l2 - l1));
 
-        long b = System.currentTimeMillis();
-        System.out.println("标记耗时 " + (b - a));
         // 1->日期
         Map<Integer, String> dayNumMap = new HashMap<>();
         for (String key : keyMap.keySet()) {
             dayNumMap.put(keyMap.get(key), key);
         }
         long e = System.currentTimeMillis();
-        System.out.println("反转耗时 " + (e - b));
-
+        System.out.println("反转耗时 " + (e - l2));
 
         Map<String, String> map = doByWhich(dog, bits, dayNumMap, keyMap);
         long end = System.currentTimeMillis();
-        System.out.printf("compute time %d%n", (end - b));
+        System.out.printf("compute time %d%n", (end - e));
         return map;
     }
 
@@ -132,66 +137,66 @@ public class NewAddStat {
         return result;
     }
 
+    // 获得第dayIndex天的新增
     private byte[] getDayNewly(byte[][] bits, int dayIndex) {
 
         if (dayIndex == 0) {
-            this.current_bitMap = formatByte(bits[0]);
-            this.current_bitMap2 = bits[0];
-            return this.current_bitMap;
+            return formatByte(bits[0]);
         }
 
-        this.current_index += 1;
+        int before = dayIndex - 1;
 
-        byte[] new_bitMap2 = new byte[bits[0].length];
+        byte[] before_bitmap = formatByte(new byte[bits[0].length]);
+        for (int j = 0; j <= before; j++) {
 
-        byte[] g = bits[0];
-        byte[] h = bits[this.current_index];
-        for (int i = 0; i < g.length; i++) {
-            byte b2 = (byte) (g[i] | h[i]);
-            new_bitMap2[i] = b2;
+            byte[] bit = formatByte(bits[j]);
+            for (int i = 0; i < before_bitmap.length; i++) {
+                byte e = before_bitmap[i];
+                byte s = bit[i];
+                int tmp;
+                if (e == 1 || s == 1) {
+                    before_bitmap[i] = 1;
+                } else {
+                    before_bitmap[i] = 0;
+                }
+            }
         }
-
-        this.current_bitMap = formatByte(new_bitMap2);
-        byte[] index_bitMap = bits[dayIndex];
+        byte[] bitmap = formatByte(bits[dayIndex]);
 
         byte[] result_bitmap = formatByte(new byte[bits[0].length]);
+        for (int i = 0; i < before_bitmap.length; i++) {
 
-        for (int i = 0; i < new_bitMap2.length; i++) {
-            String s = byte2Str(new_bitMap2[i]);
-            String s1 = byte2Str(index_bitMap[i]);
-            byte[] bytes = s.getBytes();
-            byte[] bytes1 = s1.getBytes();
-
-            for (int j = 0; j < bytes.length; j++) {
-                if (bytes[j] == 0 && bytes1[j] == 0) {
-                    result_bitmap[i * 8 + j] = 1;
-                }
+            byte e = before_bitmap[i];
+            byte s = bitmap[i];
+            if (e == 0 && s == 1) {
+                result_bitmap[i] = 1;
             }
         }
         return result_bitmap;
     }
 
 
+    // 留存新增
     private Map<String, String> otherSave(String dog, byte[][] bits, Map<Integer, String> dayNumMap, Map<String, Integer> keyMap) {
 
         Map<String, String> returnMap = new HashMap<>();
-        System.out.println("otherSave start");
         int dogInt = Integer.parseInt(dog);
 
-        long exeTime = 0L;
-
+        long l = System.currentTimeMillis();
         for (int i = 0; i < keyMap.size(); i++) {
 
-            long l = System.currentTimeMillis();
+            String s1 = dayNumMap.get(i);
             byte[] dayNewly = getDayNewly(bits, i);
             int sum_bit = sumBit(dayNewly);
             int afterDays = i + dogInt;
+
             byte[] bit;
             if (afterDays > bits.length - 1) {
                 bit = formatByte(new byte[bits[0].length]);
             } else {
                 bit = formatByte(bits[afterDays]);
             }
+
 
             int newAdd = 0;
             for (int j = 0; j < bit.length; j++) {
@@ -202,10 +207,7 @@ public class NewAddStat {
                 }
             }
 
-            long l1 = System.currentTimeMillis();
-            exeTime += (l1 - l);
-            System.out.println("-----------> " + (l1 - l));
-            String s = dayNumMap.get(i);
+            String s = s1;
             if (s != null) {
                 if (isValue) {
                     returnMap.put(s, Integer.toString(newAdd));
@@ -221,8 +223,8 @@ public class NewAddStat {
                 }
             }
         }
-
-        System.out.println("exeTime ================" + exeTime);
+        long l2 = System.currentTimeMillis();
+        System.out.println("otherSave 耗时 " + (l2 - l));
         return returnMap;
     }
 

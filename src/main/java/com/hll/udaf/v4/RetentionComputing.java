@@ -214,7 +214,8 @@ public class RetentionComputing extends AbstractGenericUDAFResolver {
                 throws HiveException {
             if (partial != null) {
 
-                LOG.info("merge run");
+                long l = System.currentTimeMillis();
+
                 AverageAgg myagg = (AverageAgg) agg;
                 //通过StandardStructObjectInspector实例，分解出 partial 数组元素值
                 Object partialCat = soi.getStructFieldData(partial, catField);
@@ -234,6 +235,8 @@ public class RetentionComputing extends AbstractGenericUDAFResolver {
                 HashMap<String, Integer> pig = (HashMap<String, Integer>) pigFieldOI.getMap(partialPig);
                 myagg.pig.putAll(pig);
 
+                long l2 = System.currentTimeMillis();
+                LOG.info("merge run " + (l2 - l));
             }
         }
 
@@ -241,16 +244,14 @@ public class RetentionComputing extends AbstractGenericUDAFResolver {
         public Object terminate(AggregationBuffer agg) throws HiveException {
             AverageAgg myagg = (AverageAgg) agg;
             List<String> cat = myagg.cat;
-
-            LOG.info("  cat.size ---- > " + cat.size());
-            LOG.info("  myagg.dog ---- > " + myagg.dog);
-            LOG.info("  myagg.fish ---- > " + myagg.fish);
-            LOG.info("  myagg.fish.size ---- > " + myagg.fish.size());
-            LOG.info("  myagg.pig.size ---- > " + myagg.pig.size());
-
             String dog = myagg.dog;
             NewAddStat newAddStat = new NewAddStat(cat, dog, myagg.fish.keySet(), myagg.pig.keySet());
-            return newAddStat.compute();
+            try {
+                return newAddStat.compute();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return new HashMap<>();
+            }
         }
     }
 }

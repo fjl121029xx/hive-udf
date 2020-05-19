@@ -7,56 +7,95 @@ public class ActiveStat {
     private List<String> add_up;
     private String dog;
     private boolean isValue;
+    private byte[] current_bitMap;
+    private byte[] current_bitMap2;
+    private int current_index = 0;
+    //
+    private Set<String> keyList;
+    private Set<String> idList;
 
-    public ActiveStat(List<String> add_up, String dog) {
+    public ActiveStat(List<String> add_up, String dog, Set<String> keyList, Set<String> idList) {
         this.add_up = add_up;
         String[] split = dog.split("-");
         this.dog = split[0];
         this.isValue = split[1].equals("value");
+
+        //
+        this.keyList = keyList;
+        this.idList = idList;
     }
 
-    public Map<String, String> compute() {
-
-        Map<String, String> returnMap = new HashMap<>();
-
-        Set<String> c = new HashSet<>();
-        Set<String> v = new HashSet<>();
-
-        for (String s : add_up) {
-            String[] split = s.split(":");
-            c.add(split[0]);
-            v.add(split[1]);
+    public void fillBitMap(byte[][] bits, Map<String, Integer> keyMap, List<String> add) {
+        for (String en : add) {
+            String key = en.split(":")[0];
+            int index = Integer.parseInt(en.split(":")[1]);
+            add(bits, keyMap.get(key), index);
         }
+    }
 
-        byte[][] bits = new byte[c.size() + 1][getIndex(v.size()) + 1];
+    public Map<String, String> compute() throws InterruptedException {
 
-        Map<String, Integer> idMap = new HashMap<>();
+        byte[][] bits = new byte[keyList.size() + 1][getIndex(idList.size()) + 1];
+
+        long a3 = System.currentTimeMillis();
         Map<String, Integer> keyMap = new HashMap<>();
-        int k = 0;
-        int l = 0;
-
-        for (String en : add_up) {
-            String pt = en.split(":")[0];
-            String ufname = en.split(":")[1];
-
-            if (keyMap.get(pt) == null) {
-                keyMap.put(pt, l);
-                l++;
+        List<String> s = new ArrayList<>(keyList);
+        s.sort(String::compareTo);
+        int keyIndex = 0;
+        for (String k : s) {
+            if (keyMap.get(k) == null) {
+                keyMap.put(k, keyIndex);
+                keyIndex++;
             }
-            if (idMap.get(ufname) == null) {
-                idMap.put(ufname, k);
-                k++;
-            }
-            Integer pt_index = keyMap.get(pt);
-            Integer index = idMap.get(ufname);
-            add(bits, pt_index, index);
         }
+        long a4 = System.currentTimeMillis();
+        System.out.println("keyMap 耗时 " + (a4 - a3));
+        System.out.println("key 标记 " + keyMap.size());
+
+        long l1 = System.currentTimeMillis();
+        int size = add_up.size();
+        System.out.println("size " + add_up.size());
+
+        int count = 8;
+        int quotient = size / count;
+        List<Thread> threads = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            int finalI = i;
+            Thread thread = new Thread(() -> {
+                try {
+                    int end = (finalI + 1) * quotient;
+                    int start = finalI * quotient;
+
+                    if (end >= size && start <= size) {
+                        fillBitMap(bits, keyMap, add_up.subList(start, size));
+                        System.out.println("执行子线程 add_up.subList(" + start + ", " + size + ")");
+                    } else {
+                        fillBitMap(bits, keyMap, add_up.subList(start, end));
+                        System.out.println("执行子线程 add_up.subList(" + start + ", " + end + ")");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            thread.start();
+            threads.add(thread);
+        }
+        for (int i = 0; i < count; i++) {
+            threads.get(i).join();
+        }
+        System.out.println("执行主线程");
+
+        long l2 = System.currentTimeMillis();
+        System.out.println("add 耗时 " + (l2 - l1));
 
         // 1->日期
         Map<Integer, String> dayNumMap = new HashMap<>();
         for (String key : keyMap.keySet()) {
             dayNumMap.put(keyMap.get(key), key);
         }
+        long e = System.currentTimeMillis();
+        System.out.println("反转耗时 " + (e - l2));
 
         return countActive(dog, bits, dayNumMap, keyMap);
     }
