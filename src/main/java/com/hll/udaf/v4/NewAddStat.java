@@ -7,6 +7,7 @@ public class NewAddStat {
     private List<String> add_up;
     private String dog;
     private boolean isValue;
+    private byte[] last_bit_map;
     //
     private Set<String> keyList;
     private Set<String> idList;
@@ -52,7 +53,7 @@ public class NewAddStat {
         long l1 = System.currentTimeMillis();
         int size = add_up.size();
 
-        int count = 1;
+        int count = 8;
         int quotient = size / count;
         List<Thread> threads = new ArrayList<>();
         for (int i = 0; i < count; i++) {
@@ -141,15 +142,15 @@ public class NewAddStat {
     private byte[] getDayNewly(byte[][] bits, int dayIndex) {
 
         if (dayIndex == 0) {
+            this.last_bit_map = formatByte(bits[0]);
             return formatByte(bits[0]);
         }
 
         int before = dayIndex - 1;
 
-        byte[] before_bitmap = formatByte(new byte[bits[0].length]);
-        for (int j = 0; j <= before; j++) {
-
-            byte[] bit = formatByte(bits[j]);
+        byte[] before_bitmap = this.last_bit_map;
+        if (before > 0) {
+            byte[] bit = formatByte(bits[before]);
             for (int i = 0; i < before_bitmap.length; i++) {
                 byte e = before_bitmap[i];
                 byte s = bit[i];
@@ -160,7 +161,9 @@ public class NewAddStat {
                     before_bitmap[i] = 0;
                 }
             }
+            this.last_bit_map = before_bitmap;
         }
+
         byte[] bitmap = formatByte(bits[dayIndex]);
 
         byte[] result_bitmap = formatByte(new byte[bits[0].length]);
