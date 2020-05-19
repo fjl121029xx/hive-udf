@@ -262,25 +262,29 @@ public class NewAddStat {
         return b;
     }
 
+    // 新增数
     public int calculate(int from, int to, byte[][] bits, Map<Integer, String> re_mmap) {
 
-        byte[] bitnext_tmp = formatByte(new byte[bits[from].length]);
-        for (int j = 0; j <= from; j++) {
-
-            byte[] bit = formatByte(bits[j]);
-            for (int i = 0; i < bitnext_tmp.length; i++) {
-                byte e = bitnext_tmp[i];
+        byte[] bitnext_tmp;
+        if (from == 0) {
+            bitnext_tmp = formatByte(bits[0]);
+            this.last_bit_map = bitnext_tmp;
+        } else {
+            byte[] bit = formatByte(bits[from]);
+            for (int i = 0; i < this.last_bit_map.length; i++) {
+                byte e = this.last_bit_map[i];
                 byte s = bit[i];
                 int tmp;
                 if ((tmp = e | s) == 1) {
-                    bitnext_tmp[i] = 1;
+                    this.last_bit_map[i] = 1;
                 } else {
-                    bitnext_tmp[i] = 0;
+                    this.last_bit_map[i] = 0;
                 }
             }
         }
 
-        byte[] a = bitnext_tmp;
+
+        byte[] a = this.last_bit_map;
         byte[] bit1 = bits[to];
         byte[] b = formatByte(bit1);
 
