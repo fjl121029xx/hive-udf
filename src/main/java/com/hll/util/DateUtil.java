@@ -8,7 +8,7 @@ public class DateUtil {
 
     public static List<String> getDays(Calendar start, Calendar end) {
         LinkedList<String> list = new LinkedList<>();
-        while (start.before(end)) {
+        while (start.before(end) || start.compareTo(end) == 0) {
             list.add(formatCalender(start));
             start.add(Calendar.DAY_OF_YEAR, 1);
         }
