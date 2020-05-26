@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v4/UDFRowColStat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v4/RetentionComputing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v4/RetentionComputing.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/util/DateUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/util/DateUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/v3/UDFMutilDateFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v3/UDFMutilDateFormat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/v4/UDFRowColStat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v4/UDFRowColStat.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -310,7 +310,8 @@
       <workItem from="1589884540361" duration="948000" />
       <workItem from="1589886127156" duration="27000" />
       <workItem from="1590114739381" duration="729000" />
-      <workItem from="1590396784852" duration="3146000" />
+      <workItem from="1590396784852" duration="3631000" />
+      <workItem from="1590457616301" duration="4094000" />
     </task>
     <task id="LOCAL-00001" summary="20200325   ...1">
       <created>1585103679259</created>
@@ -634,7 +635,14 @@
       <option name="project" value="LOCAL" />
       <updated>1589884295332</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="20200525   &gt;..·1">
+      <created>1590404994036</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1590404994036</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -652,7 +660,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
-    <MESSAGE value="20200423   ...1" />
     <MESSAGE value="20200424   ...代理测试" />
     <MESSAGE value="20200424   ...1" />
     <MESSAGE value="20200428   &gt;..1" />
@@ -677,7 +684,8 @@
     <MESSAGE value="20200518   &gt;..·3" />
     <MESSAGE value="20200518   &gt;..·4" />
     <MESSAGE value="20200518   &gt;..·5" />
-    <option name="LAST_COMMIT_MESSAGE" value="20200518   &gt;..·5" />
+    <MESSAGE value="20200525   &gt;..·1" />
+    <option name="LAST_COMMIT_MESSAGE" value="20200525   &gt;..·1" />
   </component>
   <component name="WindowStateProjectService">
     <state x="233" y="0" key="#Project_Structure" timestamp="1584352698150">
@@ -708,10 +716,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="66" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.680@0.0.1280.680" timestamp="1586401795799" />
-    <state x="91" y="0" key="CommitChangelistDialog2" timestamp="1589884294758">
+    <state x="91" y="0" key="CommitChangelistDialog2" timestamp="1590404992106">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="91" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1589884294758" />
+    <state x="91" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1590404992106" />
     <state x="93" y="93" width="1095" height="495" key="DiffContextDialog" timestamp="1589880011391">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -720,22 +728,22 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="421" y="78" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1589885858419" />
-    <state width="1237" height="145" key="GridCell.Tab.0.bottom" timestamp="1590114845904">
+    <state width="1237" height="145" key="GridCell.Tab.0.bottom" timestamp="1590461558010">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="145" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1590114845904" />
-    <state width="1237" height="145" key="GridCell.Tab.0.center" timestamp="1590114845904">
+    <state width="1237" height="145" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1590461558010" />
+    <state width="1237" height="145" key="GridCell.Tab.0.center" timestamp="1590461558010">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="145" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1590114845904" />
-    <state width="1237" height="145" key="GridCell.Tab.0.left" timestamp="1590114845904">
+    <state width="1237" height="145" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1590461558010" />
+    <state width="1237" height="145" key="GridCell.Tab.0.left" timestamp="1590461558010">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="145" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1590114845904" />
-    <state width="1237" height="145" key="GridCell.Tab.0.right" timestamp="1590114845904">
+    <state width="1237" height="145" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1590461558010" />
+    <state width="1237" height="145" key="GridCell.Tab.0.right" timestamp="1590461558010">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="145" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1590114845904" />
+    <state width="1237" height="145" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1590461558010" />
     <state width="1237" height="204" key="GridCell.Tab.1.bottom" timestamp="1587715805421">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -764,10 +772,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1588065801055" />
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1589884296692">
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1590405020602">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1589884296692" />
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1590405020602" />
     <state x="93" y="93" width="1095" height="495" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587719916623">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -792,10 +800,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="297" y="151" key="run.anything.popup/0.0.1280.680@0.0.1280.680" timestamp="1588144105302" />
-    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup" timestamp="1589773914203">
+    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup" timestamp="1590461517274">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup/0.0.1280.680@0.0.1280.680" timestamp="1589773914203" />
+    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup/0.0.1280.680@0.0.1280.680" timestamp="1590461517274" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

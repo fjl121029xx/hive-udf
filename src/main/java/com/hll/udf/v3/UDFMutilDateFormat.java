@@ -1,6 +1,5 @@
 package com.hll.udf.v3;
 
-import com.hll.udaf.v1.CompareRate;
 import org.apache.hadoop.hive.ql.exec.Description;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentException;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentLengthException;
@@ -23,9 +22,10 @@ public class UDFMutilDateFormat extends GenericUDF {
 
     public static Logger logger = Logger.getLogger(UDFMutilDateFormat.class);
 
-    private TimestampObjectInspector dateObjectInspector01;
+    private TimestampObjectInspector timestampObjectInspector01;
     private JavaLongObjectInspector longObjectInspector01;
     private JavaStringObjectInspector stringObjectInspector01;
+    private JavaDateObjectInspector dateObjectInspector01;
 
     private WritableConstantStringObjectInspector stringObjectInspector02;
 
@@ -40,13 +40,16 @@ public class UDFMutilDateFormat extends GenericUDF {
 
 
         if (a instanceof TimestampObjectInspector) {
-            this.dateObjectInspector01 = (TimestampObjectInspector) a;
+            this.timestampObjectInspector01 = (TimestampObjectInspector) a;
             this.stringObjectInspector02 = (WritableConstantStringObjectInspector) b;
         } else if (a instanceof JavaLongObjectInspector) {
             this.longObjectInspector01 = (JavaLongObjectInspector) a;
             this.stringObjectInspector02 = (WritableConstantStringObjectInspector) b;
         } else if (a instanceof JavaStringObjectInspector) {
             this.stringObjectInspector01 = (JavaStringObjectInspector) a;
+            this.stringObjectInspector02 = (WritableConstantStringObjectInspector) b;
+        } else if (a instanceof JavaDateObjectInspector) {
+            this.dateObjectInspector01 = (JavaDateObjectInspector) a;
             this.stringObjectInspector02 = (WritableConstantStringObjectInspector) b;
         } else {
             throw new UDFArgumentException(String.format("wrong type %s %s", a.getClass(), b.getClass()));
@@ -145,8 +148,8 @@ public class UDFMutilDateFormat extends GenericUDF {
 
         Calendar ca = Calendar.getInstance();
         logger.info(deferredObjects[0].getClass().getName());
-        if (this.dateObjectInspector01 != null && this.stringObjectInspector02 != null) {
-            Timestamp t = dateObjectInspector01.getPrimitiveJavaObject(deferredObjects[0].get());
+        if (this.timestampObjectInspector01 != null && this.stringObjectInspector02 != null) {
+            Timestamp t = timestampObjectInspector01.getPrimitiveJavaObject(deferredObjects[0].get());
             assert ca != null;
             ca.setTime(new Date(t.getTime()));
         } else if (this.longObjectInspector01 != null && this.stringObjectInspector02 != null) {
@@ -161,6 +164,10 @@ public class UDFMutilDateFormat extends GenericUDF {
             } else {
                 ca = noChineseDateArr(args0);
             }
+        } else if (this.dateObjectInspector01 != null && this.stringObjectInspector02 != null) {
+
+            Date date = dateObjectInspector01.getPrimitiveJavaObject(deferredObjects[0].get());
+            ca.setTime(date);
         } else {
             throw new RuntimeException(String.format("wrong type 【%s\t%s】", deferredObjects[0].getClass().getName(), deferredObjects[1].getClass().getName()));
         }
