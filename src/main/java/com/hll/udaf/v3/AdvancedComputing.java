@@ -40,13 +40,21 @@ public class AdvancedComputing extends UDAF {
             logger.info(dimensions + "\t" + measure + "\t" + mathFunction);
             StringBuilder sb = new StringBuilder();
             if (dimensions != null && dimensions.size() > 0) {
-                for (String l : dimensions) {
-                    if (l == null) {
-                        sb.append("0").append(",");
+                for (int i = 0; i < dimensions.size(); i++) {
+                    String s = dimensions.get(i);
+                    if (i == dimensions.size() - 1) {
+                        if (s == null) {
+                            sb.append("0");
+                        } else {
+                            sb.append(s);
+                        }
                     } else {
-                        sb.append(l).append(",");
+                        if (s == null) {
+                            sb.append("0").append(",");
+                        } else {
+                            sb.append(s).append(",");
+                        }
                     }
-
                 }
             } else {
                 return true;

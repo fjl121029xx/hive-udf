@@ -41,7 +41,6 @@ public class UDFRowColStat extends UDF {
 
         if (rowcol != 1) {
 
-
             StringBuilder mea = new StringBuilder();
             for (int i = 0; i < measure_length; i++) {
                 if (i == measure_length - 1) mea.append("0.0");
@@ -126,7 +125,8 @@ public class UDFRowColStat extends UDF {
             if (rowcol == 6 || rowcol == 2 || rowcol == 7) {
                 for (Map.Entry<String, String> en : t1.entrySet()) {
                     String k = en.getKey();
-                    String v = en.getKey();
+                    String v = en.getValue();
+
                     List<String> dimension_list = splitArray(k.split(","), 0, dimension_length);
                     List<String> compare_list = splitArray(k.split(","), dimension_length, dimension_length + compare_length);
                     List<String> measure_list = splitArray(v.split("::"), 0, measure_length);
@@ -177,71 +177,164 @@ public class UDFRowColStat extends UDF {
                     }
                 }
             }
-            totalSumMap.putAll(sub_ttal);
-            totalSumMap.putAll(t1);
-            resule = doRowCount(totalSumMap, 1, 1);
+            List<String> a = doRowCount(totalSumMap, dimension_length, compare_length, row_func);
+            List<String> b = doRowCount(sub_ttal, dimension_length, compare_length, row_func);
+            List<String> c = doRowCount(t1, dimension_length, compare_length, row_func);
+            resule.addAll(a);
+            resule.addAll(b);
+            resule.addAll(c);
         } else {
-            resule = doRowCount(t1, 1, 1);
+            resule = doRowCount(t1, 1, 1, row_func);
         }
         return resule;
     }
 
-    public List<String> doRowCount(Map<String, String> m, int dimension_length, int compare_length) {
+    public List<String> doRowCount(Map<String, String> m, int dimension_length, int compare_length
+            , List<String> row_func) {
         Map<String, Double> hangheji = new HashMap<>();
         Map<String, Double> shuzhixiaoji = new HashMap<>();
         Map<String, Double> fenliexiaoji = new HashMap<>();
+
+        Map<String, Integer> dimenkey2compareSize = new HashMap<>();
 
         for (Map.Entry<String, String> en :
                 m.entrySet()) {
             String[] key = en.getKey().split(",");
             String[] value = en.getValue().split("::");
+
             List<String> dimensionKey = splitArray(key, 0, dimension_length);
-            List<String> compareKey = splitArray(key, dimension_length, dimension_length + compare_length);
-            Double v = Arrays.stream(value).map(Double::parseDouble).reduce(Double::sum).get();
             String dKey = mkString(dimensionKey, "△");
-            hangheji.put(dKey, (v + hangheji.getOrDefault(dKey, 0.00)));
+            List<String> compareKey = splitArray(key, dimension_length, dimension_length + compare_length);
+
+            int dimenCompareSize = dimenkey2compareSize.getOrDefault(dKey, 0);
+            dimenCompareSize = dimenCompareSize + 1;
+            dimenkey2compareSize.put(dKey, dimenCompareSize);
+
+            double hanghejiValue = hangheji.getOrDefault(dKey, 0.00);
+            if (hanghejiValue == 0.00 && row_func.get(0).equals("max-1")) hanghejiValue = -9999999;
+            else if (hanghejiValue == 0.00 && row_func.get(0).equals("min-1")) hanghejiValue = 9999999;
+
+            double v = Arrays.stream(value).map(Double::parseDouble).reduce(Double::sum).get();
+            if (row_func.get(0) == "max-1") {
+                v = Arrays.stream(value).map(Double::parseDouble).max(Double::compareTo).get();
+                if (v > hanghejiValue) {
+                    hanghejiValue = v;
+                }
+            } else if (row_func.get(0).equals("min-1")) {
+                v = Arrays.stream(value).map(Double::parseDouble).min(Double::compareTo).get();
+                if (v < hanghejiValue) {
+                    hanghejiValue = v;
+                }
+            } else if (row_func.get(0).equals("sum-1") || row_func.get(0).equals("avg-1")) {
+                hanghejiValue = hanghejiValue + v;
+            }
+            hangheji.put(dKey, hanghejiValue);
+
 
             // 数值小计
             for (int i = 0; i < value.length; i++) {
                 String shuzhikey = dKey + "△" + i;
-                shuzhixiaoji.put(shuzhikey, (Double.parseDouble(value[i]) + shuzhixiaoji.getOrDefault(shuzhikey, 0.00)));
+                Double shuzhixiaojiValue = shuzhixiaoji.getOrDefault(shuzhikey, 0.00);
+
+                if (shuzhixiaojiValue == 0.00 && row_func.get(i + 1).equals("max-1"))
+                    shuzhixiaojiValue = -9999999999999.0;
+                else if (shuzhixiaojiValue == 0.00 && row_func.get(i + 1).equals("min-1"))
+                    shuzhixiaojiValue = 9999999999.0;
+                double v3 = Double.parseDouble(value[i]);
+
+                if (row_func.get(i + 1) == "max-1") {
+                    if (v3 > shuzhixiaojiValue) {
+                        shuzhixiaojiValue = v3;
+                    }
+                } else if (row_func.get(i + 1) == "min-1") {
+
+                    if (v3 < shuzhixiaojiValue) {
+                        shuzhixiaojiValue = v3;
+                    }
+                } else if (row_func.get(i + 1) == "sum-1" || row_func.get(i + 1) == "avg-1") {
+                    shuzhixiaojiValue = shuzhixiaojiValue + v3;
+                }
+                shuzhixiaoji.put(shuzhikey, shuzhixiaojiValue);
 
             }
             // 分列小计
             String fenliekey = dKey + "△" + mkString(compareKey, "△");
-            fenliexiaoji.put(fenliekey, (v + fenliexiaoji.getOrDefault(fenliekey, 0.00)));
+            double fenliexiaojiValue = fenliexiaoji.getOrDefault(fenliekey, 0.00);
+            String fenlieFunc = row_func.get(row_func.size() - 1);
+            if (fenliexiaojiValue == 0.00 && fenlieFunc.equals("max-1"))
+                fenliexiaojiValue = -9999999;
+            else if (fenliexiaojiValue == 0.00 && fenlieFunc.equals("min-1"))
+                fenliexiaojiValue = 9999999;
+
+            double v2 = Arrays.stream(value).map(Double::parseDouble).reduce(Double::sum).get();
+            if (fenlieFunc.equals("max-1")) {
+                v2 = Arrays.stream(value).map(Double::parseDouble).max(Double::compareTo).get();
+                if (v2 > fenliexiaojiValue) {
+                    fenliexiaojiValue = v2;
+                }
+            } else if (fenlieFunc.equals("min-1")) {
+                v2 = Arrays.stream(value).map(Double::parseDouble).min(Double::compareTo).get();
+                if (v2 < fenliexiaojiValue) {
+                    fenliexiaojiValue = v2;
+                }
+            } else if (fenlieFunc.equals("sum-1") || fenlieFunc.equals("avg-1")) {
+                hanghejiValue = hanghejiValue + v2;
+            }
+            fenliexiaoji.put(fenliekey, hanghejiValue);
 
         }
+        logger.info(hangheji);
+        logger.info(shuzhixiaoji);
+        logger.info(fenliexiaoji);
+
         List<String> newResultSeq = new LinkedList<>();
         for (Map.Entry<String, String> en :
                 m.entrySet()) {
 
+            logger.info("key---> " + en.getKey());
+            logger.info("value---> " + en.getValue());
             String key = en.getKey();
-            String value = en.getValue();
+            String value = en.getValue().replace("::", ",");
 
             String[] krr = key.split(",");
-            String[] vrr = key.split("::");
+            String[] vrr = value.split(",");
             List<String> dimensionKey = splitArray(krr, 0, dimension_length);
             List<String> compareKey = splitArray(krr, dimension_length, dimension_length + compare_length);
+            int size = dimenkey2compareSize.getOrDefault(mkString(dimensionKey, "△"), 1);
 
             for (int i = 0; i < vrr.length; i++) {
                 double shuzhixiaojiValue = shuzhixiaoji.getOrDefault(mkString(dimensionKey, "△") + "△" + i, 0.00);
-                value = value + "::" + shuzhixiaojiValue;
+                if (row_func.get(i + 1).equals("avg-1")) {
+                    value = String.format("%s,%s", value, shuzhixiaojiValue / vrr.length);
+                } else {
+                    value = String.format("%s,%s", value, shuzhixiaojiValue);
+                }
             }
 
             double fenliexiaojiValue = fenliexiaoji.getOrDefault(mkString(dimensionKey, "△") + "△" + mkString(compareKey, "△"), 0.00);
-            value = value + "::" + fenliexiaojiValue;
+            if (row_func.get(row_func.size()).equals("avg-1")) {
+                value = value + "," + fenliexiaojiValue / vrr.length;
+            } else {
+                value = value + "," + fenliexiaojiValue;
+            }
+
+
             double hanghejiValue = hangheji.getOrDefault(mkString(dimensionKey, "△"), 0.00);
-            value = value + "::" + hanghejiValue;
+            if (row_func.get(0).equals("avg-1")) {
+                value = value + "," + hanghejiValue / size;
+            } else {
+                value = value + "," + hanghejiValue;
+            }
+
 
             if (key.contains("总计")) {
-                value = value + "::columnSum";
+                value = value + ",columnSum";
             } else if (key.contains("小计")) {
-                value = value + "::columnSum_subtotal_";
+                value = value + ",columnSum_subtotal_";
             } else {
-                value = value + "::";
+                value = value + ",";
             }
-            newResultSeq.add(key + ":" + value);
+            newResultSeq.add(key + "," + value);
 
         }
         return newResultSeq;
