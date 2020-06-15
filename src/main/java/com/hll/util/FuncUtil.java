@@ -180,7 +180,7 @@ public class FuncUtil {
         }
         Set<String> kset = m1.keySet();
         for (String i : kset) {
-            result.put(i, m1.getOrDefault(i, "") + "::" + m2.getOrDefault(i, ""));
+            result.put(i, m1.getOrDefault(i, "") + "\001" + m2.getOrDefault(i, ""));
         }
         return result;
     }
