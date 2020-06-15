@@ -73,7 +73,13 @@ public class UDFRowColStat extends UDF {
                     for (int i = 0; i < vrr.length; i++) {
                         String func = col_measure_func.get(i);
                         double o = Double.parseDouble(tt[i]);
-                        double p = Double.parseDouble(vrr[i]);
+                        double p = 0.0;
+                        try {
+                            p = Double.parseDouble(vrr[i]);
+                        } catch (Exception e) {
+                            System.out.println(vrr[i]);
+                        }
+
                         if (func.equals("max-1")) {
                             if (p > o) {
                                 o = p;
@@ -151,8 +157,8 @@ public class UDFRowColStat extends UDF {
                         StringBuilder res = new StringBuilder();
                         for (int j = 0; j < measure_list.size(); j++) {
 
-                            double o = Double.parseDouble(tt[i]);
-                            double p = Double.parseDouble(measure_list.get(i));
+                            double o = Double.parseDouble(tt[j]);
+                            double p = Double.parseDouble(measure_list.get(j));
                             if (func.equals("max-1")) {
                                 if (p > o) {
                                     o = p;
@@ -177,6 +183,7 @@ public class UDFRowColStat extends UDF {
                     }
                 }
             }
+
             List<String> a = doRowCount(totalSumMap, dimension_length, compare_length, row_func);
             List<String> b = doRowCount(sub_ttal, dimension_length, compare_length, row_func);
             List<String> c = doRowCount(t1, dimension_length, compare_length, row_func);
@@ -214,14 +221,32 @@ public class UDFRowColStat extends UDF {
             if (hanghejiValue == 0.00 && row_func.get(0).equals("max-1")) hanghejiValue = -9999999;
             else if (hanghejiValue == 0.00 && row_func.get(0).equals("min-1")) hanghejiValue = 9999999;
 
-            double v = Arrays.stream(value).map(Double::parseDouble).reduce(Double::sum).get();
-            if (row_func.get(0) == "max-1") {
-                v = Arrays.stream(value).map(Double::parseDouble).max(Double::compareTo).get();
+            double v = Arrays.stream(value).map(s -> {
+                try {
+                    return Double.parseDouble(s);
+                } catch (Exception e) {
+                    return 0.00;
+                }
+            }).reduce(Double::sum).get();
+            if (row_func.get(0).equals("max-1")) {
+                v = Arrays.stream(value).map(s -> {
+                    if (!s.equals("-")) {
+                        return Double.parseDouble(s);
+                    } else {
+                        return 0.0;
+                    }
+                }).max(Double::compareTo).get();
                 if (v > hanghejiValue) {
                     hanghejiValue = v;
                 }
             } else if (row_func.get(0).equals("min-1")) {
-                v = Arrays.stream(value).map(Double::parseDouble).min(Double::compareTo).get();
+                v = Arrays.stream(value).map(s -> {
+                    if (!s.equals("-")) {
+                        return Double.parseDouble(s);
+                    } else {
+                        return 0.0;
+                    }
+                }).min(Double::compareTo).get();
                 if (v < hanghejiValue) {
                     hanghejiValue = v;
                 }
@@ -229,7 +254,6 @@ public class UDFRowColStat extends UDF {
                 hanghejiValue = hanghejiValue + v;
             }
             hangheji.put(dKey, hanghejiValue);
-
 
             // 数值小计
             for (int i = 0; i < value.length; i++) {
@@ -240,23 +264,25 @@ public class UDFRowColStat extends UDF {
                     shuzhixiaojiValue = -9999999999999.0;
                 else if (shuzhixiaojiValue == 0.00 && row_func.get(i + 1).equals("min-1"))
                     shuzhixiaojiValue = 9999999999.0;
-                double v3 = Double.parseDouble(value[i]);
-
-                if (row_func.get(i + 1) == "max-1") {
+                double v3 = 0;
+                if (!value[i].equals("-")) {
+                    v3 = Double.parseDouble(value[i]);
+                }
+                if (row_func.get(i + 1).equals("max-1")) {
                     if (v3 > shuzhixiaojiValue) {
                         shuzhixiaojiValue = v3;
                     }
-                } else if (row_func.get(i + 1) == "min-1") {
+                } else if (row_func.get(i + 1).equals("min-1")) {
 
                     if (v3 < shuzhixiaojiValue) {
                         shuzhixiaojiValue = v3;
                     }
-                } else if (row_func.get(i + 1) == "sum-1" || row_func.get(i + 1) == "avg-1") {
+                } else if (row_func.get(i + 1).equals("sum-1") || row_func.get(i + 1) == "avg-1") {
                     shuzhixiaojiValue = shuzhixiaojiValue + v3;
                 }
                 shuzhixiaoji.put(shuzhikey, shuzhixiaojiValue);
-
             }
+
             // 分列小计
             String fenliekey = dKey + "△" + mkString(compareKey, "△");
             double fenliexiaojiValue = fenliexiaoji.getOrDefault(fenliekey, 0.00);
@@ -266,33 +292,48 @@ public class UDFRowColStat extends UDF {
             else if (fenliexiaojiValue == 0.00 && fenlieFunc.equals("min-1"))
                 fenliexiaojiValue = 9999999;
 
-            double v2 = Arrays.stream(value).map(Double::parseDouble).reduce(Double::sum).get();
+            double v2 = Arrays.stream(value).map(s -> {
+                if (!s.equals("-")) {
+                    return Double.parseDouble(s);
+                } else {
+                    return 0.0;
+                }
+            }).reduce(Double::sum).get();
+
             if (fenlieFunc.equals("max-1")) {
-                v2 = Arrays.stream(value).map(Double::parseDouble).max(Double::compareTo).get();
+                v2 = Arrays.stream(value).map(s -> {
+                    if (!s.equals("-")) {
+                        return Double.parseDouble(s);
+                    } else {
+                        return 0.0;
+                    }
+                }).max(Double::compareTo).get();
                 if (v2 > fenliexiaojiValue) {
                     fenliexiaojiValue = v2;
                 }
             } else if (fenlieFunc.equals("min-1")) {
-                v2 = Arrays.stream(value).map(Double::parseDouble).min(Double::compareTo).get();
+                v2 = Arrays.stream(value).map(s -> {
+                    if (!s.equals("-")) {
+                        return Double.parseDouble(s);
+                    } else {
+                        return 0.0;
+                    }
+                }).min(Double::compareTo).get();
                 if (v2 < fenliexiaojiValue) {
                     fenliexiaojiValue = v2;
                 }
             } else if (fenlieFunc.equals("sum-1") || fenlieFunc.equals("avg-1")) {
-                hanghejiValue = hanghejiValue + v2;
+                fenliexiaojiValue = fenliexiaojiValue + v2;
             }
-            fenliexiaoji.put(fenliekey, hanghejiValue);
+            fenliexiaoji.put(fenliekey, fenliexiaojiValue);
 
         }
-        logger.info(hangheji);
-        logger.info(shuzhixiaoji);
-        logger.info(fenliexiaoji);
 
+        logger.info(fenliexiaoji);
         List<String> newResultSeq = new LinkedList<>();
         for (Map.Entry<String, String> en :
                 m.entrySet()) {
 
-            logger.info("key---> " + en.getKey());
-            logger.info("value---> " + en.getValue());
             String key = en.getKey();
             String value = en.getValue().replace("::", ",");
 
@@ -311,13 +352,6 @@ public class UDFRowColStat extends UDF {
                 }
             }
 
-            double fenliexiaojiValue = fenliexiaoji.getOrDefault(mkString(dimensionKey, "△") + "△" + mkString(compareKey, "△"), 0.00);
-            if (row_func.get(row_func.size()).equals("avg-1")) {
-                value = value + "," + fenliexiaojiValue / vrr.length;
-            } else {
-                value = value + "," + fenliexiaojiValue;
-            }
-
 
             double hanghejiValue = hangheji.getOrDefault(mkString(dimensionKey, "△"), 0.00);
             if (row_func.get(0).equals("avg-1")) {
@@ -326,6 +360,14 @@ public class UDFRowColStat extends UDF {
                 value = value + "," + hanghejiValue;
             }
 
+            String fenliekey = mkString(dimensionKey, "△") + "△" + mkString(compareKey, "△");
+            logger.info("key---> " + fenliekey);
+            double fenliexiaojiValue = fenliexiaoji.getOrDefault(fenliekey, 0.00);
+            if (row_func.get(row_func.size() - 1).equals("avg-1")) {
+                value = value + "," + fenliexiaojiValue / vrr.length;
+            } else {
+                value = value + "," + fenliexiaojiValue;
+            }
 
             if (key.contains("总计")) {
                 value = value + ",columnSum";
@@ -334,6 +376,8 @@ public class UDFRowColStat extends UDF {
             } else {
                 value = value + ",";
             }
+
+
             newResultSeq.add(key + "," + value);
 
         }
