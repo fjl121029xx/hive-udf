@@ -4,8 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.hll.util.FuncUtil.doCompare;
-import static com.hll.util.FuncUtil.mergerMap;
+import static com.hll.util.FuncUtil.*;
 
 public class UdfImpl implements Udf {
 
@@ -90,9 +89,9 @@ public class UdfImpl implements Udf {
         for (String whatMath : mathFunc) {
             if (whatMath.startsWith("compare")) {
                 Map<String, String> map = doCompare(cat.getOrDefault(whatMath, new HashMap<>()), whatMath.split("-")[0], Integer.parseInt(whatMath.split("-")[1]), Integer.parseInt(whatMath.split("-")[2]));
-                finalResule = mergerMap(finalResule, map);
+                finalResule = mergerMapV1(finalResule, map);
             } else {
-                finalResule = mergerMap(finalResule, cat.get(whatMath));
+                finalResule = mergerMapV1(finalResule, cat.get(whatMath));
             }
         }
         return finalResule;

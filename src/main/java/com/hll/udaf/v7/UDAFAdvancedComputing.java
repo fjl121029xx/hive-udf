@@ -152,15 +152,15 @@ public class UDAFAdvancedComputing extends UDAF {
             for (String whatMath : mathFunc) {
                 if (whatMath.startsWith("compare")) {
                     Map<String, String> map = doCompare(cat.getOrDefault(whatMath, new HashMap<>()), whatMath.split("-")[0], Integer.parseInt(whatMath.split("-")[1]), Integer.parseInt(whatMath.split("-")[2]));
-                    finalResule = mergerMap(finalResule, map);
+                    finalResule = mergerMapV2(finalResule, map);
                 } else if (whatMath.startsWith("row_account")) {
                     Map<String, String> map = doRolAccount(cat.getOrDefault(whatMath, new HashMap<>()));
-                    finalResule = mergerMap(finalResule, map);
+                    finalResule = mergerMapV2(finalResule, map);
                 } else if (whatMath.startsWith("add_up")) {
                     Map<String, String> map = doAddUp(cat.getOrDefault(whatMath, new HashMap<>()), whatMath);
-                    finalResule = mergerMap(finalResule, map);
+                    finalResule = mergerMapV2(finalResule, map);
                 } else {
-                    finalResule = mergerMap(finalResule, cat.get(whatMath));
+                    finalResule = mergerMapV2(finalResule, cat.get(whatMath));
                 }
             }
             return finalResule;

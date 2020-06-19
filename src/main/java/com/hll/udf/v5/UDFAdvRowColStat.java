@@ -331,7 +331,7 @@ public class UDFAdvRowColStat extends UDF {
                 m.entrySet()) {
 
             String key = en.getKey();
-            String value = en.getValue().replace("\001", ",");
+            String value = en.getValue();
 
             String[] krr = key.split("\001");
             String[] vrr = value.split("\001");

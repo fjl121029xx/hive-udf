@@ -170,7 +170,22 @@ public class FuncUtil {
         return ca.get(Calendar.YEAR) + "" + m + "" + d;
     }
 
-    public static Map<String, String> mergerMap(Map<String, String> m1, Map<String, String> m2) {
+    public static Map<String, String> mergerMapV1(Map<String, String> m1, Map<String, String> m2) {
+        Map<String, String> result = new HashMap<>();
+        if (m1 == null || m1.isEmpty()) {
+            return m2;
+        }
+        if (m2 == null || m2.isEmpty()) {
+            return m1;
+        }
+        Set<String> kset = m1.keySet();
+        for (String i : kset) {
+            result.put(i, m1.getOrDefault(i, "") + "::" + m2.getOrDefault(i, ""));
+        }
+        return result;
+    }
+
+    public static Map<String, String> mergerMapV2(Map<String, String> m1, Map<String, String> m2) {
         Map<String, String> result = new HashMap<>();
         if (m1 == null || m1.isEmpty()) {
             return m2;
