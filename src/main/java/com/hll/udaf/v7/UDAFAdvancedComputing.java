@@ -6,9 +6,7 @@ import org.apache.hadoop.hive.ql.exec.UDAF;
 import org.apache.hadoop.hive.ql.exec.UDAFEvaluator;
 import org.apache.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.hll.util.FuncUtil.*;
 
@@ -37,9 +35,11 @@ public class UDAFAdvancedComputing extends UDAF {
         }
 
         //map阶段，返回值为boolean类型，当为true则程序继续执行，当为false则程序退出
-        public boolean iterate(List<String> dimensions, List<String> measure, List<String> mathFunction) {
+        public boolean iterate(List<String> dimensions,
+                               List<String> measure,
+                               List<String> mathFunction,
+                               String filterKey) {
 
-            logger.info(dimensions + "\t" + measure + "\t" + mathFunction);
             StringBuilder sb = new StringBuilder();
             if (dimensions != null && dimensions.size() > 0) {
                 for (int i = 0; i < dimensions.size(); i++) {
@@ -86,6 +86,10 @@ public class UDAFAdvancedComputing extends UDAF {
             tmp.put("mathFuncStr", mathFuncStr);
             buffer.PartialResult.put("mathFuncStr", tmp);
 
+            Map<String, String> tmp2 = new HashMap<>();
+            tmp2.put("filterKey", filterKey);
+            buffer.PartialResult.put("filterKey", tmp2);
+
             return true;
         }
 
@@ -98,16 +102,22 @@ public class UDAFAdvancedComputing extends UDAF {
             if (mapOutput == null || mapOutput.size() == 0) {
                 return true;
             }
-            String mathFuncStr = "";
-            try {
+            String mathFuncStr = null;
+            if (buffer.PartialResult.containsKey("mathFuncStr")) {
                 mathFuncStr = buffer.PartialResult.get("mathFuncStr").get("mathFuncStr");
                 buffer.PartialResult.remove("mathFuncStr");
-            } catch (Exception e) {
-                System.out.println();
             }
-
             String mathFuncStr2 = mapOutput.get("mathFuncStr").get("mathFuncStr");
             mapOutput.remove("mathFuncStr");
+
+            String filterKey = null;
+            if (buffer.PartialResult.containsKey("filterKey")) {
+                filterKey = buffer.PartialResult.get("filterKey").get("filterKey");
+                buffer.PartialResult.remove("filterKey");
+            }
+            String filterKey2 = mapOutput.get("filterKey").get("filterKey");
+            mapOutput.remove("filterKey");
+
 
             Map<String, Map<String, String>> cat1 = buffer.PartialResult;
             Map<String, Map<String, String>> cat2 = mapOutput;
@@ -129,18 +139,38 @@ public class UDAFAdvancedComputing extends UDAF {
             tmp.put("mathFuncStr", mathFuncStr);
             buffer.PartialResult.put("mathFuncStr", tmp);
 
+
+            if (filterKey == null || filterKey.length() == 0) {
+                filterKey = filterKey2;
+            }
+            Map<String, String> tmp2 = new HashMap<>();
+            tmp2.put("filterKey", filterKey);
+            buffer.PartialResult.put("filterKey", tmp2);
+
             return true;
         }
 
         public Map<String, String> terminate() {
+            logger.info("terminate");
 
             Map<String, String> finalResule = new HashMap<>();
+            logger.info("check mathFuncStr");
             Map<String, String> map1 = buffer.PartialResult.get("mathFuncStr");
             if (map1 == null || map1.size() == 0) {
                 return finalResule;
             }
             String mathFuncStr = map1.get("mathFuncStr");
             buffer.PartialResult.remove("mathFuncStr");
+
+            logger.info("check filterKey");
+            Map<String, String> map2 = buffer.PartialResult.get("filterKey");
+            if (map2 == null || map2.size() == 0) {
+                return finalResule;
+            }
+            String filterKey = map2.get("filterKey");
+            buffer.PartialResult.remove("filterKey");
+            logger.info("check end filterKey is " + filterKey
+                    + "\t mathFuncStr is " + mathFuncStr);
 
             Map<String, Map<String, String>> cat = buffer.PartialResult;
             if (cat == null || cat.size() == 0) {
@@ -163,6 +193,26 @@ public class UDAFAdvancedComputing extends UDAF {
                     finalResule = mergerMapV2(finalResule, cat.get(whatMath));
                 }
             }
+
+            String[] filterKeyArr = filterKey.split(":");
+            Iterator<Map.Entry<String, String>> it = finalResule.entrySet().iterator();
+            int aCount = 0;
+            int bCount = 0;
+            while (it.hasNext()) {
+                Map.Entry<String, String> entry = it.next();
+                String key = entry.getKey();
+                String filterValue = key.split("\001")[0];
+                if (!filterKeyArr[0].equals("") && filterValue.compareTo(filterKeyArr[0]) >= 0 &&
+                        !filterKeyArr[1].equals("") && filterValue.compareTo(filterKeyArr[1]) <= 0) {
+                    bCount++;
+                } else {
+                    aCount++;
+                    it.remove();
+                }
+
+            }
+            logger.info("has filter " + aCount);
+            logger.info("no filter " + bCount);
             return finalResule;
         }
 
