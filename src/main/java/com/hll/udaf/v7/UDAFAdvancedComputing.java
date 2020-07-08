@@ -182,12 +182,15 @@ public class UDAFAdvancedComputing extends UDAF {
             for (String whatMath : mathFunc) {
                 if (whatMath.startsWith("compare")) {
                     Map<String, String> map = doCompare(cat.getOrDefault(whatMath, new HashMap<>()), whatMath.split("-")[0], Integer.parseInt(whatMath.split("-")[1]), Integer.parseInt(whatMath.split("-")[2]));
+                    logger.info(map);
                     finalResule = mergerMapV2(finalResule, map);
                 } else if (whatMath.startsWith("row_account")) {
                     Map<String, String> map = doRolAccount(cat.getOrDefault(whatMath, new HashMap<>()));
+                    logger.info(map);
                     finalResule = mergerMapV2(finalResule, map);
                 } else if (whatMath.startsWith("add_up")) {
                     Map<String, String> map = doAddUp(cat.getOrDefault(whatMath, new HashMap<>()), whatMath);
+                    logger.info(map);
                     finalResule = mergerMapV2(finalResule, map);
                 } else {
                     finalResule = mergerMapV2(finalResule, cat.get(whatMath));
@@ -202,13 +205,19 @@ public class UDAFAdvancedComputing extends UDAF {
                 Map.Entry<String, String> entry = it.next();
                 String key = entry.getKey();
                 String filterValue = key.split("\001")[0];
-                if (!filterKeyArr[0].equals("") && filterValue.compareTo(filterKeyArr[0]) >= 0 &&
-                        !filterKeyArr[1].equals("") && filterValue.compareTo(filterKeyArr[1]) <= 0) {
-                    bCount++;
+
+                if (filterKeyArr.length > 0) {
+                    if (!filterKeyArr[0].equals("") && filterValue.compareTo(filterKeyArr[0]) >= 0 &&
+                            !filterKeyArr[1].equals("") && filterValue.compareTo(filterKeyArr[1]) <= 0) {
+                        bCount++;
+                    } else {
+                        aCount++;
+                        it.remove();
+                    }
                 } else {
-                    aCount++;
-                    it.remove();
+                    bCount++;
                 }
+
 
             }
             logger.info("has filter " + aCount);

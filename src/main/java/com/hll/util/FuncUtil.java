@@ -1,5 +1,8 @@
 package com.hll.util;
 
+import com.hll.udaf.v1.CompareRate;
+import org.apache.log4j.Logger;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -7,19 +10,27 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class FuncUtil {
+    public static Logger logger = Logger.getLogger(FuncUtil.class);
 
     public static Map<String, String> doCompare(Map<String, String> compare, String _type, int whitch, int what) {
-
+        logger.info("compare map " + compare);
         Map<String, String> finalResule = new HashMap<>();
         for (String key : compare.keySet()) {
             Calendar timt = findTime(key);
             String timttype = findTimeType(key);
 
             double v1 = Double.parseDouble(compare.getOrDefault(key, "0.00"));
-            String newKey = key.replaceFirst(caFormat(timt, timttype), caFormat(timeSub(timt, _type + "-" + whitch), timttype));
+            String s = caFormat(timt, timttype);
+            logger.info(s + "-" + _type + "-" + whitch);
+            String s1 = caFormat(timeSub(timt, _type + "-" + whitch), timttype);
+            logger.info("----------- 1 " + s);
+            logger.info("----------- 2 " + s1);
+            String newKey = key.replaceFirst(s, s1);
 
 
             double v2 = Double.parseDouble(compare.getOrDefault(newKey, "0.00"));
+            logger.info("compare: key " + key + " v1 " + v1 + " newKey " + newKey + " v2 " + v2);
+
             if (what == 1) {
                 String r = "-";
                 if (v2 != 0) {
@@ -279,7 +290,7 @@ public class FuncUtil {
         } else if (_type.startsWith("compare-4")) {
             ca.add(Calendar.YEAR, -1);
         } else if (_type.startsWith("compare-5")) {
-            ca.add(Calendar.MONTH, -4);
+            ca.add(Calendar.MONTH, -3);
         }
         return ca;
     }
