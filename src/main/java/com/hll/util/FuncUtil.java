@@ -50,6 +50,7 @@ public class FuncUtil {
 
     public static Map<String, String> doRolAccount(Map<String, String> row_account) {
         Map<String, String> finalResule = new HashMap<>();
+        BigDecimal z = new BigDecimal(1);
         double sum_value = 0.00;
         for (String v : row_account.values()) {
             sum_value += Double.parseDouble(v);
@@ -57,7 +58,7 @@ public class FuncUtil {
         BigDecimal b = new BigDecimal(sum_value);
         for (Map.Entry<String, String> en : row_account.entrySet()) {
             BigDecimal a = new BigDecimal(en.getValue());
-            BigDecimal result = a.divide(b, 6, RoundingMode.HALF_UP).setScale(6, BigDecimal.ROUND_UP);
+            BigDecimal result = a.divide(z, 6, RoundingMode.HALF_UP).divide(b, 6, RoundingMode.HALF_UP).setScale(6, BigDecimal.ROUND_UP);
             finalResule.put(en.getKey(), result.toString());
         }
         return finalResule;

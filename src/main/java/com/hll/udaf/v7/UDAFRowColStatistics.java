@@ -1317,7 +1317,7 @@ public class UDAFRowColStatistics extends UDAF {
                 s = "^[0-9]*$";
                 pattern = Pattern.compile(s);
                 ma = pattern.matcher(input);
-                if (ma.find()) return 8;
+                if (ma.find() && input.startsWith("20")) return 8;
                 else return 0;
             }
         }

@@ -151,7 +151,11 @@ public class UDFMutilDateFormat extends GenericUDF {
         if (this.timestampObjectInspector01 != null && this.stringObjectInspector02 != null) {
             Timestamp t = timestampObjectInspector01.getPrimitiveJavaObject(deferredObjects[0].get());
             assert ca != null;
-            ca.setTime(new Date(t.getTime()));
+            try {
+                ca.setTime(new Date(t.getTime()));
+            } catch (Exception e) {
+                return t+"";
+            }
         } else if (this.longObjectInspector01 != null && this.stringObjectInspector02 != null) {
             long l = longObjectInspector01.get(deferredObjects[0].get());
             assert ca != null;

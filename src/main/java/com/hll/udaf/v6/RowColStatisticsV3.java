@@ -660,11 +660,11 @@ public class RowColStatisticsV3 extends UDAF {
                     }
                     if (totalSumMap.containsKey(key)) {
 //                        totalSumMap.put(key, vrr[0] + "△" + vrr[1]);
-                        StringBuilder sb =new StringBuilder();
+                        StringBuilder sb = new StringBuilder();
                         for (int j = 0; j < vrr.length; j++) {
                             sb.append(vrr[j]).append("△");
                         }
-                        totalSumMap.put(key,sb.toString().substring(0,sb.length()-1));
+                        totalSumMap.put(key, sb.toString().substring(0, sb.length() - 1));
                     }
                 }
                 // =====
@@ -854,11 +854,11 @@ public class RowColStatisticsV3 extends UDAF {
                     }
                     if (sub_ttal.containsKey(key)) {
 //                        sub_ttal.put(key, vrr[0] + "△" + vrr[1]);
-                        StringBuilder sb =new StringBuilder();
+                        StringBuilder sb = new StringBuilder();
                         for (int j = 0; j < vrr.length; j++) {
                             sb.append(vrr[j]).append("△");
                         }
-                        sub_ttal.put(key,sb.toString().substring(0,sb.length()-1));
+                        sub_ttal.put(key, sb.toString().substring(0, sb.length() - 1));
 
                     }
                 }
@@ -1118,11 +1118,11 @@ public class RowColStatisticsV3 extends UDAF {
                         }
                     }
                     if (totalSumMap.containsKey(key)) {
-                        StringBuilder sb =new StringBuilder();
+                        StringBuilder sb = new StringBuilder();
                         for (int j = 0; j < vrr.length; j++) {
                             sb.append(vrr[j]).append("△");
                         }
-                        totalSumMap.put(key,sb.toString().substring(0,sb.length()-1));
+                        totalSumMap.put(key, sb.toString().substring(0, sb.length() - 1));
                     }
                 }
 
@@ -1193,11 +1193,11 @@ public class RowColStatisticsV3 extends UDAF {
                     }
                     if (sub_ttal.containsKey(key)) {
 
-                        StringBuilder sb =new StringBuilder();
+                        StringBuilder sb = new StringBuilder();
                         for (int j = 0; j < vrr.length; j++) {
                             sb.append(vrr[j]).append("△");
                         }
-                        sub_ttal.put(key,sb.toString().substring(0,sb.length()-1));
+                        sub_ttal.put(key, sb.toString().substring(0, sb.length() - 1));
                     }
                 }
 
@@ -1319,7 +1319,7 @@ public class RowColStatisticsV3 extends UDAF {
                 s = "^[0-9]*$";
                 pattern = Pattern.compile(s);
                 ma = pattern.matcher(input);
-                if (ma.find()) return 8;
+                if (ma.find() && input.startsWith("20")) return 8;
                 else return 0;
             }
         }
