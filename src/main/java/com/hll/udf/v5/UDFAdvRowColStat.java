@@ -207,6 +207,7 @@ public class UDFAdvRowColStat extends UDF {
 
             List<String> dimensionKey = splitArray(key, 0, dimension_length);
             String dKey = mkString(dimensionKey, "\001");
+
             List<String> compareKey = splitArray(key, dimension_length, dimension_length + compare_length);
 
             int dimenCompareSize = dimenkey2compareSize.getOrDefault(dKey, 0);
@@ -280,7 +281,11 @@ public class UDFAdvRowColStat extends UDF {
             }
 
             // 分列小计
-            String fenliekey = dKey + "\001" + mkString(compareKey, "\001");
+            String fenliekey = dKey;
+            if (compareKey.size() != 0) {
+                fenliekey = "\001" + mkString(compareKey, "\001");
+            }
+
             double fenliexiaojiValue = fenliexiaoji.getOrDefault(fenliekey, 0.00);
             String fenlieFunc = row_func.get(row_func.size() - 1);
             if (fenliexiaojiValue == 0.00 && fenlieFunc.equals("max-1"))
@@ -356,7 +361,11 @@ public class UDFAdvRowColStat extends UDF {
                 value = value + "\001" + hanghejiValue;
             }
 
-            String fenliekey = mkString(dimensionKey, "\001") + "\001" + mkString(compareKey, "\001");
+            String fenliekey = mkString(dimensionKey, "\001") ;
+            if (compareKey.size() != 0) {
+                fenliekey= "\001" + mkString(compareKey, "\001");
+            }
+
 
             double fenliexiaojiValue = fenliexiaoji.getOrDefault(fenliekey, 0.00);
             if (row_func.get(row_func.size() - 1).equals("avg-1")) {
@@ -381,15 +390,21 @@ public class UDFAdvRowColStat extends UDF {
 
     }
 
-    public static List<String> splitArray(String[] arr, int a, int b) {
+    public List<String> splitArray(String[] arr, int a, int b) {
         List<String> newArr = new ArrayList<>();
-        for (int i = a; i < b; i++) {
-            newArr.add(arr[i]);
+        try {
+
+            for (int i = a; i < b; i++) {
+                newArr.add(arr[i]);
+            }
+        } catch (Exception e) {
+            logger.info("splitArray---> " + mkString(Arrays.asList(arr), "=") + " " + a + " " + b);
         }
         return newArr;
     }
 
     public static List<String> splitList(List<String> arr, int a, int b) {
+
         List<String> newArr = new ArrayList<>();
         for (int i = a; i < b; i++) {
             newArr.add(arr.get(i));

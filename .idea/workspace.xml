@@ -19,13 +19,12 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20200708   &gt;..·1">
+    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20200709   &gt;..·1">
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/Demo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/Demo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v6/RowColStatisticsV3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v6/RowColStatisticsV3.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v7/UDAFRowColStatistics.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v7/UDAFRowColStatistics.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v7/UDAFAdvancedComputing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v7/UDAFAdvancedComputing.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/v3/UDFMutilDateFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v3/UDFMutilDateFormat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/v5/UDFAdvRowColStat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v5/UDFAdvRowColStat.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/util/FuncUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/util/FuncUtil.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -338,14 +337,12 @@
       <workItem from="1593685684317" duration="660000" />
       <workItem from="1593759556565" duration="5061000" />
       <workItem from="1594195404232" duration="4370000" />
-      <workItem from="1594263818754" duration="4976000" />
-    </task>
-    <task id="LOCAL-00005" summary="20200407   ...1">
-      <created>1586227173484</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1586227173484</updated>
+      <workItem from="1594263818754" duration="5586000" />
+      <workItem from="1594628536505" duration="1824000" />
+      <workItem from="1594806973590" duration="882000" />
+      <workItem from="1594897487069" duration="2910000" />
+      <workItem from="1594983365188" duration="210000" />
+      <workItem from="1595217045200" duration="1011000" />
     </task>
     <task id="LOCAL-00006" summary="20200407   ...2">
       <created>1586241243920</created>
@@ -683,7 +680,14 @@
       <option name="project" value="LOCAL" />
       <updated>1594198918099</updated>
     </task>
-    <option name="localTasksCounter" value="54" />
+    <task id="LOCAL-00054" summary="20200709   &gt;..·1">
+      <created>1594278245147</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1594278245151</updated>
+    </task>
+    <option name="localTasksCounter" value="55" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -714,7 +718,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="20200429   &gt;..2" />
     <MESSAGE value="20200429   &gt;..3" />
     <MESSAGE value="20200507   &gt;..3" />
     <MESSAGE value="20200507   &gt;..4" />
@@ -739,17 +742,14 @@
     <MESSAGE value="20200615   &gt;..·2" />
     <MESSAGE value="20200619   &gt;..·1" />
     <MESSAGE value="20200708   &gt;..·1" />
-    <option name="LAST_COMMIT_MESSAGE" value="20200708   &gt;..·1" />
+    <MESSAGE value="20200709   &gt;..·1" />
+    <option name="LAST_COMMIT_MESSAGE" value="20200709   &gt;..·1" />
   </component>
   <component name="WindowStateProjectService">
     <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589857178746">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1589857178746" />
-    <state x="403" y="143" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1586235509192">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="403" y="143" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1280.680@0.0.1280.680" timestamp="1586235509192" />
     <state x="755" y="73" key="#com.intellij.ide.util.MemberChooser" timestamp="1587697941410">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -762,10 +762,6 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="104" y="228" width="431" height="239" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1280.680@0.0.1280.680" timestamp="1588142639724" />
-    <state x="66" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1586401795799">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="66" y="0" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1280.680@0.0.1280.680" timestamp="1586401795799" />
     <state x="371" y="87" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1592292324476">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -782,22 +778,22 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="421" y="78" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1592537118679" />
-    <state width="1237" height="163" key="GridCell.Tab.0.bottom" timestamp="1594276020242">
+    <state width="1237" height="227" key="GridCell.Tab.0.bottom" timestamp="1595217459759">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1594276020242" />
-    <state width="1237" height="163" key="GridCell.Tab.0.center" timestamp="1594276020242">
+    <state width="1237" height="227" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1595217459759" />
+    <state width="1237" height="227" key="GridCell.Tab.0.center" timestamp="1595217459759">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1594276020242" />
-    <state width="1237" height="163" key="GridCell.Tab.0.left" timestamp="1594276020241">
+    <state width="1237" height="227" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1595217459759" />
+    <state width="1237" height="227" key="GridCell.Tab.0.left" timestamp="1595217459759">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1594276020241" />
-    <state width="1237" height="163" key="GridCell.Tab.0.right" timestamp="1594276020242">
+    <state width="1237" height="227" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1595217459759" />
+    <state width="1237" height="227" key="GridCell.Tab.0.right" timestamp="1595217459759">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1594276020242" />
+    <state width="1237" height="227" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1595217459759" />
     <state width="1237" height="204" key="GridCell.Tab.1.bottom" timestamp="1587715805421">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -826,10 +822,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1592292202321" />
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1594198919730">
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1594278246504">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1594198919730" />
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1594278246504" />
     <state x="93" y="93" width="1095" height="495" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587719916623">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -838,14 +834,6 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="325" y="165" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1589434265533" />
-    <state x="741" y="107" key="extract.method.dialog" timestamp="1586487629794">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="741" y="107" key="extract.method.dialog/0.0.1280.680@0.0.1280.680" timestamp="1586487629794" />
-    <state x="28" y="36" key="new project wizard" timestamp="1585799422596">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="28" y="36" key="new project wizard/0.0.1280.680@0.0.1280.680" timestamp="1585799422596" />
     <state x="343" y="0" key="refactoring.ChangeSignatureDialog" timestamp="1590404608590">
       <screen x="0" y="0" width="1280" height="680" />
     </state>

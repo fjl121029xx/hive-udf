@@ -206,7 +206,7 @@ public class UDAFAdvancedComputing extends UDAF {
                 String key = entry.getKey();
                 String filterValue = key.split("\001")[0];
 
-                if (filterKeyArr.length > 0) {
+                if (mathFuncStr.contains("compare") && filterKeyArr.length > 0) {
                     if (!filterKeyArr[0].equals("") && filterValue.compareTo(filterKeyArr[0]) >= 0 &&
                             !filterKeyArr[1].equals("") && filterValue.compareTo(filterKeyArr[1]) <= 0) {
                         bCount++;

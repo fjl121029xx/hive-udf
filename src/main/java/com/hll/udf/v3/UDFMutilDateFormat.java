@@ -154,12 +154,20 @@ public class UDFMutilDateFormat extends GenericUDF {
             try {
                 ca.setTime(new Date(t.getTime()));
             } catch (Exception e) {
-                return t+"";
+                return t + "";
             }
         } else if (this.longObjectInspector01 != null && this.stringObjectInspector02 != null) {
             long l = longObjectInspector01.get(deferredObjects[0].get());
             assert ca != null;
-            ca.setTime(new Date(l));
+            String s = Long.toString(l);
+            if (s.length() == 8) {
+
+                ca.set(Integer.parseInt(s.substring(0, 4)),
+                        (Integer.parseInt(s.substring(4, 6)) - 1),
+                        Integer.parseInt(s.substring(6, 8)));
+            } else {
+                ca.setTime(new Date(l));
+            }
         } else if (this.stringObjectInspector01 != null && this.stringObjectInspector02 != null) {
 
             String args0 = stringObjectInspector01.getPrimitiveJavaObject(deferredObjects[0].get());

@@ -58,7 +58,8 @@ public class FuncUtil {
         BigDecimal b = new BigDecimal(sum_value);
         for (Map.Entry<String, String> en : row_account.entrySet()) {
             BigDecimal a = new BigDecimal(en.getValue());
-            BigDecimal result = a.divide(z, 6, RoundingMode.HALF_UP).divide(b, 6, RoundingMode.HALF_UP).setScale(6, BigDecimal.ROUND_UP);
+            BigDecimal result = a.divide(b, 6, RoundingMode.HALF_UP).setScale(6, BigDecimal.ROUND_UP);
+            logger.info("===== a " + a + " ===== b " + b);
             finalResule.put(en.getKey(), result.toString());
         }
         return finalResule;
