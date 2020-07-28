@@ -147,7 +147,6 @@ public class UDFMutilDateFormat extends GenericUDF {
     public Object evaluate(DeferredObject[] deferredObjects) throws HiveException {
 
         Calendar ca = Calendar.getInstance();
-        logger.info(deferredObjects[0].getClass().getName());
         if (this.timestampObjectInspector01 != null && this.stringObjectInspector02 != null) {
             Timestamp t = timestampObjectInspector01.getPrimitiveJavaObject(deferredObjects[0].get());
             assert ca != null;
@@ -157,11 +156,15 @@ public class UDFMutilDateFormat extends GenericUDF {
                 return t + "";
             }
         } else if (this.longObjectInspector01 != null && this.stringObjectInspector02 != null) {
-            long l = longObjectInspector01.get(deferredObjects[0].get());
+            long l = 0L;
+            try {
+                l = longObjectInspector01.get(deferredObjects[0].get());
+            } catch (Exception e) {
+                return "null";
+            }
             assert ca != null;
             String s = Long.toString(l);
             if (s.length() == 8) {
-
                 ca.set(Integer.parseInt(s.substring(0, 4)),
                         (Integer.parseInt(s.substring(4, 6)) - 1),
                         Integer.parseInt(s.substring(6, 8)));
@@ -171,6 +174,9 @@ public class UDFMutilDateFormat extends GenericUDF {
         } else if (this.stringObjectInspector01 != null && this.stringObjectInspector02 != null) {
 
             String args0 = stringObjectInspector01.getPrimitiveJavaObject(deferredObjects[0].get());
+            if (args0 == null) {
+                return args0;
+            }
             if (isContainChinese(args0)) {
                 ca = ChineseDateFormat(args0);
             } else {
@@ -179,6 +185,9 @@ public class UDFMutilDateFormat extends GenericUDF {
         } else if (this.dateObjectInspector01 != null && this.stringObjectInspector02 != null) {
 
             Date date = dateObjectInspector01.getPrimitiveJavaObject(deferredObjects[0].get());
+            if (date == null) {
+                return date.toString();
+            }
             ca.setTime(date);
         } else {
             throw new RuntimeException(String.format("wrong type 【%s\t%s】", deferredObjects[0].getClass().getName(), deferredObjects[1].getClass().getName()));

@@ -19,13 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20200709   &gt;..·1">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20200720   &gt;..·1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v7/UDAFAdvancedComputing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v7/UDAFAdvancedComputing.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/v3/UDFMutilDateFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v3/UDFMutilDateFormat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/v5/UDFAdvRowColStat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v5/UDFAdvRowColStat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/util/FuncUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/util/FuncUtil.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -34,20 +30,6 @@
   </component>
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
-  </component>
-  <component name="DatabaseView">
-    <option name="SHOW_INTERMEDIATE" value="true" />
-    <option name="GROUP_DATA_SOURCES" value="true" />
-    <option name="GROUP_SCHEMA" value="true" />
-    <option name="GROUP_CONTENTS" value="false" />
-    <option name="SORT_POSITIONED" value="false" />
-    <option name="SHOW_EMPTY_GROUPS" value="false" />
-    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
-    <option name="HIDDEN_KINDS">
-      <set />
-    </option>
-    <expand />
-    <select />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -343,13 +325,9 @@
       <workItem from="1594897487069" duration="2910000" />
       <workItem from="1594983365188" duration="210000" />
       <workItem from="1595217045200" duration="1011000" />
-    </task>
-    <task id="LOCAL-00006" summary="20200407   ...2">
-      <created>1586241243920</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1586241243920</updated>
+      <workItem from="1595232531837" duration="1746000" />
+      <workItem from="1595242364986" duration="6000" />
+      <workItem from="1595329528028" duration="670000" />
     </task>
     <task id="LOCAL-00007" summary="20200409   ...2">
       <created>1586428202191</created>
@@ -687,7 +665,14 @@
       <option name="project" value="LOCAL" />
       <updated>1594278245151</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="20200720   &gt;..·1">
+      <created>1595232548303</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1595232548304</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -718,7 +703,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="20200429   &gt;..3" />
     <MESSAGE value="20200507   &gt;..3" />
     <MESSAGE value="20200507   &gt;..4" />
     <MESSAGE value="20200508   &gt;..·1" />
@@ -743,7 +727,8 @@
     <MESSAGE value="20200619   &gt;..·1" />
     <MESSAGE value="20200708   &gt;..·1" />
     <MESSAGE value="20200709   &gt;..·1" />
-    <option name="LAST_COMMIT_MESSAGE" value="20200709   &gt;..·1" />
+    <MESSAGE value="20200720   &gt;..·1" />
+    <option name="LAST_COMMIT_MESSAGE" value="20200720   &gt;..·1" />
   </component>
   <component name="WindowStateProjectService">
     <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589857178746">
@@ -778,22 +763,22 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="421" y="78" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1592537118679" />
-    <state width="1237" height="227" key="GridCell.Tab.0.bottom" timestamp="1595217459759">
+    <state width="1237" height="227" key="GridCell.Tab.0.bottom" timestamp="1595329598145">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="227" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1595217459759" />
-    <state width="1237" height="227" key="GridCell.Tab.0.center" timestamp="1595217459759">
+    <state width="1237" height="227" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1595329598145" />
+    <state width="1237" height="227" key="GridCell.Tab.0.center" timestamp="1595329598145">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="227" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1595217459759" />
-    <state width="1237" height="227" key="GridCell.Tab.0.left" timestamp="1595217459759">
+    <state width="1237" height="227" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1595329598145" />
+    <state width="1237" height="227" key="GridCell.Tab.0.left" timestamp="1595329598144">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="227" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1595217459759" />
-    <state width="1237" height="227" key="GridCell.Tab.0.right" timestamp="1595217459759">
+    <state width="1237" height="227" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1595329598144" />
+    <state width="1237" height="227" key="GridCell.Tab.0.right" timestamp="1595329598145">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="227" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1595217459759" />
+    <state width="1237" height="227" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1595329598145" />
     <state width="1237" height="204" key="GridCell.Tab.1.bottom" timestamp="1587715805421">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -822,10 +807,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1592292202321" />
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1594278246504">
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1595232550106">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1594278246504" />
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1595232550106" />
     <state x="93" y="93" width="1095" height="495" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587719916623">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
