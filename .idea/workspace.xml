@@ -19,7 +19,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20200720   &gt;..·1">
+    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20200728   &gt;..·1">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/v3/UDFMutilDateFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v3/UDFMutilDateFormat.java" afterDir="false" />
     </list>
@@ -328,13 +329,7 @@
       <workItem from="1595232531837" duration="1746000" />
       <workItem from="1595242364986" duration="6000" />
       <workItem from="1595329528028" duration="670000" />
-    </task>
-    <task id="LOCAL-00007" summary="20200409   ...2">
-      <created>1586428202191</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1586428202191</updated>
+      <workItem from="1595902713079" duration="308000" />
     </task>
     <task id="LOCAL-00008" summary="20200410   ...1">
       <created>1586487437802</created>
@@ -672,7 +667,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595232548304</updated>
     </task>
-    <option name="localTasksCounter" value="56" />
+    <task id="LOCAL-00056" summary="20200728   &gt;..·1">
+      <created>1595903019713</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1595903019714</updated>
+    </task>
+    <option name="localTasksCounter" value="57" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -703,7 +705,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="20200507   &gt;..3" />
     <MESSAGE value="20200507   &gt;..4" />
     <MESSAGE value="20200508   &gt;..·1" />
     <MESSAGE value="20200509   &gt;..·1" />
@@ -728,7 +729,8 @@
     <MESSAGE value="20200708   &gt;..·1" />
     <MESSAGE value="20200709   &gt;..·1" />
     <MESSAGE value="20200720   &gt;..·1" />
-    <option name="LAST_COMMIT_MESSAGE" value="20200720   &gt;..·1" />
+    <MESSAGE value="20200728   &gt;..·1" />
+    <option name="LAST_COMMIT_MESSAGE" value="20200728   &gt;..·1" />
   </component>
   <component name="WindowStateProjectService">
     <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589857178746">
