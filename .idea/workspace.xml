@@ -20,9 +20,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20200728   &gt;..·1">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/dw/TestMain.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/dw/UDFJsonFormat.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udf/v3/UDFMutilDateFormat.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udf/v3/UDFMutilDateFormat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v4/RetentionComputing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v4/RetentionComputing.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +33,9 @@
   </component>
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
+  </component>
+  <component name="ComposerSettings">
+    <execution />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -83,33 +88,7 @@
       <recent name="D:\work\source\ReportDateFormat" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Demo (1)">
-    <configuration name="Demo (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.hll.udaf.Demo" />
-      <module name="hive-udf" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.hll.udaf.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Demo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.hll.udf.v2.dif.Demo" />
-      <module name="hive-udf" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.hll.udf.v2.dif.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Application.TestMain">
     <configuration name="Demo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.hll.udaf.Demo" />
       <module name="hive-udf" />
@@ -149,25 +128,12 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="GenerateColData" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.hll.test.GenerateColData" />
-      <module name="hive-udf" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.hll.test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="TestMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="com.hll.test.TestMain" />
+      <option name="MAIN_CLASS_NAME" value="com.hll.dw.TestMain" />
       <module name="hive-udf" />
       <extension name="coverage">
         <pattern>
-          <option name="PATTERN" value="com.hll.test.*" />
+          <option name="PATTERN" value="com.hll.dw.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -175,18 +141,23 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <list>
-      <item itemvalue="Application.Demo" />
-      <item itemvalue="Application.GenerateColData" />
-      <item itemvalue="Application.TestMain" />
-      <item itemvalue="Application.Demo (1)" />
-    </list>
+    <configuration name="UDFJsonFormat" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.hll.dw.UDFJsonFormat" />
+      <module name="hive-udf" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.hll.dw.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Demo (1)" />
-        <item itemvalue="Application.Demo" />
         <item itemvalue="Application.TestMain" />
-        <item itemvalue="Application.GenerateColData" />
+        <item itemvalue="Application.UDFJsonFormat" />
       </list>
     </recent_temporary>
   </component>
@@ -329,14 +300,11 @@
       <workItem from="1595232531837" duration="1746000" />
       <workItem from="1595242364986" duration="6000" />
       <workItem from="1595329528028" duration="670000" />
-      <workItem from="1595902713079" duration="308000" />
-    </task>
-    <task id="LOCAL-00008" summary="20200410   ...1">
-      <created>1586487437802</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1586487437802</updated>
+      <workItem from="1595902713079" duration="3108000" />
+      <workItem from="1595916059573" duration="3240000" />
+      <workItem from="1597199988470" duration="801000" />
+      <workItem from="1601263206678" duration="289000" />
+      <workItem from="1601275111632" duration="309000" />
     </task>
     <task id="LOCAL-00009" summary="20200413   ...1">
       <created>1586771565440</created>
@@ -674,7 +642,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595903019714</updated>
     </task>
-    <option name="localTasksCounter" value="57" />
+    <task id="LOCAL-00057" summary="20200728   &gt;..·1">
+      <created>1595903036179</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1595903036179</updated>
+    </task>
+    <option name="localTasksCounter" value="58" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -733,10 +708,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="20200728   &gt;..·1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1589857178746">
+    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595903790233">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1589857178746" />
+    <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1595903790233" />
     <state x="755" y="73" key="#com.intellij.ide.util.MemberChooser" timestamp="1587697941410">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -765,22 +740,22 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="421" y="78" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1592537118679" />
-    <state width="1237" height="227" key="GridCell.Tab.0.bottom" timestamp="1595329598145">
+    <state width="1237" height="227" key="GridCell.Tab.0.bottom" timestamp="1595918707933">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="227" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1595329598145" />
-    <state width="1237" height="227" key="GridCell.Tab.0.center" timestamp="1595329598145">
+    <state width="1237" height="227" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1595918707933" />
+    <state width="1237" height="227" key="GridCell.Tab.0.center" timestamp="1595918707933">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="227" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1595329598145" />
-    <state width="1237" height="227" key="GridCell.Tab.0.left" timestamp="1595329598144">
+    <state width="1237" height="227" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1595918707933" />
+    <state width="1237" height="227" key="GridCell.Tab.0.left" timestamp="1595918707933">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="227" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1595329598144" />
-    <state width="1237" height="227" key="GridCell.Tab.0.right" timestamp="1595329598145">
+    <state width="1237" height="227" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1595918707933" />
+    <state width="1237" height="227" key="GridCell.Tab.0.right" timestamp="1595918707933">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="227" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1595329598145" />
+    <state width="1237" height="227" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1595918707933" />
     <state width="1237" height="204" key="GridCell.Tab.1.bottom" timestamp="1587715805421">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -809,10 +784,10 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1592292202321" />
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1595232550106">
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1595903037471">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1595232550106" />
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1595903037471" />
     <state x="93" y="93" width="1095" height="495" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587719916623">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
@@ -846,6 +821,11 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/hll/udaf/v6/RowColStatisticsV3.java</url>
           <line>1019</line>
           <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/hll/dw/TestMain.java</url>
+          <line>56</line>
+          <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

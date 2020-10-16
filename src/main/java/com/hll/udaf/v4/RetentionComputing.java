@@ -19,7 +19,7 @@ import java.util.*;
 
 @Description(name = "udfretentioncomputing",
         value = "_func_(dimensions, measures, measurefunc) -  " +
-                " list<string> , list<string> , list<string>p")
+                " list<string> , list<string> , list<string>")
 public class RetentionComputing extends AbstractGenericUDAFResolver {
 
     static final Log LOG = LogFactory.getLog(GenericUDAFAverage.class.getName());
