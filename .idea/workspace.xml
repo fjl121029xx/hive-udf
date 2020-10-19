@@ -19,12 +19,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20200728   &gt;..·1">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/dw/TestMain.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/dw/UDFJsonFormat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20201016   &gt;..·1">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/demand/YQSUDFHanglie.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v4/RetentionComputing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v4/RetentionComputing.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,6 +48,7 @@
   <component name="MavenRunner">
     <option name="skipTests" value="true" />
   </component>
+  <component name="PhpDebugGeneral" listening_started="true" />
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="1" />
   </component>
@@ -305,13 +303,9 @@
       <workItem from="1597199988470" duration="801000" />
       <workItem from="1601263206678" duration="289000" />
       <workItem from="1601275111632" duration="309000" />
-    </task>
-    <task id="LOCAL-00009" summary="20200413   ...1">
-      <created>1586771565440</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1586771565440</updated>
+      <workItem from="1602844428187" duration="85000" />
+      <workItem from="1603075715329" duration="2635000" />
+      <workItem from="1603087904698" duration="10874000" />
     </task>
     <task id="LOCAL-00010" summary="20200414   ...1">
       <created>1586854103976</created>
@@ -649,7 +643,14 @@
       <option name="project" value="LOCAL" />
       <updated>1595903036179</updated>
     </task>
-    <option name="localTasksCounter" value="58" />
+    <task id="LOCAL-00058" summary="20201016   &gt;..·1">
+      <created>1602844453116</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1602844453117</updated>
+    </task>
+    <option name="localTasksCounter" value="59" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -680,7 +681,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="20200507   &gt;..4" />
     <MESSAGE value="20200508   &gt;..·1" />
     <MESSAGE value="20200509   &gt;..·1" />
     <MESSAGE value="20200511   &gt;..·1" />
@@ -705,109 +705,54 @@
     <MESSAGE value="20200709   &gt;..·1" />
     <MESSAGE value="20200720   &gt;..·1" />
     <MESSAGE value="20200728   &gt;..·1" />
-    <option name="LAST_COMMIT_MESSAGE" value="20200728   &gt;..·1" />
+    <MESSAGE value="20201016   &gt;..·1" />
+    <option name="LAST_COMMIT_MESSAGE" value="20201016   &gt;..·1" />
   </component>
   <component name="WindowStateProjectService">
     <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595903790233">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1595903790233" />
-    <state x="755" y="73" key="#com.intellij.ide.util.MemberChooser" timestamp="1587697941410">
+    <state x="446" y="46" key="#com.intellij.ide.util.MemberChooser" timestamp="1603076165620">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="755" y="73" key="#com.intellij.ide.util.MemberChooser/0.0.1280.680@0.0.1280.680" timestamp="1587697941410" />
-    <state x="302" y="17" key="#com.intellij.refactoring.encapsulateFields.EncalpsulateFieldsDialog" timestamp="1588126598606">
+    <state x="446" y="46" key="#com.intellij.ide.util.MemberChooser/0.0.1280.680@0.0.1280.680" timestamp="1603076165620" />
+    <state x="371" y="87" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog" timestamp="1603092490670">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="302" y="17" key="#com.intellij.refactoring.encapsulateFields.EncalpsulateFieldsDialog/0.0.1280.680@0.0.1280.680" timestamp="1588126598606" />
-    <state x="104" y="228" width="431" height="239" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes" timestamp="1588142639724">
+    <state x="371" y="87" key="#com.intellij.refactoring.typeMigration.ui.FailedConversionsDialog/0.0.1280.680@0.0.1280.680" timestamp="1603092490670" />
+    <state x="421" y="95" key="FileChooserDialogImpl" timestamp="1603098115793">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="104" y="228" width="431" height="239" key="#com.intellij.refactoring.move.moveClassesOrPackages.MoveClassesOrPackagesDialog.classes/0.0.1280.680@0.0.1280.680" timestamp="1588142639724" />
-    <state x="371" y="87" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1592292324476">
+    <state x="421" y="95" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1603098115793" />
+    <state width="1237" height="133" key="GridCell.Tab.0.bottom" timestamp="1603097832745">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="371" y="87" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1280.680@0.0.1280.680" timestamp="1592292324476" />
-    <state x="91" y="0" key="CommitChangelistDialog2" timestamp="1592531684078">
+    <state width="1237" height="133" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1603097832745" />
+    <state width="1237" height="133" key="GridCell.Tab.0.center" timestamp="1603097832744">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="91" y="0" key="CommitChangelistDialog2/0.0.1280.680@0.0.1280.680" timestamp="1592531684078" />
-    <state x="93" y="93" width="1095" height="495" key="DiffContextDialog" timestamp="1589880011391">
+    <state width="1237" height="133" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1603097832744" />
+    <state width="1237" height="133" key="GridCell.Tab.0.left" timestamp="1603097832744">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="93" y="93" width="1095" height="495" key="DiffContextDialog/0.0.1280.680@0.0.1280.680" timestamp="1589880011391" />
-    <state x="421" y="78" key="FileChooserDialogImpl" timestamp="1592537118679">
+    <state width="1237" height="133" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1603097832744" />
+    <state width="1237" height="133" key="GridCell.Tab.0.right" timestamp="1603097832744">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="421" y="78" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1592537118679" />
-    <state width="1237" height="227" key="GridCell.Tab.0.bottom" timestamp="1595918707933">
+    <state width="1237" height="133" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1603097832744" />
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1602844497909">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="227" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1595918707933" />
-    <state width="1237" height="227" key="GridCell.Tab.0.center" timestamp="1595918707933">
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1602844497909" />
+    <state x="28" y="1" key="new project wizard" timestamp="1603098120350">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="227" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1595918707933" />
-    <state width="1237" height="227" key="GridCell.Tab.0.left" timestamp="1595918707933">
+    <state x="28" y="1" key="new project wizard/0.0.1280.680@0.0.1280.680" timestamp="1603098120350" />
+    <state x="297" y="-6" width="670" height="676" key="search.everywhere.popup" timestamp="1603078576684">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="227" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1595918707933" />
-    <state width="1237" height="227" key="GridCell.Tab.0.right" timestamp="1595918707933">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="1237" height="227" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1595918707933" />
-    <state width="1237" height="204" key="GridCell.Tab.1.bottom" timestamp="1587715805421">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="1237" height="204" key="GridCell.Tab.1.bottom/0.0.1280.680@0.0.1280.680" timestamp="1587715805421" />
-    <state width="1237" height="204" key="GridCell.Tab.1.center" timestamp="1587715805421">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="1237" height="204" key="GridCell.Tab.1.center/0.0.1280.680@0.0.1280.680" timestamp="1587715805421" />
-    <state width="1237" height="204" key="GridCell.Tab.1.left" timestamp="1587715805421">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="1237" height="204" key="GridCell.Tab.1.left/0.0.1280.680@0.0.1280.680" timestamp="1587715805421" />
-    <state width="1237" height="204" key="GridCell.Tab.1.right" timestamp="1587715805421">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state width="1237" height="204" key="GridCell.Tab.1.right/0.0.1280.680@0.0.1280.680" timestamp="1587715805421" />
-    <state x="288" y="38" key="NewModule_or_Project.wizard" timestamp="1592537120737">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="288" y="38" key="NewModule_or_Project.wizard/0.0.1280.680@0.0.1280.680" timestamp="1592537120737" />
-    <state x="411" y="54" key="RollbackChangesDialog" timestamp="1589880128159">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="411" y="54" key="RollbackChangesDialog/0.0.1280.680@0.0.1280.680" timestamp="1589880128159" />
-    <state x="142" y="0" key="SettingsEditor" timestamp="1592292202321">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="142" y="0" key="SettingsEditor/0.0.1280.680@0.0.1280.680" timestamp="1592292202321" />
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1595903037471">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1595903037471" />
-    <state x="93" y="93" width="1095" height="495" key="com.intellij.history.integration.ui.views.FileHistoryDialog" timestamp="1587719916623">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="93" y="93" width="1095" height="495" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.0.1280.680@0.0.1280.680" timestamp="1587719916623" />
-    <state x="325" y="165" key="com.intellij.ide.util.TipDialog" timestamp="1589434265533">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="325" y="165" key="com.intellij.ide.util.TipDialog/0.0.1280.680@0.0.1280.680" timestamp="1589434265533" />
-    <state x="343" y="0" key="refactoring.ChangeSignatureDialog" timestamp="1590404608590">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="343" y="0" key="refactoring.ChangeSignatureDialog/0.0.1280.680@0.0.1280.680" timestamp="1590404608590" />
-    <state x="297" y="151" key="run.anything.popup" timestamp="1588144105302">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="297" y="151" key="run.anything.popup/0.0.1280.680@0.0.1280.680" timestamp="1588144105302" />
-    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup" timestamp="1590461517274">
-      <screen x="0" y="0" width="1280" height="680" />
-    </state>
-    <state x="303" y="1" width="672" height="678" key="search.everywhere.popup/0.0.1280.680@0.0.1280.680" timestamp="1590461517274" />
+    <state x="297" y="-6" width="670" height="676" key="search.everywhere.popup/0.0.1280.680@0.0.1280.680" timestamp="1603078576684" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -816,11 +761,6 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/hll/test/UdfImpl.java</url>
           <line>80</line>
           <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/hll/udaf/v6/RowColStatisticsV3.java</url>
-          <line>1019</line>
-          <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/hll/dw/TestMain.java</url>
