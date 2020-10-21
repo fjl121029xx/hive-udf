@@ -19,10 +19,8 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20201019   &gt;..·1">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20201021   &gt;..·1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v6/RowColStatisticsV3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v6/RowColStatisticsV3.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -307,14 +305,7 @@
       <workItem from="1602844428187" duration="85000" />
       <workItem from="1603075715329" duration="2635000" />
       <workItem from="1603087904698" duration="10903000" />
-      <workItem from="1603244532908" duration="1108000" />
-    </task>
-    <task id="LOCAL-00011" summary="20200415   ...1">
-      <created>1586933371682</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1586933371682</updated>
+      <workItem from="1603244532908" duration="2880000" />
     </task>
     <task id="LOCAL-00012" summary="20200416   ...1">
       <created>1587022751228</created>
@@ -652,7 +643,14 @@
       <option name="project" value="LOCAL" />
       <updated>1603103326343</updated>
     </task>
-    <option name="localTasksCounter" value="60" />
+    <task id="LOCAL-00060" summary="20201021   &gt;..·1">
+      <created>1603246513952</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1603246513952</updated>
+    </task>
+    <option name="localTasksCounter" value="61" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -683,7 +681,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="20200509   &gt;..·1" />
     <MESSAGE value="20200511   &gt;..·1" />
     <MESSAGE value="20200512   &gt;..·1" />
     <MESSAGE value="20200512   &gt;..·2" />
@@ -708,7 +705,8 @@
     <MESSAGE value="20200728   &gt;..·1" />
     <MESSAGE value="20201016   &gt;..·1" />
     <MESSAGE value="20201019   &gt;..·1" />
-    <option name="LAST_COMMIT_MESSAGE" value="20201019   &gt;..·1" />
+    <MESSAGE value="20201021   &gt;..·1" />
+    <option name="LAST_COMMIT_MESSAGE" value="20201021   &gt;..·1" />
   </component>
   <component name="WindowStateProjectService">
     <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595903790233">
