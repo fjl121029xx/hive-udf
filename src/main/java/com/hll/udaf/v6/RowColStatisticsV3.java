@@ -213,19 +213,19 @@ public class RowColStatisticsV3 extends UDAF {
                 for (Map.Entry<String, String> inen : cat21.entrySet()) {
                     String subk = inen.getKey();
 
-                    if (subk.contains("count")) {
+                    if (subk.endsWith("count")) {
 
                         double dvalue = Double.parseDouble(cat11.getOrDefault(subk, "0.00")) +
                                 Double.parseDouble(cat21.getOrDefault(subk, "0.00"));
                         cat11.put(subk, Double.toString(dvalue));
-                    } else if (subk.contains("max")) {
+                    } else if (subk.endsWith("max")) {
                         double dvalue1 = Double.parseDouble(cat11.getOrDefault(subk, "0.00"));
                         double dvalue2 = Double.parseDouble(cat21.getOrDefault(subk, "0.00"));
                         if (dvalue2 > dvalue1) {
                             dvalue1 = dvalue2;
                         }
                         cat11.put(subk, Double.toString(dvalue1));
-                    } else if (subk.contains("min")) {
+                    } else if (subk.endsWith("min")) {
 
                         double dvalue1 = Double.parseDouble(cat11.getOrDefault(subk, "9999999.00"));
                         double dvalue2 = Double.parseDouble(cat21.getOrDefault(subk, "9999999.00"));
@@ -233,7 +233,7 @@ public class RowColStatisticsV3 extends UDAF {
                             dvalue1 = dvalue2;
                         }
                         cat11.put(subk, Double.toString(dvalue1));
-                    } else if (subk.contains("uniqueCount")) {
+                    } else if (subk.endsWith("uniqueCount")) {
                         String dvalue1 = cat11.getOrDefault(subk, "");
                         String dvalue2 = cat21.getOrDefault(subk, "");
 
@@ -246,7 +246,7 @@ public class RowColStatisticsV3 extends UDAF {
                             }
                         }
                         cat11.put(subk, dvalue1);
-                    } else if (subk.contains("avg")) {
+                    } else if (subk.endsWith("avg")) {
                         String dvalue1 = cat11.getOrDefault(subk, "0,0");
                         String dvalue2 = cat21.getOrDefault(subk, "0,0");
 
@@ -268,12 +268,12 @@ public class RowColStatisticsV3 extends UDAF {
             for (Map.Entry<String, String> en : dog2.entrySet()) {
                 String keyd = en.getKey();
 
-                if (keyd.contains("count")) {
+                if (keyd.endsWith("count")) {
                     double v1 = Double.parseDouble(dog2.getOrDefault(keyd, "0.00"));
                     double v2 = Double.parseDouble(dog1.getOrDefault(keyd, "0.00"));
                     double result = v1 + v2;
                     dog1.put(keyd, Double.toString(result));
-                } else if (keyd.contains("max")) {
+                } else if (keyd.endsWith("max")) {
                     double v1 = Double.parseDouble(dog2.getOrDefault(keyd, "0.00"));
                     double v2 = Double.parseDouble(dog1.getOrDefault(keyd, "0.00"));
 
@@ -281,7 +281,7 @@ public class RowColStatisticsV3 extends UDAF {
                         v1 = v2;
                     }
                     dog1.put(keyd, Double.toString(v1));
-                } else if (keyd.contains("min")) {
+                } else if (keyd.endsWith("min")) {
                     double v1 = Double.parseDouble(dog2.getOrDefault(keyd, "9999999.00"));
                     double v2 = Double.parseDouble(dog1.getOrDefault(keyd, "9999999.00"));
 
@@ -289,7 +289,7 @@ public class RowColStatisticsV3 extends UDAF {
                         v1 = v2;
                     }
                     dog1.put(keyd, Double.toString(v1));
-                } else if (keyd.contains("uniqueCount")) {
+                } else if (keyd.endsWith("uniqueCount")) {
 
                     String v1 = dog2.getOrDefault(keyd, "");
                     String v2 = dog1.getOrDefault(keyd, "");
@@ -305,7 +305,7 @@ public class RowColStatisticsV3 extends UDAF {
                     }
                     dog1.put(keyd, v2);
 
-                } else if (keyd.contains("avg")) {
+                } else if (keyd.endsWith("avg")) {
 
                     String v1 = dog2.getOrDefault(keyd, "0,0");
                     String v2 = dog1.getOrDefault(keyd, "0,0");
@@ -330,10 +330,10 @@ public class RowColStatisticsV3 extends UDAF {
         }
 
         public double str2double(String key, String v) {
-            if (key.contains("avg")) {
+            if (key.endsWith("avg")) {
                 String[] enarr = v.split(",");
                 return Double.parseDouble(enarr[0]) / Double.parseDouble(enarr[1]);
-            } else if (key.contains("uniqueCount")) {
+            } else if (key.endsWith("uniqueCount")) {
                 return Double.parseDouble(new String(v.split(",").length + ""));
             } else {
                 return Double.parseDouble(v);

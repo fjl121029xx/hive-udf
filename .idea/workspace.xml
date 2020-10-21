@@ -19,9 +19,10 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20201016   &gt;..·1">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/demand/YQSUDFHanglie.java" afterDir="false" />
+    <list default="true" id="4e20b845-6ad9-449c-84c9-b04ea30ff5e5" name="Default Changelist" comment="20201019   &gt;..·1">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v6/RowColStatisticsV3.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/hll/udaf/v6/RowColStatisticsV3.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -305,14 +306,8 @@
       <workItem from="1601275111632" duration="309000" />
       <workItem from="1602844428187" duration="85000" />
       <workItem from="1603075715329" duration="2635000" />
-      <workItem from="1603087904698" duration="10874000" />
-    </task>
-    <task id="LOCAL-00010" summary="20200414   ...1">
-      <created>1586854103976</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1586854103976</updated>
+      <workItem from="1603087904698" duration="10903000" />
+      <workItem from="1603244532908" duration="1108000" />
     </task>
     <task id="LOCAL-00011" summary="20200415   ...1">
       <created>1586933371682</created>
@@ -650,7 +645,14 @@
       <option name="project" value="LOCAL" />
       <updated>1602844453117</updated>
     </task>
-    <option name="localTasksCounter" value="59" />
+    <task id="LOCAL-00059" summary="20201019   &gt;..·1">
+      <created>1603103326342</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1603103326343</updated>
+    </task>
+    <option name="localTasksCounter" value="60" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -681,7 +683,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="20200508   &gt;..·1" />
     <MESSAGE value="20200509   &gt;..·1" />
     <MESSAGE value="20200511   &gt;..·1" />
     <MESSAGE value="20200512   &gt;..·1" />
@@ -706,7 +707,8 @@
     <MESSAGE value="20200720   &gt;..·1" />
     <MESSAGE value="20200728   &gt;..·1" />
     <MESSAGE value="20201016   &gt;..·1" />
-    <option name="LAST_COMMIT_MESSAGE" value="20201016   &gt;..·1" />
+    <MESSAGE value="20201019   &gt;..·1" />
+    <option name="LAST_COMMIT_MESSAGE" value="20201019   &gt;..·1" />
   </component>
   <component name="WindowStateProjectService">
     <state x="96" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1595903790233">
@@ -725,26 +727,26 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="421" y="95" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1603098115793" />
-    <state width="1237" height="133" key="GridCell.Tab.0.bottom" timestamp="1603097832745">
+    <state width="1237" height="133" key="GridCell.Tab.0.bottom" timestamp="1603245060503">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="133" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1603097832745" />
-    <state width="1237" height="133" key="GridCell.Tab.0.center" timestamp="1603097832744">
+    <state width="1237" height="133" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1603245060503" />
+    <state width="1237" height="133" key="GridCell.Tab.0.center" timestamp="1603245060503">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="133" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1603097832744" />
-    <state width="1237" height="133" key="GridCell.Tab.0.left" timestamp="1603097832744">
+    <state width="1237" height="133" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1603245060503" />
+    <state width="1237" height="133" key="GridCell.Tab.0.left" timestamp="1603245060503">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="133" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1603097832744" />
-    <state width="1237" height="133" key="GridCell.Tab.0.right" timestamp="1603097832744">
+    <state width="1237" height="133" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1603245060503" />
+    <state width="1237" height="133" key="GridCell.Tab.0.right" timestamp="1603245060503">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state width="1237" height="133" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1603097832744" />
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1602844497909">
+    <state width="1237" height="133" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1603245060503" />
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2" timestamp="1603103328109">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
-    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1602844497909" />
+    <state x="233" y="63" key="Vcs.Push.Dialog.v2/0.0.1280.680@0.0.1280.680" timestamp="1603103328109" />
     <state x="28" y="1" key="new project wizard" timestamp="1603098120350">
       <screen x="0" y="0" width="1280" height="680" />
     </state>
